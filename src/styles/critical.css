@@ -3,3 +3,21 @@
   position: absolute;
   margin-left: 1em;
 }
+
+.crit_main {
+  flex: 1;
+}
+
+.crit_header {
+  width: 100%;
+}
+
+.crit_header_logo {
+  position: absolute;
+  margin: 2em;
+}
+
+.crit_header_title {
+  align-self: center;
+  margin: 1em auto;
+}

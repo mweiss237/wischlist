@@ -1,0 +1,14 @@
+.headline {
+    text-align: center;
+}
+
+.card {
+    border: 2px solid lightgoldenrodyellow;
+    border-radius: 4px;
+    background-color: #f2eecb;
+    color: #111;
+    width: 100%;
+    max-width: 550px;
+    margin: auto;
+    padding: 0 2em 1em;
+}

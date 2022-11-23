@@ -11,10 +11,17 @@ const Header = ({}: HeaderParams) => {
       <Head>
         <title>Wischlist</title>
       </Head>
+      <div className="crit_header">
+        <Image
+          className="crit_header_logo"
+          src={favicon}
+          alt="vercel icon"
+          width={40}
+          height={40}
+        />
 
-      <Image className="example" src={favicon} alt="vercel icon" width={40} height={40} />
-
-      <h1 className={`waffleFont ${styles.headline}`}>Wischlist</h1>
+        <h1 className={`crit_header_title ${styles.headline}`}>Wischlist</h1>
+      </div>
     </>
   );
 };
