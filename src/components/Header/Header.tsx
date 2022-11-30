@@ -25,6 +25,10 @@ const Header = ({}: HeaderParams) => {
 
         <h1 className={`crit_header_title ${styles.headline}`}>Wischlist</h1>
       </div>
+      <nav className="crit_navigator">
+        <Link href={"/"}>Home</Link>
+        <Link href={"/entries"}>Lists</Link>
+      </nav>
     </>
   );
 };

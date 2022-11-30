@@ -8,7 +8,7 @@ const App = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Header />
-      <main className="crit_main">
+      <main>
         <Component {...pageProps} />
       </main>
       <Footer />

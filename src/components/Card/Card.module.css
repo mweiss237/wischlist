@@ -1,0 +1,21 @@
+.headline {
+    text-align: center;
+}
+
+.card {
+    box-shadow: 3px 5px 8px #a3a3a3;
+    border-radius: 7px;
+    background-color: #e5e7eb;
+    color: #111;
+    width: 100%;
+    max-width: 550px;
+    margin: auto;
+    padding: .5em 2em 1em;
+    transition: box-shadow ease-in .1s, transform .2s;
+    transform: scaleY(1);
+}
+
+.card:hover {
+    box-shadow: 3px 5px 12px #a3a3a3;
+    transform: scale(1.01);
+}
