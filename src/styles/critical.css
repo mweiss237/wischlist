@@ -1,10 +1,16 @@
 .crit_header {
+  display: flex;
   width: 100%;
+  align-items: center;
 }
 
 .crit_header_logo {
   position: absolute;
-  margin: 0.5em 2em;
+  display: block;
+  height: auto;
+  width: auto;
+  line-height: 0;
+  margin: 1em 2em;
 }
 
 .crit_header_title {
@@ -32,4 +38,13 @@
   padding: 0.5em;
   color: black;
   text-decoration: none;
+}
+
+.crit_footer {
+  display: flex;
+  padding: .5rem 0;
+  margin: 1rem 2rem 0;
+  border-top: 1px solid #e5e7eb;
+  justify-content: center;
+  align-items: center;
 }

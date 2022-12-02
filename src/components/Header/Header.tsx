@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
 import styles from "./Header.module.css";
-import favicon from "../../../public/favicon.ico";
 import Link from "next/link";
 
 type HeaderParams = {};
@@ -13,13 +12,13 @@ const Header = ({}: HeaderParams) => {
         <title>Wischlist</title>
       </Head>
       <div className="crit_header">
-        <Link href="/">
+        <Link href="/" className="crit_header_logo">
           <Image
-            className="crit_header_logo"
-            src={favicon}
+            src={"/favicon.ico"}
             alt="vercel icon"
             width={40}
             height={40}
+            unoptimized
           />
         </Link>
 

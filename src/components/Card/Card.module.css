@@ -1,21 +1,35 @@
-.headline {
-    text-align: center;
+.cardWrapper {
+    display: flex;
+    flex-flow: column nowrap;
 }
 
 .card {
-    box-shadow: 3px 5px 8px #a3a3a3;
-    border-radius: 7px;
-    background-color: #e5e7eb;
-    color: #111;
-    width: 100%;
-    max-width: 550px;
-    margin: auto;
-    padding: .5em 2em 1em;
-    transition: box-shadow ease-in .1s, transform .2s;
-    transform: scaleY(1);
+    height: 200px;
+    box-sizing: border-box;
+    padding: 16px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 7px rgba(0, 0, 0, 0.15);
+    resize: none;
+    font-family: sans-serif;
+    font-size: 16px;
 }
 
 .card:hover {
-    box-shadow: 3px 5px 12px #a3a3a3;
-    transform: scale(1.01);
+  box-shadow: 0 0 12px #a3a3a3;
+}
+
+.saveWish {
+    display: none;
+    width: 33%;
+    background-color: white;
+    background: none;
+    border: none;
+    
+
+
+}
+
+.saveWish.active {
+    display: initial;
 }

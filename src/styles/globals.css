@@ -27,11 +27,11 @@ code {
 
 @media (prefers-color-scheme: dark) {
   html {
-    color-scheme: dark;
+    color-scheme: white;
   }
   body {
     color: white;
-    background: #313131;
+    background: #009578;
   }
 
   code {

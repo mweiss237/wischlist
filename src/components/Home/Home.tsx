@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
 import styles from "./Home.module.css";
-import welcomeImg from "../../../public/under_construction.png";
 
 const Home = () => {
   return (
@@ -19,11 +18,12 @@ const Home = () => {
         <h2>We are currently setting things up!</h2>
 
         <Image
-          src={welcomeImg}
+          src={'/under_construction.png'}
           alt="construction side"
-          width={200}
+          width={300}
           height={200}
           loading={"eager"}
+          unoptimized
         />
 
         <h2>Be patient!</h2>

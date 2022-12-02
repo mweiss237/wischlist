@@ -1,22 +1,25 @@
+import React from "react";
 import styles from "./Card.module.css";
 
-type CardParams = {};
+type CardParams = {
+  id: string;
+  value: string;
+};
 
-const Card = (props: CardParams) => {
+const Card = ({ id, value = "" }: CardParams) => {
+  const [pristine, setPristine] = React.useState(false);
   return (
-    <div className={styles.card}>
-      <h2 className={styles.headline}>This is an example!</h2>
-      <h3>ToDo List</h3>
-      <ul>
-        <li>List entry 1</li>
-        <li>List entry 2</li>
-      </ul>
-      <hr />
-      <h3>Done List</h3>
-      <ul>
-        <li>List entry 3</li>
-        <li>List entry 4</li>
-      </ul>
+    <div className={styles.cardWrapper}>
+      <textarea
+        onChange={() => setPristine(true)}
+        className={styles.card}
+        placeholder="Ich wünsche mir..."
+      >
+        {value}
+      </textarea>
+      <button className={`${styles.saveWish} ${pristine ? styles.active : ""}`}>
+        +
+      </button>
     </div>
   );
 };
