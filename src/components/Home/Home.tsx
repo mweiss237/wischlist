@@ -22,6 +22,7 @@ const Home = () => {
           src={welcomeImg}
           alt="construction side"
           width={200}
+          height={200}
           loading={"eager"}
         />
 

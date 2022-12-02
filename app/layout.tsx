@@ -12,11 +12,11 @@ export default function RootLayout({
     <html>
       <head></head>
       <body>
-          <Header />
+        <Header />
         <main>
           <span className="crit_content">{children}</span>
         </main>
-          <Footer />
+        <Footer />
       </body>
     </html>
   );
