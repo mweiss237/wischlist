@@ -3,7 +3,7 @@
 import AddCard from "components/AddCard/AddCard";
 import Card from "components/Card/Card";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
-import { getWishes } from "lib/wish";
+import { wishDB } from "lib/wish";
 import React from "react";
 import { useState } from "react";
 import styles from "./List.module.css";
@@ -13,7 +13,7 @@ type ListParams = {};
 const List = (props: ListParams) => {
   const [wishes, setWishes] = useState<QueryDocumentSnapshot<DocumentData>[]>();
   React.useEffect(() => {
-    getWishes().then((value) => setWishes(value));
+    wishDB.getAll().then((value) => setWishes(value.docs));
   }, []);
   return (
     <div className={styles.list}>

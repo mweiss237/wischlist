@@ -1,12 +1,12 @@
 "use client";
 
-import { saveWish } from "lib/wish";
+import { addWish } from "lib/wish";
 import styles from "./AddCard.module.css";
 
 type AddCardParams = {};
 
 const addEmptyCard = async () => {
-    const res = await saveWish("")
+    const res = await addWish("")
     console.log(res)
     debugger;
 };
