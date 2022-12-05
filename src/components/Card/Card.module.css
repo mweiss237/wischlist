@@ -21,15 +21,16 @@
 
 .saveWish {
     display: none;
-    width: 33%;
-    background-color: white;
+    overflow: hidden;
+    position: relative;
+    align-self: end;
+    bottom: 2.5em;
     background: none;
     border: none;
-    
-
-
+    cursor: pointer;
 }
 
+
 .saveWish.active {
-    display: initial;
+    display: unset;
 }

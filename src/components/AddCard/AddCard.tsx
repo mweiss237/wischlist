@@ -1,23 +1,15 @@
-"use client";
-
-import { addWish } from "lib/wish";
+import { wishDB } from "lib/wish";
 import styles from "./AddCard.module.css";
 
 type AddCardParams = {};
 
-const addEmptyCard = async () => {
-    const res = await addWish("")
-    console.log(res)
-    debugger;
+const addEmptyCard = () => {
+  wishDB.add({ wish: "" });
 };
 
 const AddCard = (props: AddCardParams) => {
   return (
-    <button
-      className={styles["add-note"]}
-      type="button"
-      onClick={addEmptyCard}
-    >
+    <button className={styles["add-note"]} type="button" onClick={addEmptyCard}>
       +
     </button>
   );
