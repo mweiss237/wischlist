@@ -2,6 +2,7 @@ import {
   addDoc,
   collection,
   CollectionReference,
+  deleteDoc,
   DocumentData,
   DocumentReference,
   getDoc,
@@ -26,4 +27,7 @@ export class DatabaseHelper<T extends DocumentData> {
 
   public update = async (document: DocumentReference<T>, data: UpdateData<T>) =>
     await updateDoc(document, data);
+
+  public delete = async (document: DocumentReference<T>) =>
+    await deleteDoc(document);
 }

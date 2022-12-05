@@ -1,5 +1,3 @@
-"use client";
-
 import AddCard from "components/AddCard/AddCard";
 import Card from "components/Card/Card";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
