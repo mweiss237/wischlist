@@ -11,9 +11,15 @@
   width: auto;
   line-height: 0;
   margin: 1em 2em;
-  border: 1px solid white;
+  border: 2px solid white;
   padding: .5em;
-  border-radius: 30%;
+  border-radius: 20%;
+  box-shadow: unset;
+  transition: box-shadow .2s;
+}
+
+.crit_header_logo:hover {
+  box-shadow: 0 0 6px #fff;
 }
 
 .crit_header_title {

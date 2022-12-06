@@ -9,16 +9,15 @@ import styles from "./Card.module.css";
 type CardParams = {
   id: string;
   value: string;
-  document: QueryDocumentSnapshot<Wish>;
 };
 
-const Card = ({ id, value = "", document }: CardParams) => {
+const Card = ({ id, value = ""}: CardParams) => {
   const router = useRouter();
   const [pristine, setPristine] = React.useState(false);
   const [wish, setWish] = React.useState(value);
   const handler = {
     submit: () => {
-      wishDB.update(document.ref, { wish }).then(() => {
+      wishDB.update(id, { wish }).then(() => {
         router.refresh()
       });
       setPristine(false);
@@ -30,7 +29,7 @@ const Card = ({ id, value = "", document }: CardParams) => {
     remove: () => {
       const doDelete = confirm("Wunsch von der Liste löschen?");
       if (doDelete) {
-        wishDB.delete(document.ref).then(() => {
+        wishDB.delete(id).then(() => {
           router.refresh()
         })
       }

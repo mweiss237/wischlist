@@ -2,6 +2,7 @@ import Footer from "components/Footer/Footer";
 import Header from "components/Header/Header";
 import "../src/styles/globals.css";
 import "../src/styles/critical.css";
+import Head from "next/head";
 
 export default function RootLayout({
   children,
@@ -10,7 +11,10 @@ export default function RootLayout({
 }) {
   return (
     <html>
-      <head></head>
+      <head>
+        <title>Wischlist</title>
+        <meta name="viewport" content="width=device-width" />
+      </head>
       <body>
         <Header />
         <main>

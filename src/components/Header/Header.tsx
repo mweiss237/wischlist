@@ -8,9 +8,6 @@ type HeaderParams = {};
 const Header = ({}: HeaderParams) => {
   return (
     <>
-      <Head>
-        <title>Wischlist</title>
-      </Head>
       <div className="crit_header">
         <Link href="/" className="crit_header_logo">
           <Image
