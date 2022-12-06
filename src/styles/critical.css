@@ -11,6 +11,9 @@
   width: auto;
   line-height: 0;
   margin: 1em 2em;
+  border: 1px solid white;
+  padding: .5em;
+  border-radius: 30%;
 }
 
 .crit_header_title {
@@ -25,19 +28,27 @@
 .crit_navigator {
   margin: 0;
   width: 100%;
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid #fff;
   padding: 1em;
   display: flex;
   gap: 1em;
 }
 
 .crit_navigator a {
-  background-color: #d8d8d8;
+  background-color: #fff;
   border-radius: 5px;
   gap: 0.5em;
   padding: 0.5em;
-  color: black;
+  color: #333;
   text-decoration: none;
+  transform: unset;
+  box-shadow: none;
+  transition: transform .1s, box-shadow .1s;
+}
+
+.crit_navigator a:hover {
+  box-shadow: 2px 3px 5px #0d6855;
+  transform: translateY(-1px);
 }
 
 .crit_footer {

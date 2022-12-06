@@ -56,6 +56,7 @@ const Card = ({ id, value = "", document }: CardParams) => {
           height={30}
           width={30}
           unoptimized
+          loading="eager"
         />
       </button>
     </div>

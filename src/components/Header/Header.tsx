@@ -14,10 +14,10 @@ const Header = ({}: HeaderParams) => {
       <div className="crit_header">
         <Link href="/" className="crit_header_logo">
           <Image
-            src={"/favicon.ico"}
-            alt="vercel icon"
-            width={40}
-            height={40}
+            src={"/wischlist-color.svg"}
+            alt="wischlist logo"
+            width={60}
+            height={60}
             unoptimized
           />
         </Link>
