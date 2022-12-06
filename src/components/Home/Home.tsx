@@ -9,16 +9,16 @@ const Home = () => {
         <title>Wischlist</title>
         <meta
           name="description"
-          content="Your personal wischlist for friends and family"
+          content="Your personal wischlist for friends and family with an extra 'c'"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <div className={styles.main}>
-        <h2>We are currently setting things up!</h2>
+        <h2>Der Wunschlistendrucker spinnt gerade</h2>
 
         <Image
-          src={'/under_construction.png'}
+          src={'/processing.svg'}
           alt="construction side"
           width={300}
           height={200}
@@ -26,8 +26,7 @@ const Home = () => {
           unoptimized
         />
 
-        <h2>Be patient!</h2>
-        <p>Maybe this thing is partially running until christmas in some years...</p>
+        <p>Das Tool befindet sich noch im Aufbau</p>
       </div>
     </div>
   );

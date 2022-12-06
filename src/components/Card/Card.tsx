@@ -51,7 +51,7 @@ const Card = ({ id, value = "", document }: CardParams) => {
         onClick={handler.submit}
       >
         <Image
-          src={"/save.png"}
+          src={"/save.svg"}
           alt="Speichern"
           height={30}
           width={30}
