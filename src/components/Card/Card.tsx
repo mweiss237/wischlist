@@ -1,6 +1,6 @@
 "use client";
-import { QueryDocumentSnapshot } from "firebase/firestore";
-import { Wish, wishDB } from "lib/wish";
+
+import { wishDB } from "lib/wish";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -9,29 +9,33 @@ import styles from "./Card.module.css";
 type CardParams = {
   id: string;
   value: string;
+  onDelete: (id: string) => void;
+  onChange: (id: string, value: string) => void;
 };
 
-const Card = ({ id, value = ""}: CardParams) => {
+const Card = ({ id, value = "", onDelete, onChange }: CardParams) => {
   const router = useRouter();
   const [pristine, setPristine] = React.useState(false);
   const [wish, setWish] = React.useState(value);
   const handler = {
     submit: () => {
       wishDB.update(id, { wish }).then(() => {
-        router.refresh()
+        router.refresh();
       });
       setPristine(false);
     },
     change: (changedValue: string) => {
       setPristine(value === changedValue ? false : true);
       setWish(changedValue);
+      onChange(id, changedValue);
     },
     remove: () => {
-      const doDelete = confirm("Wunsch von der Liste löschen?");
+      const doDelete = confirm("Eintrag von der Liste löschen?");
       if (doDelete) {
         wishDB.delete(id).then(() => {
-          router.refresh()
-        })
+          router.refresh();
+          onDelete(id);
+        });
       }
     },
   };
@@ -42,9 +46,8 @@ const Card = ({ id, value = ""}: CardParams) => {
         onDoubleClick={() => handler.remove()}
         className={styles.card}
         placeholder="Ich wünsche mir..."
-      >
-        {value}
-      </textarea>
+        defaultValue={value}
+      ></textarea>
       <button
         className={`${styles.saveWish} ${pristine ? styles.active : ""}`}
         onClick={handler.submit}

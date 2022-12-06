@@ -9,9 +9,9 @@ import {
   getDocs,
   UpdateData,
   updateDoc,
+  WithFieldValue,
 } from "firebase/firestore";
 import { firestore } from "./firebase";
-import { Wish } from "./wish";
 
 export class DatabaseHelper<T extends DocumentData> {
   private db: CollectionReference<T>;
@@ -33,14 +33,21 @@ export class DatabaseHelper<T extends DocumentData> {
   };
 
   public getAll = async () => {
-    // @ts-ignore
-    const docs = await (await getDocs<Wish>(this.db)).docs;
+    const docs = await (await getDocs<T>(this.db)).docs;
     return docs.map((doc) => {
       return { ...doc.data(), id: doc.id };
     });
   };
 
-  public add = async (data: T) => await addDoc(this.db, data);
+  public add = async (data: WithFieldValue<T>) => {
+    const ref = await addDoc<T>(this.db, data);
+    const addedDoc = await getDoc<T>(ref);
+    return {
+      wish: "", // set wish as default empty array. Will be overwritten if present in data()
+      ...addedDoc.data(),
+      id: addedDoc.id,
+    };
+  };
 
   public update = async (id: string, data: UpdateData<T>) => {
     const ref = this.getReference(id);
