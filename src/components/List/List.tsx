@@ -16,7 +16,6 @@ const List = () => {
   const deleteCallback = (id: string) => {
     console.log(wishes.filter((wish) => wish.id !== id));
     console.log(wishes);
-    debugger;
     setWishes(wishes.filter((wish) => wish.id !== id));
   };
   const changeCallback = (id: string, value: string) => {
@@ -32,7 +31,7 @@ const List = () => {
     <div className={styles.list}>
       {wishes.map((wish, index) => (
         <Card
-          key={`w_${index}`}
+          key={`w_${wish.id}`}
           id={wish.id}
           value={wish.wish}
           onDelete={deleteCallback}
