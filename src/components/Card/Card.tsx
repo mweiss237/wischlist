@@ -41,9 +41,11 @@ const Card = ({ id, value = "", onDelete, onChange }: CardParams) => {
   };
   return (
     <div className={styles.cardWrapper}>
+      <button className={styles.deleteWish} onClick={handler.remove}>
+        +
+      </button>
       <textarea
         onChange={({ target: { value } }) => handler.change(value)}
-        onDoubleClick={() => handler.remove()}
         className={styles.card}
         placeholder="Ich wünsche mir..."
         defaultValue={value}
