@@ -42,7 +42,7 @@ const Card = ({ id, value = "", onDelete, onChange }: CardParams) => {
   return (
     <div className={styles.cardWrapper}>
       <button className={styles.deleteWish} onClick={handler.remove}>
-        +
+        <Image src={"/close.svg"} fill  unoptimized loading={"eager"} alt="Löschen" />
       </button>
       <textarea
         onChange={({ target: { value } }) => handler.change(value)}

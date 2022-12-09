@@ -33,32 +33,43 @@
   border: none;
   cursor: pointer;
   opacity: 0;
-  transition: opacity .2s;
+  transition: opacity 0.2s;
 }
 
 .deleteWish {
-    position: absolute;
-    background: none;
-    transform: translate(-10px, -10px) rotate(45deg);
-    background-color: #fff;
-    color: #444;
-    width: 22px;
-    height: 22px;
-    font-size: 19px;
-    border: none;
-    box-shadow: 0px 0px 2px black;
-    border-radius: 50%;
-    cursor: pointer;
-    transition-duration: .1s;
-    transition-property: background-color, color, transform, box-shadow;
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0; /* ios fix for stretching delete button */
+  color: #444;
+  background-color: #fff;
+  transform: translate(-10px, -10px);
+  border: none;
+  box-shadow: 0px 0px 2px black;
+  border-radius: 50%;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  transition-property: background-color, color, transform, box-shadow;
+}
+.deleteWish > img {
+  padding: 2px;
+  opacity: 0.8;
+  transition: filter .2s;
+}
+
+.deleteWish:hover img {
+  opacity: 1;
+  filter: invert(1);
 }
 
 .deleteWish:hover {
-    transform: translate(-10px, -10px) rotate(calc(360deg + 45deg));
-    transition-duration: .2s;
-    background-color: rgb(255, 86, 86);
-    box-shadow: 0 0 15px #f00;
-    color: #fff;
+  transform: translate(-10px, -10px);
+  transition-duration: 0.2s;
+  background-color: rgb(255, 86, 86);
+  box-shadow: 0 0 15px #f00;
 }
 
 .saveWish.active {
