@@ -1,11 +1,9 @@
-import Head from "next/head";
 import Image from "next/image";
 import styles from "./Header.module.css";
 import Link from "next/link";
 
-type HeaderParams = {};
 
-const Header = ({}: HeaderParams) => {
+const Header = () => {
   return (
     <>
       <div className="crit_header">
@@ -24,6 +22,7 @@ const Header = ({}: HeaderParams) => {
       <nav className="crit_navigator">
         <Link href={"/"}>Home</Link>
         <Link href={"/entries"}>Lists</Link>
+        <Link href={"/register"}>Register</Link>
       </nav>
     </>
   );

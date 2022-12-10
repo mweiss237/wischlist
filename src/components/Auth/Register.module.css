@@ -1,0 +1,59 @@
+.wrapper {
+  display: flex;  
+  flex-flow: column nowrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+  border: none;
+  border-radius: 5px;
+  margin: 3rem auto;
+  padding: 2em;
+  box-shadow: 0 0 5px lightslategray;
+  background-color: white;
+}
+
+.buttonWrapper {
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+}
+
+label {
+  opacity: 0;
+  font-size: small;
+  color: #333;
+  transition: opacity 0.2s;
+}
+/* show label when next input is filled */
+label:has(+ input:not(:placeholder-shown)) {
+  opacity: 1;
+}
+
+.textfield {
+  background-color: white;
+  outline-width: 0;
+  padding: 0.5em;
+  margin-bottom: 1em;
+  border: none;
+  border-bottom: 1px solid lightslategray;
+  transition: background-color 0.2s;
+}
+
+.textfield:focus {
+  background-color: #f1f1f1;
+}
+
+.buttonWrapper button {
+  background-color: #009577;
+  border: none;
+  border-radius: 3px;
+  box-shadow: 0 0 5px lightslategray;
+  padding: 0.5em;
+  flex: 1;
+  color: white;
+  cursor: pointer;
+}
+
+.buttonWrapper button[type="reset"] {
+  background-color: #71827e;
+}

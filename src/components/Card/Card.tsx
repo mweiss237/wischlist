@@ -8,7 +8,7 @@ import styles from "./Card.module.css";
 
 type CardParams = {
   id: string;
-  value: string;
+  value?: string;
   onDelete: (id: string) => void;
   onChange: (id: string, value: string) => void;
 };
