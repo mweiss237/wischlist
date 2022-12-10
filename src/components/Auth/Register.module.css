@@ -18,7 +18,7 @@
   justify-content: center;
 }
 
-label {
+label.inputlabel {
   opacity: 0;
   font-size: small;
   color: #333;

@@ -5,7 +5,7 @@ import React from "react";
 import styles from "./AddCard.module.css";
 
 interface AddCardParams {
-  callback: (value: { id: string; wish?: string }) => void;
+  callback: (value: { id: string; wish: string }) => void;
 }
 
 const AddCard = ({ callback }: AddCardParams) => {

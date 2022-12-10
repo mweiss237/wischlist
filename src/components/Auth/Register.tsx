@@ -36,7 +36,7 @@ const Register = () => {
 
   return (
     <form onSubmit={authorize} className={styles.wrapper}>
-      <label htmlFor="#email">Email</label>
+      <label className="inputlabel" htmlFor="#email">Email</label>
       <input
         id="email"
         type={"email"}
@@ -44,7 +44,7 @@ const Register = () => {
         ref={emailRef}
         placeholder="Email"
       />
-      <label htmlFor="#username">Nutzername</label>
+      <label className="inputlabel" htmlFor="#username">Nutzername</label>
       <input
         id="username"
         type={"username"}
