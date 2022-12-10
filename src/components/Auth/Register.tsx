@@ -18,7 +18,7 @@ const Register = () => {
 
     const hash = crypto.createHash("md5").update(password).digest("hex");
 
-    /* --- only with firebase-admin change which breaks currently ---*/ 
+    /* --- only with firebase-admin change which breaks currently ---*/
     // if ((await userDB.where("email", "==", email)).length > 0) {
     //   alert(`Email ${email} bereits registriert.`);
     //   return;
@@ -36,7 +36,9 @@ const Register = () => {
 
   return (
     <form onSubmit={authorize} className={styles.wrapper}>
-      <label className="inputlabel" htmlFor="#email">Email</label>
+      <label className={styles.inputlabel} htmlFor="#email">
+        Email
+      </label>
       <input
         id="email"
         type={"email"}
@@ -44,7 +46,9 @@ const Register = () => {
         ref={emailRef}
         placeholder="Email"
       />
-      <label className="inputlabel" htmlFor="#username">Nutzername</label>
+      <label className={styles.inputlabel} htmlFor="#username">
+        Nutzername
+      </label>
       <input
         id="username"
         type={"username"}
@@ -52,7 +56,9 @@ const Register = () => {
         ref={usernameRef}
         placeholder="Username"
       />
-      <label htmlFor="#password">Passwort</label>
+      <label className={styles.inputlabel} htmlFor="#password">
+        Passwort
+      </label>
       <input
         id="password"
         type={"password"}

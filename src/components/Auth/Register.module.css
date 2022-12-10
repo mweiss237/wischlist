@@ -18,14 +18,14 @@
   justify-content: center;
 }
 
-label.inputlabel {
+.inputlabel {
   opacity: 0;
   font-size: small;
   color: #333;
   transition: opacity 0.2s;
 }
 /* show label when next input is filled */
-label:has(+ input:not(:placeholder-shown)) {
+.inputlabel:has(+ input:not(:placeholder-shown)) {
   opacity: 1;
 }
 
