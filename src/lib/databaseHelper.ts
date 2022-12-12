@@ -11,7 +11,7 @@ import {
   updateDoc,
   WithFieldValue,
 } from "firebase/firestore";
-import { firestore } from "./firebase";
+import { firestore } from "./db";
 
 export class DatabaseHelper<T extends DocumentData> {
   private db: CollectionReference<T>;

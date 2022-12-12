@@ -6,12 +6,13 @@ import { useState } from "react";
 import styles from "./List.module.css";
 
 const List = () => {
-  const [wishes, setWishes] = useState<{ id: string; wish: string }[]>([]);
+  const [wishes, setWishes] = useState<{ id: string; wish?: string }[]>([]);
   React.useEffect(() => {
-    wishDB.getAll().then((value) => setWishes(value));
+    const wishes = wishDB.getAll();
+    wishes.then((value) => setWishes(value));
   }, []);
 
-  const addCallback = (wish: { id: string; wish: string }) =>
+  const addCallback = (wish: { id: string; wish?: string }) =>
     setWishes([...wishes, wish]);
   const deleteCallback = (id: string) => {
     console.log(wishes.filter((wish) => wish.id !== id));

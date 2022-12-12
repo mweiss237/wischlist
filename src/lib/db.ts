@@ -17,3 +17,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const firestore = getFirestore(app);
+
+try {
+  // Initialize Firebase
+  console.log("Firebase initialized.");
+} catch (error: any) {
+  if (!/already exists/u.test(error.message)) {
+    console.error("Firebase admin initialization error", error.stack);
+  }
+}
+
+export default app;
