@@ -11,13 +11,8 @@
   color: rgba(0, 0, 0, 0.5);
   cursor: pointer;
   transition: background 0.2s;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.2);
+  }
 }
-
-.add-note:hover {
-  background: rgba(0, 0, 0, 0.2);
-}
-
-
-/* .loading {
-    background: rgba(0, 0, 0, 0.05);
-} */
