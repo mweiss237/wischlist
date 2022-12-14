@@ -14,33 +14,35 @@ import {
 import { firestore } from "./db";
 
 export class DatabaseHelper<T extends DocumentData> {
-  private db: CollectionReference<T>;
+  private collection: CollectionReference<T>;
 
   constructor(collectionName: string) {
     // @ts-ignore
-    this.db = collection(firestore, collectionName);
+    this.collection = collection(firestore, collectionName);
   }
 
-  private getReference = (id: string) => doc(this.db, id);
+  private getReference = (id: string) => doc(this.collection, id);
 
   public get = async (id: string) => {
     const ref = this.getReference(id);
     const document = await getDoc<T>(ref);
-    return {
-      ...document.data(),
-      id: document.id,
-    };
+    return document.exists()
+      ? {
+          ...document.data(),
+          id: document.id,
+        }
+      : null;
   };
 
   public getAll = async () => {
-    const docs = await (await getDocs<T>(this.db)).docs;
+    const docs = await (await getDocs<T>(this.collection)).docs;
     return docs.map((doc) => {
       return { ...doc.data(), id: doc.id };
     });
   };
 
   public add = async (data: WithFieldValue<T>) => {
-    const ref = await addDoc<T>(this.db, data);
+    const ref = await addDoc<T>(this.collection, data);
     const addedDoc = await getDoc<T>(ref);
     return {
       wish: "", // set wish as default empty array. Will be overwritten if present in data()
