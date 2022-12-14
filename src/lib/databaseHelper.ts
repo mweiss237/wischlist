@@ -1,63 +1,62 @@
-import {
-  addDoc,
-  collection,
-  CollectionReference,
-  deleteDoc,
-  doc,
-  DocumentData,
-  getDoc,
-  getDocs,
-  UpdateData,
-  updateDoc,
-  WithFieldValue,
-} from "firebase/firestore";
-import { firestore } from "./db";
+import { getFirestore } from "firebase-admin/firestore";
 
-export class DatabaseHelper<T extends DocumentData> {
-  private collection: CollectionReference<T>;
+import firebaseApp from "./db";
+
+export class DatabaseHelper<T extends FirebaseFirestore.DocumentData> {
+  private collection;
+  private firestore;
 
   constructor(collectionName: string) {
-    // @ts-ignore
-    this.collection = collection(firestore, collectionName);
+    this.firestore = getFirestore(firebaseApp);
+    this.collection = this.firestore.collection(collectionName);
   }
 
-  private getReference = (id: string) => doc(this.collection, id);
+  private getReferenceById = (id: string) => this.collection.doc(id);
 
   public get = async (id: string) => {
-    const ref = this.getReference(id);
-    const document = await getDoc<T>(ref);
-    return document.exists()
-      ? {
-          ...document.data(),
-          id: document.id,
-        }
-      : null;
+    const document = await this.getReferenceById(id).get();
+    return {
+      ...document.data(),
+      id: document.id,
+    };
+  };
+
+  public where = async (
+    ...condition: [
+      fieldPath: string | FirebaseFirestore.FieldPath,
+      opStr: FirebaseFirestore.WhereFilterOp,
+      value: any
+    ]
+  ) => {
+    return (await this.collection.where(...condition).get()).docs;
   };
 
   public getAll = async () => {
-    const docs = await (await getDocs<T>(this.collection)).docs;
-    return docs.map((doc) => {
+    const result = await this.collection.get();
+    return result.docs.map((doc) => {
       return { ...doc.data(), id: doc.id };
     });
   };
 
-  public add = async (data: WithFieldValue<T>) => {
-    const ref = await addDoc<T>(this.collection, data);
-    const addedDoc = await getDoc<T>(ref);
+  public add = async (data: FirebaseFirestore.WithFieldValue<T>) => {
+    const ref = await this.collection.add(data);
+    const added = await ref.get();
     return {
-      wish: "", // set wish as default empty array. Will be overwritten if present in data()
-      ...addedDoc.data(),
-      id: addedDoc.id,
+      ...added.data(),
+      id: added.id,
     };
   };
 
-  public update = async (id: string, data: UpdateData<T>) => {
-    const ref = this.getReference(id);
-    await updateDoc(ref, data);
+  public update = async (
+    id: string,
+    data: FirebaseFirestore.WithFieldValue<T>
+  ) => {
+    const ref = this.getReferenceById(id);
+    return await ref.set(data);
   };
 
   public delete = async (id: string) => {
-    const ref = this.getReference(id);
-    await deleteDoc(ref);
+    const ref = this.getReferenceById(id);
+    return await ref.delete();
   };
 }
