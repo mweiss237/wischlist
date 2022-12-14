@@ -2,7 +2,7 @@
 
 import { wishDB } from "lib/wish";
 import React from "react";
-import styles from "./AddCard.module.css";
+import styles from "./AddCard.module.scss";
 
 interface AddCardParams {
   callback: (value: { id: string; wish?: string }) => void;

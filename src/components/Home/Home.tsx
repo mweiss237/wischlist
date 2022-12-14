@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import styles from "./Home.module.css";
+import styles from "./Home.module.scss";
 
 const Home = () => {
   return (

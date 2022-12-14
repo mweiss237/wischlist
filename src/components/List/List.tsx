@@ -3,7 +3,7 @@ import Card from "components/Card/Card";
 import { wishDB } from "lib/wish";
 import React from "react";
 import { useState } from "react";
-import styles from "./List.module.css";
+import styles from "./List.module.scss";
 
 const List = () => {
   const [wishes, setWishes] = useState<{ id: string; wish?: string }[]>([]);

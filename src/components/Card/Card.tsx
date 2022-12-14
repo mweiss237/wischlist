@@ -4,7 +4,7 @@ import { wishDB } from "lib/wish";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
-import styles from "./Card.module.css";
+import styles from "./Card.module.scss";
 
 type CardParams = {
   id: string;

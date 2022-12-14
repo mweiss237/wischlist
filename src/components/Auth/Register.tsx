@@ -2,7 +2,7 @@
 import crypto from "crypto";
 import { userDB } from "lib/user";
 import React, { FormEvent } from "react";
-import styles from "./Register.module.css";
+import styles from "./Register.module.scss";
 
 const Register = () => {
   const emailRef = React.useRef<HTMLInputElement>(null);
@@ -67,8 +67,8 @@ const Register = () => {
         placeholder="Passwort"
       />
       <span className={styles.buttonWrapper}>
-        <button type={"submit"}>Register</button>
-        <button type={"reset"}>Reset</button>
+        <button type={"submit"}>Registrieren</button>
+        <button type={"reset"}>Zurücksetzen</button>
       </span>
     </form>
   );

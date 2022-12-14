@@ -12,10 +12,10 @@
   line-height: 0;
   margin: 1em 2em;
   border: 2px solid white;
-  padding: .5em;
+  padding: 0.5em;
   border-radius: 20%;
   box-shadow: unset;
-  transition: box-shadow .2s;
+  transition: box-shadow 0.2s;
 }
 
 .crit_header_logo:hover {
@@ -40,26 +40,39 @@
   gap: 1em;
 }
 
+.crit_navigator span { 
+  display: flex;
+  gap: 0.5em;
+  flex: 1;
+}
+
+.crit_navigator span.align-end {
+  justify-content: flex-end;
+}
+
 .crit_navigator a {
+  position: relative;
   background-color: #fff;
   border-radius: 5px;
-  gap: 0.5em;
   padding: 0.5em;
+  max-height: 34px;
   color: #333;
   text-decoration: none;
-  transform: unset;
   box-shadow: none;
-  transition: transform .1s, box-shadow .1s;
+  transition: background-color 0.2s;
+}
+
+.crit_navigator a > img {
+  position: relative
 }
 
 .crit_navigator a:hover {
-  box-shadow: 2px 3px 5px #0d6855;
-  transform: translateY(-1px);
+  background-color: #f5f5f5;
 }
 
 .crit_footer {
   display: flex;
-  padding: .5rem 0;
+  padding: 0.5rem 0;
   margin: 1rem 2rem 0;
   border-top: 1px solid #e5e7eb;
   justify-content: center;
