@@ -1,6 +1,5 @@
 "use client";
 
-import { wishDB } from "lib/wish";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -19,9 +18,10 @@ const Card = ({ id, value = "", onDelete, onChange }: CardParams) => {
   const [wish, setWish] = React.useState(value);
   const handler = {
     submit: () => {
-      wishDB.update(id, { wish }).then(() => {
-        router.refresh();
-      });
+      // wishDB.update(id, { wish }).then(() => {
+      //   router.refresh();
+      // });
+      alert("TODO!")
       setPristine(false);
     },
     change: (changedValue: string) => {
@@ -32,10 +32,11 @@ const Card = ({ id, value = "", onDelete, onChange }: CardParams) => {
     remove: () => {
       const doDelete = confirm("Eintrag von der Liste löschen?");
       if (doDelete) {
-        wishDB.delete(id).then(() => {
-          router.refresh();
-          onDelete(id);
-        });
+        alert("TODO!")
+        // wishDB.delete(id).then(() => {
+        //   router.refresh();
+        //   onDelete(id);
+        // });
       }
     },
   };

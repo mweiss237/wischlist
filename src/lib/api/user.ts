@@ -1,4 +1,4 @@
-import { DatabaseHelper } from "./databaseHelper";
+import { DatabaseHelper } from "./DatabaseHelper";
 
 export interface User {
   email: string

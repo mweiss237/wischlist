@@ -1,6 +1,7 @@
 import AddCard from "components/AddCard/AddCard";
 import Card from "components/Card/Card";
-import { wishDB } from "lib/wish";
+import { Wish } from "lib/api/wish";
+import { wishClient } from "lib/client/wishes";
 import React from "react";
 import { useState } from "react";
 import styles from "./List.module.scss";
@@ -8,8 +9,13 @@ import styles from "./List.module.scss";
 const List = () => {
   const [wishes, setWishes] = useState<{ id: string; wish?: string }[]>([]);
   React.useEffect(() => {
-    const wishes = wishDB.getAll();
-    wishes.then((value) => setWishes(value));
+    // const response = fetch("/api/wishes");
+    // response.then(async (value) => {
+      // const wishResponse: ApiRepsonse<Wish[]> = await value.json();
+      wishClient.get().then(response => {
+        setWishes(response.result);
+      })
+    // });
   }, []);
 
   const addCallback = (wish: { id: string; wish?: string }) =>

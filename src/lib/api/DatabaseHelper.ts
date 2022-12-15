@@ -1,13 +1,11 @@
-import { getFirestore } from "firebase-admin/firestore";
-
-import firebaseApp from "./db";
+import firebase from "./db";
 
 export class DatabaseHelper<T extends FirebaseFirestore.DocumentData> {
   private collection;
   private firestore;
 
   constructor(collectionName: string) {
-    this.firestore = getFirestore(firebaseApp);
+    this.firestore = firebase.firestore();
     this.collection = this.firestore.collection(collectionName);
   }
 

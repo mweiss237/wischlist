@@ -1,17 +1,18 @@
-import { wishDB } from "lib/wish";
+import { wishDB } from "lib/api/wish";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
     if (req.method === "GET") {
-      const { wish } = req.body;
-      if (!wish.id) throw "";
+      // const { wish } = req.body;
+      // if (!wish.id) throw "";
 
-      // wishDB.get()
+      const data = await wishDB.getAll();
 
-      return res
-        .status(200)
-        .json({ success: true, message: "successful fetched" });
+      return res.status(200).json({ success: true, result: data });
     } else {
       return res
         .status(405)

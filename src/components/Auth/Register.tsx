@@ -1,6 +1,5 @@
 "use client";
 import crypto from "crypto";
-import { userDB } from "lib/user";
 import React, { FormEvent } from "react";
 import styles from "./Register.module.scss";
 
@@ -24,14 +23,15 @@ const Register = () => {
     //   return;
     // }
 
-    await userDB
-      .add({
-        email: emailRef.current.value,
-        passwordHash: hash,
-        username: username,
-        lastLogin: new Date(),
-      })
-      .then((result) => alert(`id ${result.id} added`));
+    alert("TODO!")
+    // await userDB
+    //   .add({
+    //     email: emailRef.current.value,
+    //     passwordHash: hash,
+    //     username: username,
+    //     lastLogin: new Date(),
+    //   })
+    //   .then((result) => alert(`id ${result.id} added`));
   };
 
   return (

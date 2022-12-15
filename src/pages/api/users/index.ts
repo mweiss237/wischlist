@@ -1,4 +1,4 @@
-import { userDB } from "lib/user";
+import { userDB } from "lib/api/user";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
