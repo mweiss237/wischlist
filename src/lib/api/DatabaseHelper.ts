@@ -1,3 +1,4 @@
+import { Wish } from "types/Wish";
 import firebase from "./db";
 
 export class DatabaseHelper<T extends FirebaseFirestore.DocumentData> {
@@ -9,7 +10,10 @@ export class DatabaseHelper<T extends FirebaseFirestore.DocumentData> {
     this.collection = this.firestore.collection(collectionName);
   }
 
-  private getReferenceById = (id: string) => this.collection.doc(id);
+  private getReferenceById = (id: string) => {
+    console.log(id);
+    return this.collection.doc(id);
+  };
 
   public get = async (id: string) => {
     const document = await this.getReferenceById(id).get();
@@ -32,23 +36,20 @@ export class DatabaseHelper<T extends FirebaseFirestore.DocumentData> {
   public getAll = async () => {
     const result = await this.collection.get();
     return result.docs.map((doc) => {
-      return { ...doc.data(), id: doc.id };
+      return { ...doc.data(), id: doc.id } as Wish;
     });
   };
 
-  public add = async (data: FirebaseFirestore.WithFieldValue<T>) => {
+  public add = async (data: Omit<T, "id">) => {
     const ref = await this.collection.add(data);
     const added = await ref.get();
     return {
       ...added.data(),
       id: added.id,
-    };
+    } as Wish;
   };
 
-  public update = async (
-    id: string,
-    data: FirebaseFirestore.WithFieldValue<T>
-  ) => {
+  public update = async (id: string, data: Partial<T>) => {
     const ref = this.getReferenceById(id);
     return await ref.set(data);
   };

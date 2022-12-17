@@ -1,7 +1,7 @@
 "use client";
 
+import { wishClient } from "lib/client/wishClient";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import React from "react";
 import styles from "./Card.module.scss";
 
@@ -13,37 +13,40 @@ type CardParams = {
 };
 
 const Card = ({ id, value = "", onDelete, onChange }: CardParams) => {
-  const router = useRouter();
   const [pristine, setPristine] = React.useState(false);
-  const [wish, setWish] = React.useState(value);
   const handler = {
-    submit: () => {
-      // wishDB.update(id, { wish }).then(() => {
-      //   router.refresh();
-      // });
-      alert("TODO!")
+    save: () => {
+      wishClient.update(id, { wish: value }).then((response) => {
+        if (!response.success) return alert(`FEHLER: ${response.message}`);
+        console.log(`entry ${id} saved`);
+      });
       setPristine(false);
     },
     change: (changedValue: string) => {
       setPristine(value === changedValue ? false : true);
-      setWish(changedValue);
       onChange(id, changedValue);
     },
     remove: () => {
       const doDelete = confirm("Eintrag von der Liste löschen?");
       if (doDelete) {
-        alert("TODO!")
-        // wishDB.delete(id).then(() => {
-        //   router.refresh();
-        //   onDelete(id);
-        // });
+        onDelete(id);
+        wishClient.delete(id).then((response) => {
+          if (!response.success) return alert(`FEHLER: ${response.message}`);
+          console.log(`entry ${id} deleted`);
+        });
       }
     },
   };
   return (
     <div className={styles.cardWrapper}>
       <button className={styles.deleteWish} onClick={handler.remove}>
-        <Image src={"/close.svg"} fill  unoptimized loading={"eager"} alt="Löschen" />
+        <Image
+          src={"/close.svg"}
+          fill
+          unoptimized
+          loading={"eager"}
+          alt="Löschen"
+        />
       </button>
       <textarea
         onChange={({ target: { value } }) => handler.change(value)}
@@ -53,7 +56,7 @@ const Card = ({ id, value = "", onDelete, onChange }: CardParams) => {
       ></textarea>
       <button
         className={`${styles.saveWish} ${pristine ? styles.active : ""}`}
-        onClick={handler.submit}
+        onClick={handler.save}
       >
         <Image
           src={"/save.svg"}

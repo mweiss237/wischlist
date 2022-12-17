@@ -1,13 +1,13 @@
-import { userDB } from "lib/api/user";
+import { userDB } from "lib/api/userDB";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === "GET") {
       const { user } = req.body;
-      if (!user.email || !user.password) throw "";
+      if (!user.id) throw "";
 
-      // userDB.get()
+      userDB.get(user.id).then((reponse) => {});
 
       return res
         .status(200)

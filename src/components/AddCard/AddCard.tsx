@@ -1,22 +1,25 @@
 "use client";
 
+import { wishClient } from "lib/client/wishClient";
 import React from "react";
+import { Wish } from "types/Wish";
 import styles from "./AddCard.module.scss";
 
 interface AddCardParams {
-  callback: (value: { id: string; wish?: string }) => void;
+  callback: (value: Wish) => void;
 }
 
 const AddCard = ({ callback }: AddCardParams) => {
   const [isLoading, setLoading] = React.useState(false);
-
   const addEmptyCard = () => {
-    alert("TODO!")
-    // setLoading(true);
-    // wishDB.add({ wish: "" }).then(async (wish) => {
-    //   callback(wish);
-    //   setLoading(false);
-    // });
+    setLoading(true);
+
+    wishClient
+      .add({ wish: "" })
+      .then((value) => {
+        callback(value.result);
+      })
+      .finally(() => setLoading(false));
   };
   return (
     <button
