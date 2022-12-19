@@ -13,20 +13,23 @@ export default async function handler(
       result: undefined,
     }
     console.log(req.body)
-    const { id, ...rest } = JSON.parse(req.body || "{}") as User
+    const { id, ...user } = JSON.parse(req.body || "{}") as User
     res.status(200)
     switch (req.method as HTTPMethods) {
-      case "GET":
-        json.result = await userDB.getAll()
-        res.json(json)
-        break
-      case "PUT":
-        console.log(id)
-        await userDB.update(id, rest)
-        res.json(json)
-        break
+      // case "GET":
+      //   json.result = await userDB.getAll()
+      //   res.json(json)
+      //   break
+      // case "PUT":
+      //   await userDB.update(id, user)
+      //   res.json(json)
+      //   break
       case "POST":
-        json.result = await userDB.add(rest)
+        const usernameCheck = await userDB.where("username", "==", user.username)
+        const emailCheck = await userDB.where("email", "==", user.email)
+        if( usernameCheck.length > 0 || emailCheck.length > 0) throw "email or username exist already"
+
+        json.result = await userDB.add(user)
         res.json(json)
         break
       case "DELETE":

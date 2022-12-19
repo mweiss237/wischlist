@@ -19,7 +19,7 @@ export class DatabaseHelper<T> {
     return {
       ...document.data(),
       id: document.id,
-    }
+    } as T
   }
 
   public where = async (
