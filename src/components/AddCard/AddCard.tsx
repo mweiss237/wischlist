@@ -1,26 +1,26 @@
-"use client";
+"use client"
 
-import { wishClient } from "lib/client/wishClient";
-import React from "react";
-import { Wish } from "types/Wish";
-import styles from "./AddCard.module.scss";
+import { wishClient } from "lib/client/wishClient"
+import React from "react"
+import { Wish } from "types/Wish"
+import styles from "./AddCard.module.scss"
 
 interface AddCardParams {
-  callback: (value: Wish) => void;
+  callback: (value: Wish) => void
 }
 
 const AddCard = ({ callback }: AddCardParams) => {
-  const [isLoading, setLoading] = React.useState(false);
+  const [isLoading, setLoading] = React.useState(false)
   const addEmptyCard = () => {
-    setLoading(true);
+    setLoading(true)
 
     wishClient
       .add({ wish: "" })
       .then((value) => {
-        callback(value.result);
+        callback(value.result)
       })
-      .finally(() => setLoading(false));
-  };
+      .finally(() => setLoading(false))
+  }
   return (
     <button
       className={`${styles["add-note"]}`}
@@ -30,7 +30,7 @@ const AddCard = ({ callback }: AddCardParams) => {
     >
       +
     </button>
-  );
-};
+  )
+}
 
-export default AddCard;
+export default AddCard

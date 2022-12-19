@@ -1,7 +1,7 @@
-import setup from "../../package.json";
+import setup from "../../package.json"
 
 const getVersion = () => {
-  return setup.version;
-};
+  return setup.version
+}
 
-export default getVersion;
+export default getVersion

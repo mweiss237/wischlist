@@ -1,26 +1,26 @@
-import firebase from "./db";
+import firebase from "./db"
 
 export class DatabaseHelper<T> {
-  private collection;
-  private firestore;
+  private collection
+  private firestore
 
   constructor(collectionName: string) {
-    this.firestore = firebase.firestore();
-    this.collection = this.firestore.collection(collectionName);
+    this.firestore = firebase.firestore()
+    this.collection = this.firestore.collection(collectionName)
   }
 
   private getReferenceById = (id: string) => {
-    console.log(id);
-    return this.collection.doc(id);
-  };
+    console.log(id)
+    return this.collection.doc(id)
+  }
 
   public get = async (id: string) => {
-    const document = await this.getReferenceById(id).get();
+    const document = await this.getReferenceById(id).get()
     return {
       ...document.data(),
       id: document.id,
-    };
-  };
+    }
+  }
 
   public where = async (
     ...condition: [
@@ -29,32 +29,32 @@ export class DatabaseHelper<T> {
       value: any
     ]
   ) => {
-    return (await this.collection.where(...condition).get()).docs;
-  };
+    return (await this.collection.where(...condition).get()).docs
+  }
 
   public getAll = async () => {
-    const result = await this.collection.get();
+    const result = await this.collection.get()
     return result.docs.map((doc) => {
-      return { ...doc.data(), id: doc.id } as T;
-    });
-  };
+      return { ...doc.data(), id: doc.id } as T
+    })
+  }
 
   public add = async (data: Omit<T, "id">) => {
-    const ref = await this.collection.add(data);
-    const added = await ref.get();
+    const ref = await this.collection.add(data)
+    const added = await ref.get()
     return {
       ...added.data(),
       id: added.id,
-    } as T;
-  };
+    } as T
+  }
 
   public update = async (id: string, data: Partial<T>) => {
-    const ref = this.getReferenceById(id);
-    return await ref.set(data);
-  };
+    const ref = this.getReferenceById(id)
+    return await ref.set(data)
+  }
 
   public delete = async (id: string) => {
-    const ref = this.getReferenceById(id);
-    return await ref.delete();
-  };
+    const ref = this.getReferenceById(id)
+    return await ref.delete()
+  }
 }

@@ -1,6 +1,6 @@
-import Head from "next/head";
-import Image from "next/image";
-import styles from "./Home.module.scss";
+import Head from "next/head"
+import Image from "next/image"
+import styles from "./Home.module.scss"
 
 const Home = () => {
   return (
@@ -18,7 +18,7 @@ const Home = () => {
         <h2>Der Wunschlistendrucker spinnt gerade</h2>
 
         <Image
-          src={'/processing.svg'}
+          src={"/processing.svg"}
           alt="construction side"
           width={300}
           height={200}
@@ -29,7 +29,7 @@ const Home = () => {
         <p>Das Tool befindet sich noch im Aufbau</p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

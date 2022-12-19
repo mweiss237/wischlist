@@ -1,4 +1,4 @@
-import { User } from "types/User";
-import { DatabaseHelper } from "./DatabaseHelper";
+import { User } from "types/User"
+import { DatabaseHelper } from "./DatabaseHelper"
 
-export const userDB = new DatabaseHelper<User>("users");
+export const userDB = new DatabaseHelper<User>("users")

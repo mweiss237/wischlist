@@ -3,8 +3,8 @@
 // import { initializeApp } from "firebase-admin/app";
 import certConfig from "./../wischlist-cd9c6-firebase-adminsdk-v6w8f-b72f9c4e78.json"
 
-import admin from "firebase-admin";
-import { cert } from "firebase-admin/app";
+import admin from "firebase-admin"
+import { cert } from "firebase-admin/app"
 
 // Your web app's Firebase configuration
 // const firebaseConfig = {
@@ -16,18 +16,17 @@ import { cert } from "firebase-admin/app";
 //   appId: "1:777134630529:web:7909aff7f1a870addf4f80",
 // };
 
-
 try {
   // Initialize Firebase
   admin.initializeApp({
     // @ts-ignore
-    credential: cert(certConfig)
-  });
-  console.log("Firebase initialized.");
+    credential: cert(certConfig),
+  })
+  console.log("Firebase initialized.")
 } catch (error: any) {
   if (!/already exists/u.test(error.message)) {
-    console.error("Firebase admin initialization error", error.stack);
+    console.error("Firebase admin initialization error", error.stack)
   }
 }
 
-export default admin;
+export default admin

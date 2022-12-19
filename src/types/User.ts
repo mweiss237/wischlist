@@ -1,7 +1,7 @@
 export interface User {
-  id: string;
-  email: string;
-  passwordHash: string;
-  username: string;
-  lastLogin: Date;
+  id: string
+  email: string
+  passwordHash: string
+  username: string
+  lastLogin: Date
 }

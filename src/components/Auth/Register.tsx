@@ -1,21 +1,21 @@
-"use client";
-import crypto from "crypto";
-import React, { FormEvent } from "react";
-import styles from "./Register.module.scss";
+"use client"
+import crypto from "crypto"
+import React, { FormEvent } from "react"
+import styles from "./Register.module.scss"
 
 const Register = () => {
-  const emailRef = React.useRef<HTMLInputElement>(null);
-  const usernameRef = React.useRef<HTMLInputElement>(null);
-  const passwordRef = React.useRef<HTMLInputElement>(null);
+  const emailRef = React.useRef<HTMLInputElement>(null)
+  const usernameRef = React.useRef<HTMLInputElement>(null)
+  const passwordRef = React.useRef<HTMLInputElement>(null)
 
   const authorize = async (e: FormEvent) => {
-    e.preventDefault();
-    const email = emailRef.current?.value;
-    const username = usernameRef.current?.value;
-    const password = passwordRef.current?.value;
-    if (!email || !username || !password) return;
+    e.preventDefault()
+    const email = emailRef.current?.value
+    const username = usernameRef.current?.value
+    const password = passwordRef.current?.value
+    if (!email || !username || !password) return
 
-    const hash = crypto.createHash("md5").update(password).digest("hex");
+    const hash = crypto.createHash("md5").update(password).digest("hex")
 
     /* --- only with firebase-admin change which breaks currently ---*/
     // if ((await userDB.where("email", "==", email)).length > 0) {
@@ -32,7 +32,7 @@ const Register = () => {
     //     lastLogin: new Date(),
     //   })
     //   .then((result) => alert(`id ${result.id} added`));
-  };
+  }
 
   return (
     <form onSubmit={authorize} className={styles.wrapper}>
@@ -71,7 +71,7 @@ const Register = () => {
         <button type={"reset"}>Zurücksetzen</button>
       </span>
     </form>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register

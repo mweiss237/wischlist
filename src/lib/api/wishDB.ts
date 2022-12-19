@@ -1,4 +1,4 @@
-import { Wish } from "types/Wish";
-import { DatabaseHelper } from "./DatabaseHelper";
+import { Wish } from "types/Wish"
+import { DatabaseHelper } from "./DatabaseHelper"
 
-export const wishDB = new DatabaseHelper<Wish>("wishes");
+export const wishDB = new DatabaseHelper<Wish>("wishes")
