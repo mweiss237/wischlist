@@ -1,7 +1,6 @@
-import { Wish } from "types/Wish";
 import firebase from "./db";
 
-export class DatabaseHelper<T extends FirebaseFirestore.DocumentData> {
+export class DatabaseHelper<T> {
   private collection;
   private firestore;
 
@@ -36,7 +35,7 @@ export class DatabaseHelper<T extends FirebaseFirestore.DocumentData> {
   public getAll = async () => {
     const result = await this.collection.get();
     return result.docs.map((doc) => {
-      return { ...doc.data(), id: doc.id } as Wish;
+      return { ...doc.data(), id: doc.id } as T;
     });
   };
 
@@ -46,7 +45,7 @@ export class DatabaseHelper<T extends FirebaseFirestore.DocumentData> {
     return {
       ...added.data(),
       id: added.id,
-    } as Wish;
+    } as T;
   };
 
   public update = async (id: string, data: Partial<T>) => {
