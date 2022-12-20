@@ -3,5 +3,13 @@ export interface User {
   email: string
   passwordHash: string
   username: string
-  lastLogin: Date
+  lastLogin?: Date
+  admin?: boolean
+}
+
+export interface AuthenticatedUser {
+  isLoggedIn: boolean
+  username?: string | null
+  id?: string | null
+  admin: boolean | null
 }

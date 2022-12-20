@@ -1,6 +1,6 @@
 import { wishDB } from "lib/api/wishDB"
 import { NextApiRequest, NextApiResponse } from "next"
-import ApiRepsonse, { HTTPMethods } from "types/ApiResponse"
+import ApiResponse, { HTTPMethods } from "types/ApiResponse"
 import { Wish } from "types/Wish"
 
 export default async function handler(
@@ -8,7 +8,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const json: ApiRepsonse<Wish[] | Wish | undefined> = {
+    const json: ApiResponse<Wish[] | Wish | undefined> = {
       success: true,
       result: undefined,
     }

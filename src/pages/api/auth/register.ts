@@ -1,6 +1,6 @@
 import { userDB } from "lib/api/userDB"
 import { NextApiRequest, NextApiResponse } from "next"
-import ApiRepsonse, { HTTPMethods } from "types/ApiResponse"
+import ApiResponse, { HTTPMethods } from "types/ApiResponse"
 import { User } from "types/User"
 
 export default async function handler(
@@ -8,7 +8,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const json: ApiRepsonse<User[] | User | undefined> = {
+    const json: ApiResponse<User[] | User | undefined> = {
       success: true,
       result: undefined,
     }
@@ -16,19 +16,24 @@ export default async function handler(
     const { id, ...user } = JSON.parse(req.body || "{}") as User
     res.status(200)
     switch (req.method as HTTPMethods) {
-      // case "GET":
-      //   json.result = await userDB.getAll()
-      //   res.json(json)
-      //   break
-      // case "PUT":
-      //   await userDB.update(id, user)
-      //   res.json(json)
-      //   break
       case "POST":
-        const usernameCheck = await userDB.where("username", "==", user.username)
+        const usernameCheck = await userDB.where(
+          "username",
+          "==",
+          user.username
+        )
         const emailCheck = await userDB.where("email", "==", user.email)
-        if( usernameCheck.length > 0 || emailCheck.length > 0) throw "email or username exist already"
+        if (usernameCheck.length > 0 || emailCheck.length > 0)
+          throw "email or username exist already"
 
+        // if (json.success) {
+        //   // @ts-ignore
+        //   req.session.user = {
+        //     id: registeredUser.id,
+        //     username: registeredUser.username,
+        //     admin: registeredUser?.admin || false,
+        //   }
+        // }
         json.result = await userDB.add(user)
         res.json(json)
         break
@@ -46,9 +51,10 @@ export default async function handler(
     return res
   } catch (e: any) {
     console.error(`Error: ${e.stack}`)
-    return res
-      .status(500)
-      .json({ success: false, message: e?.message || "unknown error" })
+    return res.status(500).json({
+      success: false,
+      message: typeof e === "string" ? e : e?.message || "unknown error",
+    })
   }
 
   // try {

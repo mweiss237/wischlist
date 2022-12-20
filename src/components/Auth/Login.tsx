@@ -1,13 +1,15 @@
 "use client"
 import crypto from "crypto"
+import { login } from "lib/client/authClient"
+import Link from "next/link"
 import React, { FormEvent } from "react"
-import styles from "./Login.module.scss"
+import styles from "./Auth.module.scss"
 
 const Login = () => {
   const emailRef = React.useRef<HTMLInputElement>(null)
   const passwordRef = React.useRef<HTMLInputElement>(null)
 
-  const login = async (e: FormEvent) => {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault()
     const email = emailRef.current?.value
     const password = passwordRef.current?.value
@@ -15,12 +17,9 @@ const Login = () => {
 
     const hash = crypto.createHash("md5").update(password).digest("hex")
 
-    const result = await fetch("/api/user/auth/login", {
-      method: "POST",
-      body: JSON.stringify({
-        email: email,
-        passwordHash: hash,
-      }),
+    const result = await login({
+      email: email,
+      passwordHash: hash,
     })
 
     alert(JSON.stringify(result))
@@ -41,7 +40,7 @@ const Login = () => {
   }
 
   return (
-    <form onSubmit={login} className={styles.wrapper}>
+    <form onSubmit={handleLogin} className={styles.wrapper}>
       <label className={styles.inputlabel} htmlFor="#email">
         Email
       </label>
@@ -66,6 +65,11 @@ const Login = () => {
         <button type={"submit"}>Login</button>
         <button type={"reset"}>Zurücksetzen</button>
       </span>
+
+      <br />
+      <p className={styles.darktext}>
+        Noch kein Account? <Link href={`/register`}>Hier registrieren</Link>
+      </p>
     </form>
   )
 }

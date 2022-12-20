@@ -1,7 +1,9 @@
 "use client"
 import crypto from "crypto"
+import { register } from "lib/client/authClient"
+import Link from "next/link"
 import React, { FormEvent } from "react"
-import styles from "./Register.module.scss"
+import styles from "./Auth.module.scss"
 
 const Register = () => {
   const emailRef = React.useRef<HTMLInputElement>(null)
@@ -17,13 +19,20 @@ const Register = () => {
 
     const hash = crypto.createHash("md5").update(password).digest("hex")
 
+    const registerResponse = await register({
+      email,
+      username,
+      passwordHash: hash,
+    })
+
+    alert(JSON.stringify(registerResponse))
     /* --- only with firebase-admin change which breaks currently ---*/
     // if ((await userDB.where("email", "==", email)).length > 0) {
     //   alert(`Email ${email} bereits registriert.`);
     //   return;
     // }
 
-    alert("TODO!")
+    // alert("TODO!")
     // await userDB
     //   .add({
     //     email: emailRef.current.value,
@@ -70,6 +79,10 @@ const Register = () => {
         <button type={"submit"}>Registrieren</button>
         <button type={"reset"}>Zurücksetzen</button>
       </span>
+      <br />
+      <p className={styles.darktext}>
+        Schon registriert? <Link href={`/login`}>Hier anmelden</Link>
+      </p>
     </form>
   )
 }

@@ -1,4 +1,4 @@
-export default interface ApiRepsonse<T> {
+export default interface ApiResponse<T> {
   success: boolean
   message?: string
   result: T

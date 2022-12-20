@@ -1,8 +1,11 @@
+"use client"
 import Image from "next/image"
 import styles from "./Header.module.scss"
 import Link from "next/link"
+import useUser from "lib/hooks/useUser"
 
 const Header = () => {
+  const { user, mutateUser } = useUser()
   return (
     <>
       <div className="crit_header">
@@ -24,7 +27,7 @@ const Header = () => {
           <Link href={"/entries"}>Lists</Link>
         </span>
         <span className="align-end">
-          <Link href={"/register"}>
+          <Link href={"/login"}>
             <Image
               src={"/user.svg"}
               width={18}
@@ -33,6 +36,7 @@ const Header = () => {
               alt="Login"
             />
           </Link>
+          {user?.isLoggedIn && <p>Angemeldet als {user.username}</p>}
         </span>
       </nav>
     </>

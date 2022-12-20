@@ -1,4 +1,4 @@
-import ApiRepsonse from "types/ApiResponse"
+import ApiResponse from "types/ApiResponse"
 
 export class ClientHelper<T> {
   private endpoint
@@ -13,7 +13,7 @@ export class ClientHelper<T> {
       body: JSON.stringify(body),
     })
 
-    const data: ApiRepsonse<T[]> = await response.json()
+    const data: ApiResponse<T[]> = await response.json()
     return data
   }
 
@@ -23,7 +23,7 @@ export class ClientHelper<T> {
       body: JSON.stringify({ ...entry }),
     })
 
-    const data: ApiRepsonse<T> = await response.json()
+    const data: ApiResponse<T> = await response.json()
     return data
   }
 
@@ -33,7 +33,7 @@ export class ClientHelper<T> {
       body: JSON.stringify({ id, ...updated }),
     })
 
-    const data: ApiRepsonse<T> = await response.json()
+    const data: ApiResponse<T> = await response.json()
     return data
   }
 
@@ -43,7 +43,7 @@ export class ClientHelper<T> {
       body: JSON.stringify({ id }),
     })
 
-    const data: ApiRepsonse<T> = await response.json()
+    const data: ApiResponse<T> = await response.json()
     return data
   }
 
