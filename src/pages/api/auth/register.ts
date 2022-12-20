@@ -26,14 +26,6 @@ export default async function handler(
         if (usernameCheck.length > 0 || emailCheck.length > 0)
           throw "email or username exist already"
 
-        // if (json.success) {
-        //   // @ts-ignore
-        //   req.session.user = {
-        //     id: registeredUser.id,
-        //     username: registeredUser.username,
-        //     admin: registeredUser?.admin || false,
-        //   }
-        // }
         json.result = await userDB.add(user)
         res.json(json)
         break
@@ -57,24 +49,4 @@ export default async function handler(
     })
   }
 
-  // try {
-  //   if (req.method === "GET") {
-  //     const { user } = req.body;
-  //     if (!user.id) throw "";
-
-  //     userDB.get(user.id).then((reponse) => {});
-
-  //     return res
-  //       .status(200)
-  //       .json({ success: true, message: "successful fetched" });
-  //   } else {
-  //     return res
-  //       .status(405)
-  //       .json({ success: false, message: `Method ${req.method} not allowed` });
-  //   }
-  // } catch (e) {
-  //   return res
-  //     .status(500)
-  //     .json({ success: false, message: "user is missing in body" });
-  // }
 }
