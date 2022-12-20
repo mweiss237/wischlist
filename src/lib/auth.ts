@@ -10,6 +10,6 @@ export const authCookieInformation = {
 
 declare module "iron-session" {
   interface IronSessionData {
-    user?: AuthenticatedUser
+    user?: Omit<AuthenticatedUser, "isLoggedIn">
   }
 }

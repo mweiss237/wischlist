@@ -16,11 +16,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     switch (req.method as HTTPMethods) {
       case "GET":
         res.send({
-          // @ts-ignore
           ...req.session.user,
-          isLoggedIn: true,
+          isLoggedIn: req.session.user ? true : false,
         })
-        // res.json(json)
         break
       default:
         return res.status(405).json({

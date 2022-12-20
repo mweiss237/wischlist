@@ -20,7 +20,6 @@ async function loginHandler(req: NextApiRequest, res: NextApiResponse) {
 
         userDB.update(matchedUserData.id, { lastLogin: new Date() })
 
-        // @ts-ignore
         req.session.user = {
           id: matchedUser.id,
           username: matchedUserData.username,

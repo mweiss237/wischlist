@@ -1,6 +1,3 @@
-import { AuthenticatedUser } from "types/User"
-import { ClientHelper } from "./ClientHelper"
-
 export const routes = {
   login: "/api/auth/login",
   register: "/api/auth/register",
