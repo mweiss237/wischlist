@@ -1,12 +1,12 @@
-import Footer from "components/Footer/Footer";
-import Header from "components/Header/Header";
-import "../src/styles/globals.scss";
-import "../src/styles/critical.scss";
+import Footer from "components/Footer/Footer"
+import Header from "components/Header/Header"
+import "../src/styles/globals.scss"
+import "../src/styles/critical.scss"
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <html>
@@ -22,5 +22,5 @@ export default function RootLayout({
         <Footer />
       </body>
     </html>
-  );
+  )
 }

@@ -8,8 +8,12 @@ export default function useUser({
   redirectIfFound = false,
 } = {}) {
   const router = useRouter()
-  const { data: user, error, isValidating, isLoading, mutate: mutateUser } = useSWR<AuthenticatedUser>("/api/user",)
-//   const result = useSWR<UserLoginState>("/api/user")
+  const fetcher = (url: string) => fetch(url).then((r) => r.json())
+
+  const { data: user, mutate: mutateUser } = useSWR<AuthenticatedUser>(
+    "/api/user",
+    fetcher
+  )
 
   useEffect(() => {
     // if no redirect needed, just return (example: already on /dashboard)
