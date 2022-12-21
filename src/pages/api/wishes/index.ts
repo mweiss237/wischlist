@@ -45,6 +45,9 @@ export default async function handler(
     console.error(`Error: ${e.stack}`)
     return res
       .status(500)
-      .json({ success: false, message: e?.message || "unknown error" })
+      .json({
+        success: false,
+        message: typeof e === "string" ? e : e?.message || "unknown error",
+      })
   }
 }

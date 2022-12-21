@@ -18,7 +18,7 @@ async function loginHandler(req: NextApiRequest, res: NextApiResponse) {
         if (matchedUserData.passwordHash !== user.passwordHash)
           throw "Password incorrect"
 
-        userDB.update(matchedUserData.id, { lastLogin: new Date() })
+        userDB.update(matchedUser.id, { lastLogin: new Date() })
 
         req.session.user = {
           id: matchedUser.id,
@@ -57,7 +57,10 @@ async function loginHandler(req: NextApiRequest, res: NextApiResponse) {
     console.error(`Error: ${e.stack}`)
     return res
       .status(500)
-      .json({ success: false, message: e?.message || "unknown error" })
+      .json({
+        success: false,
+        message: typeof e === "string" ? e : e?.message || "unknown error",
+      })
   }
 }
 

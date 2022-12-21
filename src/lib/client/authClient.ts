@@ -28,7 +28,7 @@ export const register = async (credentials: {
   username: string
   passwordHash: string
 }) => {
-  const response = await fetch(routes.login, {
+  const response = await fetch(routes.register, {
     method: "POST",
     body: JSON.stringify({ ...credentials }),
   })

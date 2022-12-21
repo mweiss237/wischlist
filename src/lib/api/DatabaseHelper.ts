@@ -50,7 +50,7 @@ export class DatabaseHelper<T> {
 
   public update = async (id: string, data: Partial<T>) => {
     const ref = this.getReferenceById(id)
-    return await ref.set(data)
+    return await ref.set(data, { merge: true })
   }
 
   public delete = async (id: string) => {

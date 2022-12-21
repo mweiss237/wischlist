@@ -1,20 +1,8 @@
-"use client"
 import Image from "next/image"
 import styles from "./Header.module.scss"
 import Link from "next/link"
-import useUser from "lib/hooks/useUser"
-import { logout } from "lib/client/authClient"
-import { useRouter } from "next/navigation"
 
 const Header = () => {
-  const { user, mutateUser } = useUser()
-  const router = useRouter()
-
-  const handleLogout = async () => {
-    const result = await logout()
-    if (!result.isLoggedIn) router.refresh()
-  }
-
   return (
     <>
       <div className="crit_header">
@@ -45,12 +33,6 @@ const Header = () => {
               alt="Login"
             />
           </Link>
-          {user?.isLoggedIn && (
-            <>
-              <p>Angemeldet als {user.username}</p>
-              <button onClick={handleLogout}>Logout</button>
-            </>
-          )}
         </span>
       </nav>
     </>

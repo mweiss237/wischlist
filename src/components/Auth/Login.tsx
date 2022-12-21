@@ -1,11 +1,16 @@
 "use client"
 import crypto from "crypto"
 import { login } from "lib/client/authClient"
+import useUser from "lib/hooks/useUser"
 import Link from "next/link"
 import React, { FormEvent } from "react"
 import styles from "./Auth.module.scss"
 
 const Login = () => {
+  const { mutateUser } = useUser({
+    redirectTo: '/profile',
+    redirectIfFound: true,
+  })
   const emailRef = React.useRef<HTMLInputElement>(null)
   const passwordRef = React.useRef<HTMLInputElement>(null)
 
@@ -22,7 +27,11 @@ const Login = () => {
       passwordHash: hash,
     })
 
-    alert(JSON.stringify(result))
+    
+
+    mutateUser(result)
+
+    // alert(JSON.stringify(result))
 
     /* --- only with firebase-admin change which breaks currently ---*/
     // if ((await userDB.where("email", "==", email)).length > 0) {
