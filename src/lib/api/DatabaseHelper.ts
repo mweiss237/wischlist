@@ -10,7 +10,6 @@ export class DatabaseHelper<T> {
   }
 
   private getReferenceById = (id: string) => {
-    console.log(id)
     return this.collection.doc(id)
   }
 
@@ -29,7 +28,10 @@ export class DatabaseHelper<T> {
       value: any
     ]
   ) => {
-    return (await this.collection.where(...condition).get()).docs
+    const result = await this.collection.where(...condition).get()
+    return result.docs.map((doc) => {
+      return { ...doc.data(), id: doc.id } as T
+    })
   }
 
   public getAll = async () => {

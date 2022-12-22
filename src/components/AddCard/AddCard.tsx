@@ -1,6 +1,7 @@
 "use client"
 
 import { wishClient } from "lib/client/wishClient"
+import useUser from "lib/hooks/useUser"
 import React from "react"
 import { Wish } from "types/Wish"
 import styles from "./AddCard.module.scss"
@@ -10,12 +11,18 @@ interface AddCardParams {
 }
 
 const AddCard = ({ callback }: AddCardParams) => {
+  const { user } = useUser()
   const [isLoading, setLoading] = React.useState(false)
   const addEmptyCard = () => {
     setLoading(true)
+    if (user?.isLoggedIn === false || !user?.id) {
+      alert("Bitte einloggen!")
+      setLoading(false)
+      return
+    }
 
     wishClient
-      .add({ wish: "" })
+      .add({ wish: "", userId: user.id })
       .then((value) => {
         callback(value.result)
       })

@@ -1,32 +1,34 @@
+import { withIronSessionApiRoute } from "iron-session/next"
 import { wishDB } from "lib/api/wishDB"
+import { authCookieInformation } from "lib/auth"
 import { NextApiRequest, NextApiResponse } from "next"
 import ApiResponse, { HTTPMethods } from "types/ApiResponse"
 import { Wish } from "types/Wish"
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const json: ApiResponse<Wish[] | Wish | undefined> = {
       success: true,
       result: undefined,
     }
-    console.log(req.body)
+    const user = req.session?.user
+    if (!user || user?.id === null || user?.id === undefined) {
+      res.status(405).send({ message: "Unauthorized." })
+      return
+    }
     const { id, ...rest } = JSON.parse(req.body || "{}") as Wish
     res.status(200)
     switch (req.method as HTTPMethods) {
       case "GET":
-        json.result = await wishDB.getAll()
+        json.result = await wishDB.where("userId", "==", user.id)
         res.json(json)
         break
       case "PUT":
-        console.log(id)
-        await wishDB.update(id, rest)
+        await wishDB.update(id, { ...rest, userId: user.id })
         res.json(json)
         break
       case "POST":
-        json.result = await wishDB.add(rest)
+        json.result = await wishDB.add({ ...rest, userId: user.id })
         res.json(json)
         break
       case "DELETE":
@@ -43,11 +45,11 @@ export default async function handler(
     return res
   } catch (e: any) {
     console.error(`Error: ${e.stack}`)
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: typeof e === "string" ? e : e?.message || "unknown error",
-      })
+    return res.status(500).json({
+      success: false,
+      message: typeof e === "string" ? e : e?.message || "unknown error",
+    })
   }
 }
+
+export default withIronSessionApiRoute(handler, authCookieInformation)

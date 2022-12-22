@@ -1,20 +1,26 @@
+"use client"
 import AddCard from "components/AddCard/AddCard"
 import Card from "components/Card/Card"
 import { wishClient } from "lib/client/wishClient"
+import useUser from "lib/hooks/useUser"
+import Link from "next/link"
+import { resolve } from "node:path/win32"
 import React from "react"
 import { useState } from "react"
+import { Wish } from "types/Wish"
 import styles from "./List.module.scss"
 
 const List = () => {
-  const [wishes, setWishes] = useState<{ id: string; wish?: string }[]>([])
+  const { user } = useUser()
+  const [wishes, setWishes] = useState<Wish[]>([])
   React.useEffect(() => {
     wishClient.get().then((response) => {
-      setWishes(response.result)
+      if (response?.success) setWishes(response.result)
+      else alert(response.message)
     })
   }, [])
 
-  const addCallback = (wish: { id: string; wish?: string }) =>
-    setWishes([...wishes, wish])
+  const addCallback = (wish: Wish) => setWishes([...wishes, wish])
   const deleteCallback = (id: string) => {
     setWishes(wishes.filter((wish) => wish.id !== id))
   }
@@ -29,16 +35,25 @@ const List = () => {
 
   return (
     <div className={styles.list}>
-      {wishes.map((wish) => (
-        <Card
-          key={`wish_${wish.id}`}
-          id={wish.id}
-          value={wish.wish}
-          onDelete={deleteCallback}
-          onChange={changeCallback}
-        />
-      ))}
-      <AddCard callback={addCallback} />
+      {user?.isLoggedIn ? (
+        <>
+          {wishes.map((wish) => (
+            <Card
+              key={`wish_${wish.id}`}
+              id={wish.id}
+              value={wish.wish}
+              onDelete={deleteCallback}
+              onChange={changeCallback}
+            />
+          ))}
+          <AddCard callback={addCallback} />
+        </>
+      ) : (
+        <p>
+          <Link href="/login">Logge dich ein</Link>, um deine Liste sehen zu
+          können.
+        </p>
+      )}
     </div>
   )
 }

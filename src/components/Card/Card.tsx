@@ -1,5 +1,4 @@
 "use client"
-
 import { wishClient } from "lib/client/wishClient"
 import Image from "next/image"
 import React from "react"

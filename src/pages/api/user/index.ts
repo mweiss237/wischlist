@@ -10,8 +10,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       success: true,
       result: undefined,
     }
-    console.log(req.body)
-    const { id } = JSON.parse(req.body || "{}") as User
     res.status(200)
     switch (req.method as HTTPMethods) {
       case "GET":

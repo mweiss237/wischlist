@@ -12,7 +12,6 @@ export default async function handler(
       success: true,
       result: undefined,
     }
-    console.log(req.body)
     const { id, ...user } = JSON.parse(req.body || "{}") as User
     res.status(200)
     switch (req.method as HTTPMethods) {

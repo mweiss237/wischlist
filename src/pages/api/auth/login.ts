@@ -14,24 +14,23 @@ async function loginHandler(req: NextApiRequest, res: NextApiResponse) {
         if (fetchedUsers.length === 0) throw `No user with email ${user.email}`
 
         const matchedUser = fetchedUsers[0]
-        const matchedUserData = matchedUser.data()
-        if (matchedUserData.passwordHash !== user.passwordHash)
+        if (matchedUser.passwordHash !== user.passwordHash)
           throw "Password incorrect"
 
         userDB.update(matchedUser.id, { lastLogin: new Date() })
 
         req.session.user = {
           id: matchedUser.id,
-          username: matchedUserData.username,
-          admin: matchedUserData?.admin || false,
+          username: matchedUser.username,
+          admin: matchedUser?.admin || false,
         }
         await req.session.save()
         res.status(200)
         res.send({
           isLoggedIn: true,
-          username: matchedUserData.username,
+          username: matchedUser.username,
           id: matchedUser.id,
-          admin: matchedUserData?.admin || false,
+          admin: matchedUser?.admin || false,
         } as AuthenticatedUser)
 
         break
