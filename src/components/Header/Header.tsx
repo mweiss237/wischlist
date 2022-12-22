@@ -1,6 +1,9 @@
 import Image from "next/image"
 import styles from "./Header.module.scss"
 import Link from "next/link"
+import { Indie_Flower } from "@next/font/google"
+
+const indieFlower = Indie_Flower({ weight: "400", subsets: ["latin"] })
 
 const Header = () => {
   return (
@@ -16,7 +19,7 @@ const Header = () => {
           />
         </Link>
 
-        <h1 className={`crit_header_title ${styles.headline}`}>Wischlist</h1>
+        <h1 className={`crit_header_title ${styles.headline} ${indieFlower.className}`}>Wischlist</h1>
       </div>
       <nav className="crit_navigator">
         <span className="align-start">
