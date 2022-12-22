@@ -4,7 +4,6 @@ import Card from "components/Card/Card"
 import { wishClient } from "lib/client/wishClient"
 import useUser from "lib/hooks/useUser"
 import Link from "next/link"
-import { resolve } from "node:path/win32"
 import React from "react"
 import { useState } from "react"
 import { Wish } from "types/Wish"
@@ -16,7 +15,7 @@ const List = () => {
   React.useEffect(() => {
     wishClient.get().then((response) => {
       if (response?.success) setWishes(response.result)
-      else alert(response.message)
+      else console.warn(response.message)
     })
   }, [])
 
