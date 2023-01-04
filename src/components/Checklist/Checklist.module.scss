@@ -1,0 +1,15 @@
+.checklist {
+  --background: #ffffff;
+  --text: #414856;
+  --check: #4f29f0;
+  --disabled: #c3c8de;
+  --border-radius: 10px;
+  background: var(--background);
+  border-radius: var(--border-radius);
+  position: relative;
+  box-shadow: 0 10px 30px rgba(#414856, 0.05);
+  padding: 30px 45px;
+  display: grid;
+  grid-template-columns: 30px auto;
+  align-items: center;
+}
