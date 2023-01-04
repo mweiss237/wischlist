@@ -38,3 +38,17 @@ code {
     color: black;
   }
 }
+
+@media (prefers-color-scheme: light) {
+  html {
+    color-scheme: black;
+  }
+  body {
+    color: #333;
+    background: #dedede;
+  }
+
+  code {
+    color: black;
+  }
+}

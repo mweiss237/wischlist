@@ -1,6 +1,7 @@
 "use client"
 import AddCard from "components/AddCard/AddCard"
 import Card from "components/Card/Card"
+import Loading from "components/Loading/Loading"
 import { wishClient } from "lib/client/wishClient"
 import useUser from "lib/hooks/useUser"
 import Link from "next/link"
@@ -12,11 +13,16 @@ import styles from "./List.module.scss"
 const List = () => {
   const { user } = useUser()
   const [wishes, setWishes] = useState<Wish[]>([])
+  const [isLoading, setLoading] = useState(false)
   React.useEffect(() => {
-    wishClient.get().then((response) => {
-      if (response?.success) setWishes(response.result)
-      else console.warn(response.message)
-    })
+    setLoading(true)
+    wishClient
+      .get()
+      .then((response) => {
+        if (response?.success) setWishes(response.result)
+        else console.warn(response.message)
+      })
+      .finally(() => setLoading(false))
   }, [])
 
   const addCallback = (wish: Wish) => setWishes([...wishes, wish])
@@ -34,7 +40,9 @@ const List = () => {
 
   return (
     <div className={styles.list}>
-      {user?.isLoggedIn ? (
+      {isLoading ? (
+        <Loading />
+      ) : user?.isLoggedIn ? (
         <>
           {wishes.map((wish) => (
             <Card
