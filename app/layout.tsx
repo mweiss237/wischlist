@@ -15,11 +15,7 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width" />
       </head>
       <body>
-        <Header />
-        <main>
-          <span className="crit_content">{children}</span>
-        </main>
-        <Footer />
+        {children}
       </body>
     </html>
   )
