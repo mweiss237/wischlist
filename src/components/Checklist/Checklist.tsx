@@ -13,7 +13,7 @@ const Checklist = (props: ChecklistParams) => {
     wishClient.get().then((response) => {
       if (response.success) setWishes(response.result)
     })
-  })
+  }, [])
 
   return (
     <div className={styles.checklist}>
