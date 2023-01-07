@@ -1,4 +1,16 @@
 .checklist {
+  box-shadow: 0 10px 30px rgba(#414856, 0.05);
+  padding: 30px 45px;
+  display: grid;
+  gap: .5em 0;
+  grid-template-columns: 30px auto;
+  align-items: center;
+}
+
+
+.checklist_wrapper {
+  max-width: 600px;
+  margin: 1em auto;
   --background: #ffffff;
   --text: #414856;
   --check: #4f29f0;
@@ -7,12 +19,4 @@
   background: var(--background);
   border-radius: var(--border-radius);
   position: relative;
-  box-shadow: 0 10px 30px rgba(#414856, 0.05);
-  padding: 30px 45px;
-  display: grid;
-  gap: .5em 0;
-  grid-template-columns: 30px auto;
-  align-items: center;
-  max-width: 600px;
-  margin: 1em auto;
 }

@@ -22,6 +22,12 @@
   box-shadow: 0 0 6px #fff;
 }
 
+.crit_centered {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 .crit_header_title {
   align-self: center;
   margin: 1em auto;
