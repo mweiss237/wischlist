@@ -1,10 +1,9 @@
 .add-note {
   height: 200px;
-  width: 200px;
   max-width: 200px;
-  max-height: 200px;
+  aspect-ratio: 1/1;
+  padding: 0;
   border: none;
-  outline: none;
   background: rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   font-size: 120px;
