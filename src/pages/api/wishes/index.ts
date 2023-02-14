@@ -24,11 +24,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         res.json(json)
         break
       case "PUT":
-        await wishDB.update(id, { ...rest, userId: user.id })
+        await wishDB.update(id, { ...rest })
         res.json(json)
         break
       case "POST":
-        json.result = await wishDB.add({ ...rest, userId: user.id })
+        json.result = await wishDB.add({ ...rest })
         res.json(json)
         break
       case "DELETE":

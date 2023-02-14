@@ -22,7 +22,7 @@ const AddCard = ({ callback }: AddCardParams) => {
     }
 
     wishClient
-      .add({ wish: "", userId: user.id })
+      .add({ wish: "" })
       .then((value) => {
         callback(value.result)
       })
