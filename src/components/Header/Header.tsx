@@ -24,7 +24,7 @@ const Header = () => {
       <nav className="crit_navigator">
         <span className="align-start">
           <Link href={"/"}>Home</Link>
-          <Link href={"/entries"}>Lists</Link>
+          <Link href={"/list"}>Lists</Link>
         </span>
         <span className="align-end">
           <Link href={"/login"}>

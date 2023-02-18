@@ -1,0 +1,13 @@
+.listLink {
+    padding: .5em 1em;
+    margin: .5em;
+    border: 1px solid white;
+    border-radius: .5em;
+    display: inline-flex;
+    background-color: transparent;
+    transition: background-color .2s ease-out;
+
+    &:hover {
+        background-color: #ffffff33;
+    }
+}

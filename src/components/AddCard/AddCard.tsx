@@ -1,6 +1,6 @@
 "use client"
 
-import { wishClient } from "lib/client/wishClient"
+// import { wishClient } from "lib/client/wishClient"
 import useUser from "lib/hooks/useUser"
 import React from "react"
 import { Wish } from "types/Wish"
@@ -21,12 +21,12 @@ const AddCard = ({ callback }: AddCardParams) => {
       return
     }
 
-    wishClient
-      .add({ wish: "" })
-      .then((value) => {
-        callback(value.result)
-      })
-      .finally(() => setLoading(false))
+    // wishClient
+    //   .add({ wish: "" })
+    //   .then((value) => {
+    //     callback(value.result)
+    //   })
+    //   .finally(() => setLoading(false))
   }
   return (
     <button

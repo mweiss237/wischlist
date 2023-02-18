@@ -7,6 +7,8 @@ export class ClientHelper<T> {
     this.endpoint = endpoint
   }
 
+  public setEndpoint = (newEndpoint: string) => (this.endpoint = newEndpoint)
+
   public get = async (id?: string) => {
     const body = id ? { id } : undefined
     const response: Response = await fetch(this.endpoint, {

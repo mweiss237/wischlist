@@ -1,43 +1,36 @@
 import { withIronSessionApiRoute } from "iron-session/next"
-import { listDB } from "lib/api"
+import { userDB } from "lib/api"
 import { authCookieInformation } from "lib/auth"
 import { NextApiRequest, NextApiResponse } from "next"
+import { List, User } from "types"
 import ApiResponse, { HTTPMethods } from "types/ApiResponse"
-import { List } from "types/List"
+
+interface UserDocumentData extends User, FirebaseFirestore.DocumentData {}
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { listId } = req.query
-    const json: ApiResponse<List[] | List | undefined> = {
+    const json: ApiResponse<User[] | User | undefined> = {
       success: true,
       result: undefined,
     }
-    const user = req.session?.user
-    if (!user || user?.id === null || user?.id === undefined) {
-      res.status(405).send({ message: "Unauthorized." })
-      return
-    }
-
-    const { id, ...rest } = JSON.parse(req.body || "{}") as List
     res.status(200)
+
+    const { userId } = req.query
+    if (!userId || typeof userId !== "string") throw `Invalid user id ${userId}`
+    const userRef = await userDB.get(userId)
+
+    const userData = (await (await userRef.get()).data()) as User
+    const userLists = await Promise.all(
+      userData.lists.map(async (listRef) => ({
+        id: listRef.id,
+        ...(await (await listRef.get()).data()),
+      }))
+    )
     switch (req.method as HTTPMethods) {
       case "GET":
-        const listRefs = await listDB.getAll()
-        json.result = listRefs.map((ref) => ({
-          id: ref.id,
-          ...ref.data(),
-        })) as List[]
-        res.json(json)
+        res.send(userLists)
         break
-      case "POST":
-        const ref = await listDB.add({ ...rest })
-        // TODO: List-Ref am User hinterlegen
-        json.result = {
-          id: ref.id,
-          ...(await ref.get()).data(),
-        } as List
-        res.json(json)
-        break
+
       default:
         return res.status(405).json({
           success: false,

@@ -13,24 +13,24 @@ async function loginHandler(req: NextApiRequest, res: NextApiResponse) {
         const fetchedUsers = await userDB.where("email", "==", user.email)
         if (fetchedUsers.length === 0) throw `No user with email ${user.email}`
 
-        const matchedUser = fetchedUsers[0]
+        const matchedUserSnap = fetchedUsers[0]
+        const matchedUser = matchedUserSnap.data()
+
         if (matchedUser.passwordHash !== user.passwordHash)
           throw "Password incorrect"
 
         userDB.update(matchedUser.id, { lastLogin: new Date() })
 
         req.session.user = {
-          id: matchedUser.id,
+          id: matchedUserSnap.id,
           username: matchedUser.username,
           admin: matchedUser?.admin || false,
         }
         await req.session.save()
         res.status(200)
         res.send({
+          ...req.session.user,
           isLoggedIn: true,
-          username: matchedUser.username,
-          id: matchedUser.id,
-          admin: matchedUser?.admin || false,
         } as AuthenticatedUser)
 
         break
@@ -54,12 +54,10 @@ async function loginHandler(req: NextApiRequest, res: NextApiResponse) {
     return res
   } catch (e: any) {
     console.error(`Error: ${e.stack}`)
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: typeof e === "string" ? e : e?.message || "unknown error",
-      })
+    return res.status(500).json({
+      success: false,
+      message: typeof e === "string" ? e : e?.message || "unknown error",
+    })
   }
 }
 

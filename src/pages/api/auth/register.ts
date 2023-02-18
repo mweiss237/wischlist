@@ -25,7 +25,9 @@ export default async function handler(
         if (usernameCheck.length > 0 || emailCheck.length > 0)
           throw "email or username exist already"
 
-        json.result = await userDB.add(user)
+        const docRef = await userDB.add(user)
+        const docSnap = await docRef.get()
+        json.result = { id: docRef.id, ...docSnap.data() } as User
         res.json(json)
         break
       case "DELETE":
@@ -47,5 +49,4 @@ export default async function handler(
       message: typeof e === "string" ? e : e?.message || "unknown error",
     })
   }
-
 }

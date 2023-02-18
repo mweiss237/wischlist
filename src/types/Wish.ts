@@ -7,3 +7,5 @@ export interface Wish {
     donor: string
   }
 }
+
+export type RawWishData = Omit<Wish, "id">

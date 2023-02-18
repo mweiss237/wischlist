@@ -5,3 +5,9 @@ export interface List {
   title: string
   wishes: FirebaseFirestore.DocumentReference<Wish>
 }
+
+export interface UserList {
+  id: string
+}
+
+export type RawListData = Omit<List, "id">

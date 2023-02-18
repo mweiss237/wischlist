@@ -10,9 +10,11 @@ export interface User {
   admin?: boolean
 }
 
+export type RawUserData = Omit<User, "id">
+
 export interface AuthenticatedUser {
+  id: string | null
   isLoggedIn: boolean
   username?: string | null
-  id?: string | null
   admin: boolean | null
 }

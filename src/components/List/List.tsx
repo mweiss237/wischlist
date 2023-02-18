@@ -2,7 +2,7 @@
 import AddCard from "components/AddCard/AddCard"
 import Card from "components/Card/Card"
 import Loading from "components/Loading/Loading"
-import { wishClient } from "lib/client/wishClient"
+import { ClientHelper } from "lib/client/ClientHelper"
 import useUser from "lib/hooks/useUser"
 import Link from "next/link"
 import React from "react"
@@ -10,8 +10,11 @@ import { useState } from "react"
 import { Wish } from "types/Wish"
 import styles from "./List.module.scss"
 
-const List = () => {
+const List = ({ params }: { params: { listId: string } }) => {
   const { user } = useUser()
+  const wishClient = new ClientHelper<Wish>(
+    `/api/lists/${params.listId}/wishes`
+  )
   const [wishes, setWishes] = useState<Wish[]>([])
   const [isLoading, setLoading] = useState(false)
   React.useEffect(() => {
@@ -19,8 +22,9 @@ const List = () => {
     wishClient
       .get()
       .then((response) => {
-        if (response?.success) setWishes(response.result)
-        else console.warn(response.message)
+        if (response?.success) {
+          setWishes(response.result)
+        } else console.warn(response.message)
       })
       .finally(() => setLoading(false))
   }, [])

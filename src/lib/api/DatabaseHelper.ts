@@ -1,4 +1,4 @@
-import firebase from "./db"
+import firebase from "./firebase"
 
 export class DatabaseHelper<T> {
   private collection
@@ -14,11 +14,8 @@ export class DatabaseHelper<T> {
   }
 
   public get = async (id: string) => {
-    const document = await this.getReferenceById(id).get()
-    return {
-      ...document.data(),
-      id: document.id,
-    } as T
+    const ref = await this.getReferenceById(id)
+    return ref as FirebaseFirestore.DocumentReference<T>
   }
 
   public where = async (
@@ -29,25 +26,17 @@ export class DatabaseHelper<T> {
     ]
   ) => {
     const result = await this.collection.where(...condition).get()
-    return result.docs.map((doc) => {
-      return { ...doc.data(), id: doc.id } as T
-    })
+    return result.docs
   }
 
   public getAll = async () => {
     const result = await this.collection.get()
-    return result.docs.map((doc) => {
-      return { ...doc.data(), id: doc.id } as T
-    })
+    return result.docs
   }
 
   public add = async (data: Omit<T, "id">) => {
     const ref = await this.collection.add(data)
-    const added = await ref.get()
-    return {
-      ...added.data(),
-      id: added.id,
-    } as T
+    return ref
   }
 
   public update = async (id: string, data: Partial<T>) => {

@@ -1,4 +1,4 @@
-import { Wish } from "types/Wish"
+import { List } from "types"
 import { ClientHelper } from "./ClientHelper"
 
-export const wishClient = new ClientHelper<Wish>(`/api/wishes`)
+export const listClient = new ClientHelper<List>(`/api/lists/`)
