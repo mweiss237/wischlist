@@ -18,23 +18,23 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id, ...rest } = JSON.parse(req.body || "{}") as Wish
     res.status(200)
     switch (req.method as HTTPMethods) {
-      case "GET":
-        json.result 
-        = await wishDB.where("userId", "==", user.id)
-        res.json(json)
-        break
-      case "PUT":
-        await wishDB.update(id, { ...rest })
-        res.json(json)
-        break
-      case "POST":
-        json.result = await wishDB.add({ ...rest })
-        res.json(json)
-        break
-      case "DELETE":
-        await wishDB.delete(id)
-        res.json(json)
-        break
+      // case "GET":
+      //   json.result 
+      //   = await wishDB.where("userId", "==", user.id)
+      //   res.json(json)
+      //   break
+      // case "PUT":
+      //   await wishDB.update(id, { ...rest })
+      //   res.json(json)
+      //   break
+      // case "POST":
+      //   json.result = await wishDB.add({ ...rest })
+      //   res.json(json)
+      //   break
+      // case "DELETE":
+      //   await wishDB.delete(id)
+      //   res.json(json)
+      //   break
       default:
         return res.status(405).json({
           success: false,

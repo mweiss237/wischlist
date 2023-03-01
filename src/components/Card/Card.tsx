@@ -1,5 +1,5 @@
 "use client"
-import { wishClient } from "lib/client/wishClient"
+
 import Image from "next/image"
 import React from "react"
 import styles from "./Card.module.scss"
@@ -9,16 +9,14 @@ type CardParams = {
   value?: string
   onDelete: (id: string) => void
   onChange: (id: string, value: string) => void
+  onSave: (id: string, value: string) => void
 }
 
-const Card = ({ id, value = "", onDelete, onChange }: CardParams) => {
+const Card = ({ id, value = "", onDelete, onChange, onSave }: CardParams) => {
   const [pristine, setPristine] = React.useState(false)
   const handler = {
     save: () => {
-      wishClient.update(id, { wish: value }).then((response) => {
-        if (!response.success) return alert(`FEHLER: ${response.message}`)
-        console.log(`entry ${id} saved`)
-      })
+      onSave(id, value)
       setPristine(false)
     },
     change: (changedValue: string) => {
@@ -29,10 +27,6 @@ const Card = ({ id, value = "", onDelete, onChange }: CardParams) => {
       const doDelete = confirm("Eintrag von der Liste löschen?")
       if (doDelete) {
         onDelete(id)
-        wishClient.delete(id).then((response) => {
-          if (!response.success) return alert(`FEHLER: ${response.message}`)
-          console.log(`entry ${id} deleted`)
-        })
       }
     },
   }

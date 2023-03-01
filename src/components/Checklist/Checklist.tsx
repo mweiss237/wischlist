@@ -1,18 +1,25 @@
-import { wishClient } from "lib/client/wishClient"
 import { useEffect, useState } from "react"
 import { Wish } from "types/Wish"
 import styles from "./Checklist.module.scss"
 import ChecklistEntry from "./ChecklistEntry"
 import { Indie_Flower } from "@next/font/google"
 import Loading from "components/Loading/Loading"
+import { ClientHelper } from "lib/client/ClientHelper"
 
 const indieFlower = Indie_Flower({ weight: "400", subsets: ["latin"] })
 
-interface ChecklistParams {}
+interface ChecklistParams {
+  params: {
+    listId: string
+  }
+}
 
-const Checklist = (props: ChecklistParams) => {
+const Checklist = ({ params }: ChecklistParams) => {
   const [wishes, setWishes] = useState<Wish[]>([])
   const [isLoading, setLoading] = useState<boolean>(false)
+  const wishClient = new ClientHelper<Wish>(
+    `/api/lists/${params.listId}/wishes`
+  )
 
   useEffect(() => {
     setLoading(true)

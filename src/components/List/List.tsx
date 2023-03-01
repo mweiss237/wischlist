@@ -15,6 +15,7 @@ const List = ({ params }: { params: { listId: string } }) => {
   const wishClient = new ClientHelper<Wish>(
     `/api/lists/${params.listId}/wishes`
   )
+
   const [wishes, setWishes] = useState<Wish[]>([])
   const [isLoading, setLoading] = useState(false)
   React.useEffect(() => {
@@ -29,9 +30,22 @@ const List = ({ params }: { params: { listId: string } }) => {
       .finally(() => setLoading(false))
   }, [])
 
-  const addCallback = (wish: Wish) => setWishes([...wishes, wish])
+  const addCallback = (newWish: Omit<Wish, "id">) => {
+    wishClient
+      .add(newWish)
+      .then((value) => setWishes([...wishes, value.result]))
+  }
   const deleteCallback = (id: string) => {
-    setWishes(wishes.filter((wish) => wish.id !== id))
+    wishClient.delete(id).then((response) => {
+      if (!response.success) return alert(`FEHLER: ${response.message}`)
+      setWishes(wishes.filter((wish) => wish.id !== id))
+    })
+  }
+  const saveCallback = (id: string, value: string) => {
+    wishClient.update(id, { wish: value }).then((response) => {
+      if (!response.success) return alert(`FEHLER: ${response.message}`)
+      console.log(`entry ${id} saved`)
+    })
   }
   const changeCallback = (id: string, value: string) => {
     setWishes(
@@ -55,6 +69,7 @@ const List = ({ params }: { params: { listId: string } }) => {
               value={wish.wish}
               onDelete={deleteCallback}
               onChange={changeCallback}
+              onSave={saveCallback}
             />
           ))}
           <AddCard callback={addCallback} />

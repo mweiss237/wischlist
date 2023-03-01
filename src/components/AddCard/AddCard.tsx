@@ -1,13 +1,12 @@
 "use client"
 
-// import { wishClient } from "lib/client/wishClient"
 import useUser from "lib/hooks/useUser"
 import React from "react"
 import { Wish } from "types/Wish"
 import styles from "./AddCard.module.scss"
 
 interface AddCardParams {
-  callback: (value: Wish) => void
+  callback: (value: Omit<Wish, "id">) => void
 }
 
 const AddCard = ({ callback }: AddCardParams) => {
@@ -20,13 +19,7 @@ const AddCard = ({ callback }: AddCardParams) => {
       setLoading(false)
       return
     }
-
-    // wishClient
-    //   .add({ wish: "" })
-    //   .then((value) => {
-    //     callback(value.result)
-    //   })
-    //   .finally(() => setLoading(false))
+    callback({ wish: "" })
   }
   return (
     <button
