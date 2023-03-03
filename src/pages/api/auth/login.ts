@@ -19,7 +19,7 @@ async function loginHandler(req: NextApiRequest, res: NextApiResponse) {
         if (matchedUser.passwordHash !== user.passwordHash)
           throw "Password incorrect"
 
-        userDB.update(matchedUser.id, { lastLogin: new Date() })
+        userDB.update(matchedUserSnap.id, { lastLogin: new Date() })
 
         req.session.user = {
           id: matchedUserSnap.id,
