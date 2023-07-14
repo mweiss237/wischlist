@@ -10,10 +10,12 @@ export default function useUser({
   const router = useRouter()
   const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
-  const { data: user, mutate: mutateUser } = useSWR<AuthenticatedUser>(
-    "/api/user",
-    fetcher
-  )
+  const {
+    data: user,
+    mutate: mutateUser,
+    isLoading,
+    isValidating,
+  } = useSWR<AuthenticatedUser>("/api/user", fetcher)
 
   useEffect(() => {
     // if no redirect needed, just return (example: already on /dashboard)
@@ -30,5 +32,5 @@ export default function useUser({
     }
   }, [user, redirectIfFound, redirectTo, router])
 
-  return { user, mutateUser }
+  return { user, mutateUser, loading: isLoading, validating: isValidating }
 }

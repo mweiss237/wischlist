@@ -1,4 +1,5 @@
 "use client"
+import Loading from "components/Loading/Loading"
 import { logout } from "lib/client/authClient"
 import useUser from "lib/hooks/useUser"
 import Image from "next/image"
@@ -6,7 +7,7 @@ import Image from "next/image"
 type ProfileParams = {}
 
 const Profile = () => {
-  const { user, mutateUser } = useUser({
+  const { user, mutateUser, loading } = useUser({
     redirectTo: "/login",
     redirectIfFound: false,
   })
@@ -14,6 +15,8 @@ const Profile = () => {
     const response = await logout()
     mutateUser(response)
   }
+
+  if (loading) return <Loading />
 
   return (
     <div style={{ width: "50%", minWidth: "300px", margin: "0 auto" }}>

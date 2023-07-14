@@ -5,10 +5,11 @@ import useUser from "lib/hooks/useUser"
 import Link from "next/link"
 import React, { FormEvent } from "react"
 import styles from "./Auth.module.scss"
+import Loading from "components/Loading/Loading"
 
 const Login = () => {
-  const { mutateUser } = useUser({
-    redirectTo: '/profile',
+  const { user, mutateUser, loading, validating } = useUser({
+    redirectTo: "/profile",
     redirectIfFound: true,
   })
   const emailRef = React.useRef<HTMLInputElement>(null)
@@ -26,8 +27,6 @@ const Login = () => {
       email: email,
       passwordHash: hash,
     })
-
-    
 
     mutateUser(result)
 
@@ -47,6 +46,10 @@ const Login = () => {
     //   })
     // .then((result) => alert(`id ${result.id} added`));
   }
+
+  console.log({ loading, validating, user })
+
+  if (loading || validating || user?.isLoggedIn) return <Loading />
 
   return (
     <form onSubmit={handleLogin} className={styles.wrapper}>
