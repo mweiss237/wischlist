@@ -1,13 +1,15 @@
 "use client"
 
 import Link from "next/link"
-import React, { FormEvent, useState } from "react"
+import React, { FormEvent, useEffect, useState } from "react"
 import styles from "./Auth.module.scss"
 import Loading from "components/Loading/Loading"
 import { useAuth } from "lib/auth"
+import { useRouter } from "next/navigation"
 
 const Login = () => {
   const { user, login } = useAuth()
+  const router = useRouter()
   const emailRef = React.useRef<HTMLInputElement>(null)
   const passwordRef = React.useRef<HTMLInputElement>(null)
 
@@ -29,8 +31,14 @@ const Login = () => {
   }
 
 
+  useEffect(() => {
+    if (user) router.push("/profile")
+  }, [router, user])
+
 
   if (loading) return <Loading />
+
+
 
   return (
     <form onSubmit={handleLogin} className={styles.wrapper}>

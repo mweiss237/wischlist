@@ -1,19 +1,19 @@
 "use client"
 import Loading from "components/Loading/Loading"
 import { useAuth } from "lib/auth"
+import { useLists } from "lib/lists"
 
 
 import Link from "next/link"
 import React from "react"
 import { useState } from "react"
-import { List } from "types"
 import styles from "./ListOverview.module.scss"
 
 const ListOverview = () => {
   const { user } = useAuth()
   const [loading, setLoading] = useState(false)
 
-  const LISTS: List[] = []
+  const { lists } = useLists()
 
 
   if (!user) {
@@ -31,7 +31,7 @@ const ListOverview = () => {
       {user ? (
         <>
           <div>
-            {LISTS.map((list) => (
+            {lists?.map((list) => (
               <a
                 className={styles.listLink}
                 href={`/list/${list.id}`}

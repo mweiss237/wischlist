@@ -1,12 +1,8 @@
-"use client"
-
-import { useAuth } from "lib/auth"
 import Head from "next/head"
 import Image from "next/image"
 import styles from "./Home.module.scss"
 
 const Home = () => {
-  const { user } = useAuth()
 
   return (
     <div className={styles.container}>
@@ -31,7 +27,7 @@ const Home = () => {
           unoptimized
         />
 
-        <p>Das Tool befindet sich noch im Aufbau: {user?.email}</p>
+        <p>Das Tool befindet sich noch im Aufbau</p>
       </div>
     </div>
   )

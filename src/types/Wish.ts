@@ -1,11 +1,8 @@
-export interface Wish {
-  id: string
-  wish: string
-  link?: string
+export interface Entry {
+  text: string
+  link?: string | null
   picked?: {
     timestamp: Date
     donor: string
   }
 }
-
-export type RawWishData = Omit<Wish, "id">

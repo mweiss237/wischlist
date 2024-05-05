@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
  * Custom hook to provide authentication methods.
  */
 export const useAuth = () => {
-  const { user } = useContext(AuthContext)
+  const { user, loading } = useContext(AuthContext)
 
   const login = async (email: string, password: string) =>
     await signInWithEmailAndPassword(auth, email, password)
@@ -46,6 +46,7 @@ export const useAuth = () => {
 
   return {
     user,
+    loading,
     login,
     logout,
     register,
