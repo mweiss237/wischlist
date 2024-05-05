@@ -1,7 +1,7 @@
 "use client"
 import Loading from "components/Loading/Loading"
 import { logout } from "lib/client/authClient"
-import useUser from "lib/hooks/useUser"
+import useUser from "lib/user"
 import Image from "next/image"
 
 type ProfileParams = {}

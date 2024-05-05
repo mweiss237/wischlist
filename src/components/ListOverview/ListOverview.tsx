@@ -1,9 +1,8 @@
 "use client"
 import Loading from "components/Loading/Loading"
-import { ClientHelper } from "lib/client/ClientHelper"
-import { userClient } from "lib/client/userClient"
-import { useLists } from "lib/hooks/useLists"
-import useUser from "lib/hooks/useUser"
+import { useAuth } from "lib/auth"
+
+
 import Link from "next/link"
 import React from "react"
 import { useState } from "react"
@@ -11,42 +10,28 @@ import { List } from "types"
 import styles from "./ListOverview.module.scss"
 
 const ListOverview = () => {
-  const { user, loading, validating } = useUser({
-    redirectTo: "/login",
-    redirectIfFound: false,
-  })
-  const [isLoading, setLoading] = useState(false)
-  const { lists, mutateLists } = useLists(user?.id || "")
+  const { user } = useAuth()
+  const [loading, setLoading] = useState(false)
 
-  const listClient = new ClientHelper<List>(`/api/lists`)
+  const LISTS: List[] = []
 
-  if (!user && (loading || validating)) {
-    return <p>Not logged in. Redirecting...</p>
+
+  if (!user) {
+    return <p>Not logged in. Please login first!</p>
   }
 
   const handleAddList = async () => {
     return alert("not yet!")
-
-    // if (user && user.id) {
-    //   const added = await (
-    //     await listClient.add({ title: "new list", wishes: [] })
-    //   ).result
-    //   const response = await mutateLists([...(lists || []), added])
-    //   // added.id
-
-    //   if (response) userClient.update(user.id, { lists: response })
-    //   console.log(JSON.stringify(response))
-    // }
   }
+
+  if (loading) return <Loading />
 
   return (
     <div className={styles.list}>
-      {loading ? (
-        <Loading />
-      ) : user?.isLoggedIn ? (
+      {user ? (
         <>
           <div>
-            {lists?.map((list) => (
+            {LISTS.map((list) => (
               <a
                 className={styles.listLink}
                 href={`/list/${list.id}`}

@@ -1,6 +1,6 @@
 "use client"
 
-import useUser from "lib/hooks/useUser"
+import useUser from "lib/user"
 import React from "react"
 import { Wish } from "types/Wish"
 import styles from "./AddCard.module.scss"
