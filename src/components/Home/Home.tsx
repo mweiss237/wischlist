@@ -27,9 +27,9 @@ const Home = () => {
           unoptimized
         />
 
-        <p>Kennst du das? Du schreibst deine Wunschliste und schickst jedem die gleiche Liste. Am Ende schenken dir Familie und Freunde die gleichen Geschenke doppelt und dreifach.</p>
-        <p>Nein? Auch gut. Um das aber schon für die Zukunft zu vermeiden, kannst du hier Wünsche erfassen und diese anschließend teilen.</p>
-        <p>Das coole dabei - die Schenkenden können Einträge als "abgehakt" markieren und jeder sieht es! Keine doppelten Geschenke mehr! 😍</p>
+        <p>Kennst du das? Du schreibst deine Wunschliste und schickst sie jedem aber niemand moderiert die Liste. Entweder du machst es selbst und verdirbst dir die Überraschung oder du bekommst von allen nur das "Tollste". </p>
+        <p>Nein? Du Glückliche*r. Falls doch, kannst du hier Wünsche erfassen und diese anschließend per Link teilen.</p>
+        <p>Das Coole dabei - da deine Einträge in der geteilten Liste abgehakt werden können, verwalten sich deine Wünsche von ganz alleine! 😍🎁</p>
       </div>
     </div>
   )
