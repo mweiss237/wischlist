@@ -10,13 +10,14 @@ export const useList = (listId: string) => {
     const [entries, setList] = useState<List | null>(null)
 
     useEffect(() => {
-        if (entries) return
 
         const listRef = ref(database, `${PATH}/${listId}`);
-        onValue(listRef, (snapshot) => {
+        const unsubscriber = onValue(listRef, (snapshot) => {
             const data = snapshot.val();
             setList(data)
         });
+
+        return unsubscriber
     }, [entries, database])
 
     const addEntry = useCallback((text: string) =>

@@ -7,16 +7,13 @@ export const useEntries = (listId: string) => {
     const [entries, setEntries] = useState<Record<string, Entry> | null>(null)
 
     useEffect(() => {
-
-        if (entries) return
-
         const entriesRef = ref(database, `entries/${listId}`);
         const unsubscriber = onValue(entriesRef, (snapshot) => {
             const data = snapshot.val();
             setEntries(data)
         });
 
-        return () => { unsubscriber() }
+        return unsubscriber
     }, [listId, entries, database])
 
     const addEntry = useCallback((entry: Entry) =>

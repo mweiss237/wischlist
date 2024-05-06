@@ -12,9 +12,6 @@ export const useLists = () => {
     const userId = user?.uid
 
     useEffect(() => {
-
-        if (lists) return
-
         const listsRef = ref(database, `lists/${userId}`);
         const unsubscriber = onValue(listsRef, (snapshot) => {
             const data = snapshot.val();
