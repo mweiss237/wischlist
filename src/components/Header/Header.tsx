@@ -32,7 +32,7 @@ const Header = () => {
           <Link href={"/list"}>Lists</Link>
         </span>
         <span className="align-end">
-          <Link href={"/login"}>
+          <Link href={user ? "/profile" : "/login"}>
             <Image
               src={user ? "/user-active.svg" : "/user.svg"}
               width={18}
