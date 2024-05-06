@@ -27,7 +27,7 @@ const Home = () => {
           unoptimized
         />
 
-        <p>Kennst du das? Du schreibst deine Wunschliste und schickst sie jedem aber niemand moderiert die Liste. Entweder du machst es selbst und verdirbst dir die Überraschung oder du bekommst von allen nur das "Tollste". </p>
+        <p>Kennst du das? Du schreibst deine Wunschliste und schickst sie jedem aber niemand moderiert die Liste. Entweder du machst es selbst und verdirbst dir die Überraschung oder du bekommst von allen nur das &quot;Tollste&quot;. </p>
         <p>Nein? Du Glückliche*r. Falls doch, kannst du hier Wünsche erfassen und diese anschließend per Link teilen.</p>
         <p>Das Coole dabei - da deine Einträge in der geteilten Liste abgehakt werden können, verwalten sich deine Wünsche von ganz alleine! 😍🎁</p>
       </div>
