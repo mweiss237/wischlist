@@ -3,14 +3,17 @@ import Loading from "components/Loading/Loading"
 import { useAuth } from "lib/auth"
 
 import Image from "next/image"
+import { useRouter } from "next/router"
+import { useEffect } from "react"
 
 const Profile = () => {
   const { user, logout } = useAuth()
+  const router = useRouter()
 
   const handleLogout = async () => {
     await logout()
+    router.push("/login")
   }
-
 
   return (
     <div style={{ width: "50%", minWidth: "300px", margin: "0 auto" }}>
