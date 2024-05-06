@@ -10,13 +10,13 @@ const Home = () => {
         <title>Wischlist</title>
         <meta
           name="description"
-          content="Your personal wischlist for friends and family with an extra 'c'"
+          content="Deine persönliche Wunschliste für Freunde und Familie!"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <div className={styles.main}>
-        <h2>Der Wunschlistendrucker spinnt gerade</h2>
+        <h2>Der Wunschlistendrucker spinnt gerade noch</h2>
 
         <Image
           src={"/processing.svg"}
@@ -27,7 +27,9 @@ const Home = () => {
           unoptimized
         />
 
-        <p>Das Tool befindet sich noch im Aufbau</p>
+        <p>Kennst du das? Du schreibst deine Wunschliste und schickst jedem die gleiche Liste. Am Ende schenken dir Familie und Freunde die gleichen Geschenke doppelt und dreifach.</p>
+        <p>Nein? Auch gut. Um das aber schon für die Zukunft zu vermeiden, kannst du hier Wünsche erfassen und diese anschließend teilen.</p>
+        <p>Das coole dabei - die Schenkenden können Einträge als "abgehakt" markieren und jeder sieht es! Keine doppelten Geschenke mehr! 😍</p>
       </div>
     </div>
   )

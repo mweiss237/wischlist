@@ -8,11 +8,10 @@ type CardParams = {
   id: string
   value?: string
   onDelete: (id: string) => void
-  onChange: (id: string, value: string) => void
   onSave: (id: string, value: string) => void
 }
 
-const Card = ({ id, value = "", onDelete, onChange, onSave }: CardParams) => {
+const Card = ({ id, value = "", onDelete, onSave }: CardParams) => {
   const [pristine, setPristine] = React.useState(false)
   const [focussed, setFocussed] = React.useState(false)
   const [text, setText ] = React.useState(value)

@@ -5,18 +5,17 @@ import { useAuth } from "lib/auth"
 import Image from "next/image"
 
 const Profile = () => {
-  const { user, loading, logout } = useAuth()
+  const { user, logout } = useAuth()
 
   const handleLogout = async () => {
     await logout()
   }
 
-  if (loading) return <Loading />
 
   return (
     <div style={{ width: "50%", minWidth: "300px", margin: "0 auto" }}>
       <div style={{ marginTop: "2rem" }}>
-        <h2>Profile</h2>
+        <h2>Profil</h2>
       </div>
       <div style={{ textAlign: "center" }}>
         <Image
@@ -27,7 +26,7 @@ const Profile = () => {
           height="150"
         />
         <h1 style={{ marginTop: "1rem" }}>{user?.displayName}</h1>
-        <p style={{ fontSize: "1.2rem" }}>Got some wishes?</p>
+        <p style={{ fontSize: "1.2rem" }}>Mein Wischlist Profil</p>
       </div>
       <button onClick={handleLogout}>Ausloggen</button>
     </div>
