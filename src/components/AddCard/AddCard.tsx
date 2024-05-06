@@ -1,20 +1,20 @@
 "use client"
 
-import useUser from "lib/hooks/useUser"
+import { useAuth } from "lib/auth"
 import React from "react"
-import { Wish } from "types/Wish"
+
 import styles from "./AddCard.module.scss"
 
 interface AddCardParams {
-  callback: (value: Omit<Wish, "id">) => void
+  callback: (value: Omit<any, "id">) => void
 }
 
 const AddCard = ({ callback }: AddCardParams) => {
-  const { user } = useUser()
+  const { user, loading } = useAuth()
   const [isLoading, setLoading] = React.useState(false)
   const addEmptyCard = () => {
     setLoading(true)
-    if (user?.isLoggedIn === false || !user?.id) {
+    if (!loading && !user) {
       alert("Bitte einloggen!")
       setLoading(false)
       return

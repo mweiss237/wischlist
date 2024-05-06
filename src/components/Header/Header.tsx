@@ -1,11 +1,16 @@
+"use client"
+
 import Image from "next/image"
 import styles from "./Header.module.scss"
 import Link from "next/link"
 import { Indie_Flower } from "@next/font/google"
+import { useAuth } from "lib/auth"
 
 const indieFlower = Indie_Flower({ weight: "400", subsets: ["latin"] })
 
 const Header = () => {
+  const { user, loading } = useAuth()
+
   return (
     <>
       <div className="crit_header">
@@ -27,9 +32,9 @@ const Header = () => {
           <Link href={"/list"}>Lists</Link>
         </span>
         <span className="align-end">
-          <Link href={"/login"}>
+          <Link href={user ? "/profile" : "/login"}>
             <Image
-              src={"/user.svg"}
+              src={user ? "/user-active.svg" : "/user.svg"}
               width={18}
               height={18}
               style={{ position: "relative" }}

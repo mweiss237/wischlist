@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react"
-import { Wish } from "types/Wish"
+import { useState } from "react"
+
 import styles from "./Checklist.module.scss"
 import ChecklistEntry from "./ChecklistEntry"
 import { Indie_Flower } from "@next/font/google"
-import Loading from "components/Loading/Loading"
-import { ClientHelper } from "lib/client/ClientHelper"
+import { useEntries } from "lib/entries"
+
+
 
 const indieFlower = Indie_Flower({ weight: "400", subsets: ["latin"] })
 
@@ -15,19 +16,15 @@ interface ChecklistParams {
 }
 
 const Checklist = ({ params }: ChecklistParams) => {
-  const [wishes, setWishes] = useState<Wish[]>([])
-  const [isLoading, setLoading] = useState<boolean>(false)
-  const wishClient = new ClientHelper<Wish>(
-    `/api/lists/${params.listId}/wishes`
-  )
+  const { listId } = params
+  const { entries } = useEntries(listId)
 
-  useEffect(() => {
-    setLoading(true)
-    wishClient.get().then((response) => {
-      setLoading(false)
-      if (response.success) setWishes(response.result)
-    })
-  }, [])
+  const [isClicked, setClicked] = useState(false)
+
+  const copyUrlToClipboard = () => {
+    setClicked(true)
+    navigator.clipboard.writeText(window.location.href)
+  }
 
   return (
     <>
@@ -35,21 +32,20 @@ const Checklist = ({ params }: ChecklistParams) => {
         className={`crit_header_title ${styles.headline} ${indieFlower.className}`}
       >
         Ich wünsche mir...
+        <button className={`crit_button ${styles.share} ${isClicked && styles.clicked}`} onClick={copyUrlToClipboard}>Link {!isClicked ? "kopieren" : "kopiert!"}</button>
       </h1>
       <div className={styles.checklist_wrapper}>
-        {isLoading && (
-          <div className="crit_centered">
-            <Loading />
-          </div>
-        )}
         <div className={styles.checklist}>
-          {wishes.map((wish) => (
-            <ChecklistEntry
-              id={wish.id}
-              title={wish.wish}
-              key={`wish${wish.id}`}
-            />
-          ))}
+          {entries && Object.keys(entries).map((entryId) => {
+            const entry = entries[entryId]
+            return (
+              <ChecklistEntry
+                id={entryId}
+                title={entry.text}
+                key={`wish${entryId}`}
+              />
+            )
+          })}
         </div>
       </div>
     </>

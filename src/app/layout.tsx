@@ -1,11 +1,13 @@
-import "../src/styles/globals.scss"
-import "../src/styles/critical.scss"
+import "styles/globals.scss"
+import "styles/critical.scss"
+import { AuthProvider } from "lib/auth"
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+
   return (
     <html>
       <head>
@@ -13,7 +15,9 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width" />
       </head>
       <body>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )
