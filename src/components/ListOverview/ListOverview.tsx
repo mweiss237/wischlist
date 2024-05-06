@@ -6,7 +6,6 @@ import { useLists } from "lib/lists"
 
 import Link from "next/link"
 import React from "react"
-import { useState } from "react"
 import styles from "./ListOverview.module.scss"
 
 const ListOverview = () => {
@@ -38,14 +37,14 @@ const ListOverview = () => {
             {lists && Object.keys(lists)?.map((listId) => {
               const list = lists[listId]
               return (
-                <a
+                <Link
                   className={styles.listLink}
                   href={`/list/${listId}`}
                   key={`list_${listId}`}
                   id={listId}
                 >
                   {list.title}
-                </a>
+                </Link>
               )
             })}
           </div>

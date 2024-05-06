@@ -15,15 +15,16 @@ type CardParams = {
 const Card = ({ id, value = "", onDelete, onChange, onSave }: CardParams) => {
   const [pristine, setPristine] = React.useState(false)
   const [focussed, setFocussed] = React.useState(false)
+  const [text, setText ] = React.useState(value)
   const handler = {
     save: () => {
-      onSave(id, value)
+      onSave(id, text)
       setPristine(false)
       setFocussed(false)
     },
-    change: (changedValue: string) => {
-      setPristine(value === changedValue ? false : true)
-      onChange(id, changedValue)
+    change: (changedText: string) => {
+      setPristine(text === changedText ? false : true)
+      setText(changedText)
     },
     remove: () => {
       const doDelete = confirm("Eintrag von der Liste löschen?")
@@ -46,10 +47,10 @@ const Card = ({ id, value = "", onDelete, onChange, onSave }: CardParams) => {
       {focussed ? (
         <>
           <textarea
-            onChange={({ target: { value } }) => handler.change(value)}
+            onChange={({ target }) => handler.change(target.value)}
             className={styles.card}
             placeholder="Ich wünsche mir..."
-            defaultValue={value}
+            defaultValue={text}
           ></textarea>
           <button
             className={`${styles.saveWish} ${pristine ? styles.active : ""}`}

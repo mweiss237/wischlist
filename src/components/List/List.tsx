@@ -3,6 +3,7 @@ import AddCard from "components/AddCard/AddCard"
 import Card from "components/Card/Card"
 import Loading from "components/Loading/Loading"
 import { useAuth } from "lib/auth"
+import { useEntries } from "lib/entries"
 
 
 import Link from "next/link"
@@ -13,8 +14,9 @@ import styles from "./List.module.scss"
 const List = ({ params }: { params: { listId: string } }) => {
   const { user, loading } = useAuth()
 
+  const { listId } = params
 
-  const [wishes, setWishes] = useState<any[]>([])
+  const { entries, addEntry, removeEntry, updateEntry } = useEntries(listId)
 
   if (loading) return <Loading />
 
@@ -61,17 +63,22 @@ const List = ({ params }: { params: { listId: string } }) => {
     <div className={styles.list}>
       {user ? (
         <>
-          {wishes.map((wish) => (
-            <Card
-              key={`wish_${wish.id}`}
-              id={wish.id}
-              value={wish.wish}
-              onDelete={() => { return }}
-              onChange={() => { return }}
-              onSave={() => { return }}
-            />
-          ))}
-          <AddCard callback={() => { return }} />
+          {entries && Object.keys(entries).map((entryId) => {
+            const entry = entries[entryId]
+            return (
+              <Card
+                key={`wish_${entryId}`}
+                id={entryId}
+                value={entry.text}
+                onDelete={() => removeEntry(entryId)}
+                onChange={() => { return }}
+                onSave={(_id, value) => { updateEntry(entryId, {text: value}) }}
+              />
+            )
+          })}
+          <AddCard callback={() => addEntry({
+            text: "",
+          })} />
         </>
       ) : (
         <p>

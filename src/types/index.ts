@@ -1,2 +1,2 @@
 export * from './List'; 
-export * from './Wish'; 
+export * from './entry'; 

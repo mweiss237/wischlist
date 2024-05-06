@@ -15,7 +15,6 @@ export const useLists = () => {
 
         if (lists) return
 
-        // FIXME: lists/userId is not returning data yet
         const listsRef = ref(database, `lists/${userId}`);
         const unsubscriber = onValue(listsRef, (snapshot) => {
             const data = snapshot.val();
