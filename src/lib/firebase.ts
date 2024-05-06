@@ -10,9 +10,10 @@ const firebaseConfig = {
   messagingSenderId: "777134630529",
   appId: "1:777134630529:web:7909aff7f1a870addf4f80"
 };
+const DB_URL = "https://wischlist-cd9c6-default-rtdb.europe-west1.firebasedatabase.app"
 
 export const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app)
 
-export const database = getDatabase(app)
+export const database = getDatabase(app, DB_URL)

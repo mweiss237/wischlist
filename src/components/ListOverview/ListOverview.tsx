@@ -10,18 +10,22 @@ import { useState } from "react"
 import styles from "./ListOverview.module.scss"
 
 const ListOverview = () => {
-  const { user } = useAuth()
-  const [loading, setLoading] = useState(false)
+  const { user, loading } = useAuth()
 
-  const { lists } = useLists()
 
+  const { lists, addList } = useLists()
+
+
+  if (loading) return <Loading />
 
   if (!user) {
     return <p>Not logged in. Please login first!</p>
   }
 
   const handleAddList = async () => {
-    return alert("not yet!")
+    const listName = prompt("Bitte listennamen eingeben:", "neue Liste")
+    if (listName)
+      addList(listName)
   }
 
   if (loading) return <Loading />
@@ -31,16 +35,19 @@ const ListOverview = () => {
       {user ? (
         <>
           <div>
-            {lists?.map((list) => (
-              <a
-                className={styles.listLink}
-                href={`/list/${list.id}`}
-                key={`list_${list.id}`}
-                id={list.id}
-              >
-                {list.title}
-              </a>
-            ))}
+            {lists && Object.keys(lists)?.map((listId) => {
+              const list = lists[listId]
+              return (
+                <a
+                  className={styles.listLink}
+                  href={`/list/${listId}`}
+                  key={`list_${listId}`}
+                  id={listId}
+                >
+                  {list.title}
+                </a>
+              )
+            })}
           </div>
           <button className={styles.addEntry} onClick={handleAddList}>
             <span>+</span>

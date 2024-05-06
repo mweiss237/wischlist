@@ -20,4 +20,12 @@
     border-radius: .5em;
     padding: .5em 1em;
     color: white;
+    transition: 
+        color .2s ease-out, 
+        background-color .2s ease-out;
+
+    &:hover {
+        background-color: #ffffff33;
+        color: #8c8c8c
+    }
 }
