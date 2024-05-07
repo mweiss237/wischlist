@@ -19,12 +19,6 @@ const Checklist = ({ params }: ChecklistParams) => {
   const { listId } = params
   const { entries } = useEntries(listId)
 
-  const [isClicked, setClicked] = useState(false)
-
-  const copyUrlToClipboard = () => {
-    setClicked(true)
-    navigator.clipboard.writeText(window.location.href)
-  }
 
   return (
     <>
@@ -32,7 +26,6 @@ const Checklist = ({ params }: ChecklistParams) => {
         className={`crit_header_title ${styles.headline} ${indieFlower.className}`}
       >
         Ich wünsche mir...
-        <button className={`crit_button ${styles.share} ${isClicked && styles.clicked}`} onClick={copyUrlToClipboard}>Link {!isClicked ? "kopieren" : "kopiert!"}</button>
       </h1>
       <div className={styles.checklist_wrapper}>
         <div className={styles.checklist}>

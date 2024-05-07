@@ -26,11 +26,3 @@
   justify-content: space-around;
 }
 
-.share {
-  transition: background-color .2s ease-out;
-
-  &.clicked {
-    background-color: #5cb85c;
-    color: white;
-  }
-}
