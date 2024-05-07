@@ -1,9 +1,11 @@
-import { useState } from "react"
 
 import styles from "./Checklist.module.scss"
 import ChecklistEntry from "./ChecklistEntry"
 import { Indie_Flower } from "@next/font/google"
 import { useEntries } from "lib/entries"
+import { useGiver } from "lib/giver"
+import Loading from "components/Loading/Loading"
+
 
 
 
@@ -19,6 +21,20 @@ const Checklist = ({ params }: ChecklistParams) => {
   const { listId } = params
   const { entries } = useEntries(listId)
 
+  const { giverName, setName, removeName } = useGiver()
+
+
+  const handleName = () => {
+    if (giverName) {
+      confirm("Möchtest du den Namen löschen?")
+      return removeName()
+    }
+
+    const newName = prompt("Möchtest du deinen Namen hinterlegen?")
+    if (newName) {
+      setName(newName)
+    }
+  }
 
   return (
     <>
@@ -27,18 +43,29 @@ const Checklist = ({ params }: ChecklistParams) => {
       >
         Ich wünsche mir...
       </h1>
+      <div className={styles.giverWrapper}>
+        <p className={styles.info}>
+          Wenn du möchtest, kannst du hier deinen Namen eintragen,
+          um anderen zu zeigen, was du schenkst:
+        </p>
+        <span>
+
+          <span>Ich bin </span>
+          <input type="text" className={styles.giverInput} readOnly placeholder="anonym" value={giverName || ""} onClick={handleName} />
+        </span>
+      </div>
       <div className={styles.checklist_wrapper}>
         <div className={styles.checklist}>
           {entries && Object.keys(entries).map((entryId) => {
-            const entry = entries[entryId]
             return (
               <ChecklistEntry
-                id={entryId}
-                title={entry.text}
+                entryId={entryId}
+                listId={listId}
                 key={`wish${entryId}`}
               />
             )
           })}
+          {!entries ? <Loading /> : null}
         </div>
       </div>
     </>
