@@ -18,18 +18,18 @@ export const useList = (listId: string) => {
         });
 
         return unsubscriber
-    }, [entries, database])
+    }, [database, PATH])
 
     const addEntry = useCallback((text: string) =>
         push(child(ref(database), `${PATH}/${listId}`), {
             text,
             link: null,
         })
-        , [database])
+        , [database, listId, PATH])
 
     const removeEntry = useCallback((entryId: string) =>
         remove(child(ref(database), `${PATH}/${listId}/${entryId}`))
-        , [])
+        , [database, listId, PATH])
 
     return { entries, addEntry, removeEntry }
 

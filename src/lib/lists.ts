@@ -19,7 +19,7 @@ export const useLists = () => {
         });
 
         return unsubscriber
-    }, [userId, lists, database])
+    }, [userId, database])
 
     const addList = useCallback((listName: string) => {
         push(child(ref(database), `lists/${userId}`), {

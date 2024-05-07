@@ -1,8 +1,8 @@
 export interface Entry {
   text: string
   link?: string | null
-  picked?: {
+  taken?: {
     timestamp: Date
-    donor: string
+    giver?: string
   }
 }

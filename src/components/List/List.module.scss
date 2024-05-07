@@ -6,8 +6,19 @@
     margin: 1em;
 }
 
-.share {
-    position: absolute;
-    right: 50px;
 
+.shareWrapper { 
+    display: flex; 
+    padding: 10px;
 }
+
+.share {
+    align-self: center;
+    margin: auto;    
+    transition: background-color .2s ease-out;
+  
+    &.clicked {
+      background-color: #5cb85c;
+      color: white;
+    }
+  }

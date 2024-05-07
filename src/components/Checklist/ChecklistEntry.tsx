@@ -1,25 +1,53 @@
+import { useEntry } from "lib/entries"
+import { useGiver } from "lib/giver"
+import { useCallback, useEffect, useState } from "react"
 import styles from "./ChecklistEntry.module.scss"
 
 interface ChecklistEntryParams {
-  id: string
-  title: string
-  checked?: boolean
+  entryId: string
+  listId: string
 }
 
-const ChecklistEntry = (props: ChecklistEntryParams) => {
+const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
+  const { entry, pick, unpick } = useEntry(listId, entryId)
+
+  const [value, setValue] = useState<boolean>(false)
+  const { giverName } = useGiver()
+
+  useEffect(() => {
+    setValue(entry?.taken !== undefined)
+  }, [entry?.taken])
+
+  const handleSelect = useCallback((selected: boolean) => {
+    setValue(!selected)
+
+    if (!selected) {
+      if (confirm("Möchtest du den Eintrag wirklich wieder freigeben?"))
+        unpick()
+
+      return
+    }
+
+    return pick(giverName)
+  }, [unpick, pick])
+
+
   return (
-    <>
+    <span style={{ display: "flex" }}>
       <input
         className={styles.input}
-        id={props.id}
+        id={entryId}
         type="checkbox"
-        value="1"
-        defaultChecked={props.checked}
+        checked={value}
+        onClick={({ currentTarget: { checked } }) => handleSelect(checked)}
       />
-      <label className={styles.label} htmlFor={props.id}>
-        {props.title}
+      <label className={styles.label} htmlFor={entryId}>
+        {entry?.text}
       </label>
-    </>
+      {entry?.taken !== undefined
+        ? (<span className={styles.giver}>(schenkt {entry.taken.giver || "jemand"})</span>)
+        : null}
+    </span >
   )
 }
 
