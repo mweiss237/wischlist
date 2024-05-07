@@ -25,15 +25,20 @@ const Checklist = ({ params }: ChecklistParams) => {
 
 
   const handleName = () => {
-    if (giverName) {
-      confirm("Möchtest du den Namen löschen?")
-      return removeName()
+
+    if (!giverName) {
+      const newName = prompt("Möchtest du deinen Namen hinterlegen?")
+      if (newName) {
+        setName(newName)
+      }
+      return
     }
 
-    const newName = prompt("Möchtest du deinen Namen hinterlegen?")
-    if (newName) {
-      setName(newName)
-    }
+
+    if (confirm("Möchtest du den Namen löschen?"))
+      return removeName()
+
+
   }
 
   return (

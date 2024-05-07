@@ -1,21 +1,23 @@
 import { useRouter } from "next/navigation"
-import { useMemo, useCallback } from "react"
+import {  useCallback } from "react"
+import useLocalStorage from "./localStorage"
 
 
 export const useGiver = () => {
     const router = useRouter()
+
+    const [giverName, setGiverName] = useLocalStorage("giver", "")
+
     
 
-    const giverName = useMemo(() => localStorage.getItem("giver"), [localStorage])
-
     const setName = useCallback((name: string) => {
-        localStorage.setItem("giver", name)
-        router.refresh() // localStorage is not part of react context -> need to trigger a refresh
-    }, [router])
+        setGiverName(name)
+        router.refresh()
+    }, [])
 
     const removeName = useCallback(() => {
-        localStorage.removeItem("giver")
-        router.refresh() // localStorage is not part of react context -> need to trigger a refresh
+        setGiverName("")
+        router.refresh()
     }, [router])
 
     return { giverName, setName, removeName }
