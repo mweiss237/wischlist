@@ -34,7 +34,8 @@ const Card = ({ id, value = "", link, onDelete, onSave, onAddLink }: CardParams)
     },
     addLink: () => {
       const newLink = prompt("Füge hier einen Link ein: (leer lassen zum Löschen)")
-      onAddLink(newLink || "")
+      if (newLink !== null)
+        onAddLink(newLink)
     }
   }
   return (
