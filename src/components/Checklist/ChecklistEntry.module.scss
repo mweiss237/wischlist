@@ -4,6 +4,17 @@
   opacity: .5;
 }
 
+.share {
+  display: flex;
+  margin-left: auto;
+  border-radius: 100%;
+  transition: background-color .2s ease-in;
+
+  &:hover {
+    background-color: #00957770;
+  }
+}
+
 .label {
   color: var(--text);
   position: relative;

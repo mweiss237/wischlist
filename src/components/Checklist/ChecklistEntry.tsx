@@ -1,5 +1,6 @@
 import { useEntry } from "lib/entries"
 import { useGiver } from "lib/giver"
+import Image from "next/image"
 import { useCallback, useEffect, useState } from "react"
 import styles from "./ChecklistEntry.module.scss"
 
@@ -13,6 +14,8 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
 
   const [value, setValue] = useState<boolean>(false)
   const { giverName } = useGiver()
+
+  console.log(giverName)
 
   useEffect(() => {
     setValue(entry?.taken !== undefined)
@@ -29,7 +32,7 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
     }
 
     return pick(giverName)
-  }, [unpick, pick])
+  }, [unpick, pick, giverName])
 
 
   return (
@@ -46,6 +49,16 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
       </label>
       {entry?.taken !== undefined
         ? (<span className={styles.giver}>(schenkt {entry.taken.giver || "jemand"})</span>)
+        : null}
+      {entry?.link ? <a href={entry.link} target="_blank" rel="noreferrer" className={styles.share}>
+        <Image
+          src={"/external_link.svg"}
+          alt="Link öffnen"
+          height={20}
+          width={20}
+          unoptimized
+          loading="lazy"
+        /></a>
         : null}
     </span >
   )
