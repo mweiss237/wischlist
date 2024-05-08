@@ -1,5 +1,6 @@
 "use client"
 
+import { parseAndActivateLinks } from "lib/link"
 import Image from "next/image"
 import React from "react"
 import styles from "./Card.module.scss"
@@ -14,7 +15,7 @@ type CardParams = {
 const Card = ({ id, value = "", onDelete, onSave }: CardParams) => {
   const [pristine, setPristine] = React.useState(false)
   const [focussed, setFocussed] = React.useState(false)
-  const [text, setText ] = React.useState(value)
+  const [text, setText] = React.useState(value)
   const handler = {
     save: () => {
       onSave(id, text)
@@ -69,7 +70,7 @@ const Card = ({ id, value = "", onDelete, onSave }: CardParams) => {
         <>
           <span
             className={styles.card}
-            dangerouslySetInnerHTML={{ __html: parseText(value) }}
+            dangerouslySetInnerHTML={{ __html: parseAndActivateLinks(value) }}
           ></span>
           <button
             className={`${styles.saveWish} ${styles.active}`}
@@ -90,12 +91,5 @@ const Card = ({ id, value = "", onDelete, onSave }: CardParams) => {
   )
 }
 
-const parseText = (text: string) => {
-  const urlRegex =
-    /https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)/g
-  return text.replaceAll(urlRegex, (substr) => {
-    return `<a href="${substr}" target="_blank">${substr}</a>`
-  })
-}
 
 export default Card
