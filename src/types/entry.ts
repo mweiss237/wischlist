@@ -1,6 +1,6 @@
 export interface Entry {
   text: string
-  link?: string | null
+  link?: string
   taken?: {
     timestamp: Date
     giver?: string

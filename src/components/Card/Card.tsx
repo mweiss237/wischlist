@@ -8,19 +8,19 @@ import styles from "./Card.module.scss"
 type CardParams = {
   id: string
   value?: string
+  link?: string
   onDelete: (id: string) => void
   onSave: (id: string, value: string) => void
+  onAddLink: (value: string) => void
 }
 
-const Card = ({ id, value = "", onDelete, onSave }: CardParams) => {
+const Card = ({ id, value = "", link, onDelete, onSave, onAddLink }: CardParams) => {
   const [pristine, setPristine] = React.useState(false)
-  const [focussed, setFocussed] = React.useState(false)
   const [text, setText] = React.useState(value)
   const handler = {
     save: () => {
       onSave(id, text)
       setPristine(false)
-      setFocussed(false)
     },
     change: (changedText: string) => {
       setPristine(text === changedText ? false : true)
@@ -32,6 +32,10 @@ const Card = ({ id, value = "", onDelete, onSave }: CardParams) => {
         onDelete(id)
       }
     },
+    addLink: () => {
+      const newLink = prompt("Füge hier einen Link ein: (leer lassen zum Löschen)")
+      onAddLink(newLink || "")
+    }
   }
   return (
     <div className={styles.cardWrapper}>
@@ -44,49 +48,43 @@ const Card = ({ id, value = "", onDelete, onSave }: CardParams) => {
           alt="Löschen"
         />
       </button>
-      {focussed ? (
-        <>
-          <textarea
-            onChange={({ target }) => handler.change(target.value)}
-            className={styles.card}
-            placeholder="Ich wünsche mir..."
-            defaultValue={text}
-          ></textarea>
-          <button
-            className={`${styles.saveWish} ${pristine ? styles.active : ""}`}
-            onClick={handler.save}
-          >
-            <Image
-              src={"/save.svg"}
-              alt="Speichern"
-              height={30}
-              width={30}
-              unoptimized
-              loading="lazy"
-            />
-          </button>
-        </>
-      ) : (
-        <>
-          <span
-            className={styles.card}
-            dangerouslySetInnerHTML={{ __html: parseAndActivateLinks(value) }}
-          ></span>
-          <button
-            className={`${styles.saveWish} ${styles.active}`}
-            onClick={() => setFocussed(true)}
-          >
-            <Image
-              src={"/edit.svg"}
-              alt="Bearbeiten"
-              height={30}
-              width={30}
-              unoptimized
-              loading="eager"
-            />
-          </button>
-        </>
-      )}
+
+
+
+      <textarea
+        onChange={({ target }) => handler.change(target.value)}
+        className={styles.card}
+        placeholder="Ich wünsche mir..."
+        defaultValue={text}
+      ></textarea>
+      <button
+        className={`${styles.saveWish} ${pristine ? styles.active : ""}`}
+        onClick={handler.save}
+      >
+        <Image
+          src={"/save.svg"}
+          alt="Speichern"
+          height={30}
+          width={30}
+          unoptimized
+          loading="lazy"
+        />
+      </button>
+      <button
+        className={`${styles.link} ${link && styles.active}`}
+        onClick={handler.addLink}
+        title="Link hinzufügen"
+      >
+        <Image
+          src={"/link.svg"}
+          alt="Link hinzufügen"
+          height={20}
+          width={20}
+          unoptimized
+          loading="lazy"
+        />
+        <label>+</label>
+      </button>
     </div>
   )
 }

@@ -46,8 +46,10 @@ const List = ({ params }: { params: { listId: string } }) => {
                   key={`wish_${entryId}`}
                   id={entryId}
                   value={entry.text}
+                  link={entry.link}
                   onDelete={() => removeEntry(entryId)}
                   onSave={(_id, value) => { updateEntry(entryId, { text: value }) }}
+                  onAddLink={(value) => { updateEntry(entryId, { link: value }) }}
                 />
               )
             })}
