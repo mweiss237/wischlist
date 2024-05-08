@@ -14,6 +14,8 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
   const [value, setValue] = useState<boolean>(false)
   const { giverName } = useGiver()
 
+  console.log(giverName)
+
   useEffect(() => {
     setValue(entry?.taken !== undefined)
   }, [entry?.taken])
@@ -29,7 +31,7 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
     }
 
     return pick(giverName)
-  }, [unpick, pick])
+  }, [unpick, pick, giverName])
 
 
   return (
