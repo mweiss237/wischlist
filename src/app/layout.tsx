@@ -1,6 +1,7 @@
 import "styles/globals.scss"
 import "styles/critical.scss"
 import { AuthProvider } from "lib/auth"
+import { Analytics } from "@vercel/analytics/react"
 
 export default function RootLayout({
   children,
@@ -21,6 +22,7 @@ export default function RootLayout({
         <AuthProvider>
           {children}
         </AuthProvider>
+        <Analytics />
       </body>
     </html>
   )
