@@ -50,7 +50,7 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
       {entry?.taken !== undefined
         ? (<span className={styles.giver}>(schenkt {entry.taken.giver || "jemand"})</span>)
         : null}
-      {entry?.link ? <a href={entry.link} target="_blank" className={styles.share}>
+      {entry?.link ? <a href={entry.link} target="_blank" rel="noreferrer" className={styles.share}>
         <Image
           src={"/external_link.svg"}
           alt="Link öffnen"

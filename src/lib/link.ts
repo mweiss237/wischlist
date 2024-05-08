@@ -8,6 +8,6 @@ export const parseAndActivateLinks = (text: string) => {
 
     return text.replaceAll(urlRegex, (substr) => {
         const visibleLink = substr
-        return `<a href="${substr}" target="_blank">(Link)</a>`
+        return `<a href="${substr}" target="_blank" rel="noreferrer">(Link)</a>`
     })
 }
