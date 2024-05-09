@@ -1,17 +1,29 @@
 "use client"
-import { useAuth } from "lib/auth"
+import { useAuth, useUser } from "lib/auth"
 
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { useCallback } from "react"
 
 const Profile = () => {
-  const { user, logout } = useAuth()
+  const { user, updateUserName } = useUser()
+  const { logout } = useAuth()
   const router = useRouter()
 
   const handleLogout = async () => {
     await logout()
     router.push("/login")
   }
+
+  const handleChangeName = useCallback(async () => {
+    const value = prompt("Dein Nutzername:", user?.displayName || "")
+    if (value === null) return
+
+    await updateUserName(value)
+
+  }, [user?.displayName, updateUserName])
+
+  console.log(user?.displayName)
 
   return (
     <div style={{ width: "50%", minWidth: "300px", margin: "0 auto" }}>
@@ -26,7 +38,14 @@ const Profile = () => {
           width="150"
           height="150"
         />
-        <h1 style={{ marginTop: "1rem" }}>{user?.displayName}</h1>
+        <input
+          type="text"
+          className="crit_textinput"
+          readOnly
+          style={{ marginTop: "1rem" }}
+          value={user?.displayName || ""}
+          onClick={handleChangeName}
+        />
         <p style={{ fontSize: "1.2rem" }}>Mein Wischlist Profil</p>
       </div>
       <button onClick={handleLogout}>Ausloggen</button>
