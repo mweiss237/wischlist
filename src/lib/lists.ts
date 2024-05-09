@@ -1,4 +1,4 @@
-import { ref, onValue, push, child } from "firebase/database"
+import { ref, onValue, push, child, remove, query, equalTo, orderByChild } from "firebase/database"
 import { useCallback, useEffect, useState } from "react";
 import { List } from "types";
 import { useAuth } from "./auth";
@@ -12,7 +12,8 @@ export const useLists = () => {
     const userId = user?.uid
 
     useEffect(() => {
-        const listsRef = ref(database, `lists/${userId}`);
+        if (!userId) return
+        const listsRef = query(ref(database, `lists`), ...[orderByChild("userId"), equalTo(userId)]);
         const unsubscriber = onValue(listsRef, (snapshot) => {
             const data = snapshot.val();
             setLists(data)
@@ -22,10 +23,15 @@ export const useLists = () => {
     }, [userId, database])
 
     const addList = useCallback((listName: string) => {
-        push(child(ref(database), `lists/${userId}`), {
+        push(child(ref(database), `lists`), {
             title: listName,
+            userId,
         });
     }, [userId, database])
 
-    return { lists, addList }
+    const removeList = useCallback((listId: string) => {
+        remove(ref(database, `lists/${listId}`));
+    }, [userId, database])
+
+    return { lists, addList, removeList }
 }

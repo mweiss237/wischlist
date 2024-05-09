@@ -1,24 +1,32 @@
-.list {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    gap: 1em;
-    margin: 1em;
+.listNameWrapper {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+  gap: 1em;
 }
 
+.list {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  gap: 1em;
+  margin: 1em;
+}
 
-.shareWrapper { 
-    display: flex; 
-    padding: 10px;
+.shareWrapper {
+  display: flex;
+  padding: 10px;
 }
 
 .share {
-    align-self: center;
-    margin: auto;    
-    transition: background-color .2s ease-out;
-  
-    &.clicked {
-      background-color: #5cb85c;
-      color: white;
-    }
+  align-self: center;
+  margin: auto;
+  transition: background-color 0.2s ease-out;
+
+  &.clicked {
+    background-color: #5cb85c;
+    color: white;
   }
+}

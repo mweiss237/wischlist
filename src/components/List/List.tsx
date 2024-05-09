@@ -1,28 +1,52 @@
 "use client"
+import { Indie_Flower } from "@next/font/google"
 import AddCard from "components/AddCard/AddCard"
 import Card from "components/Card/Card"
+import { DeleteTrashCan } from "components/DeleteTrashCan/DeleteTrashCan"
 import Loading from "components/Loading/Loading"
 import { useAuth } from "lib/auth"
 import { useEntries } from "lib/entries"
-
+import { useList } from "lib/list"
 
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import React from "react"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import styles from "./List.module.scss"
 
+const indieFlowerFont = Indie_Flower({ weight: "400", subsets: ["latin"] })
+
 const List = ({ params }: { params: { listId: string } }) => {
+  const router = useRouter()
   const { user, loading } = useAuth()
 
   const { listId } = params
 
+  const { list, updateListTitle, deleteList } = useList(listId)
   const { entries, addEntry, removeEntry, updateEntry } = useEntries(listId)
 
 
   const [isClicked, setClicked] = useState(false)
 
+  const handleDeleteList = useCallback(() => {
+    if (confirm("Möchtest du diese Liste wirklich unwiederbringlich löschen?")) {
+      deleteList()
+      router.push("/list")
+    }
+  }, [deleteList])
+
   if (loading) return <Loading />
+
+  const handleChangeListName = () => {
+    const listName = prompt("Ändere den Namen für diese Liste", list?.title)
+
+    if (listName === null) return
+
+    if (listName === "") return alert("Bitte gib einen Namen ein!")
+
+    updateListTitle(listName)
+  }
 
   const copyUrlToClipboard = () => {
     setClicked(true)
@@ -30,8 +54,15 @@ const List = ({ params }: { params: { listId: string } }) => {
   }
 
 
+
   return (
     <>
+      <DeleteTrashCan onDelete={handleDeleteList} />
+      <div className={`${styles.listNameWrapper} ${indieFlowerFont.className}`}>
+
+        <span>Liste:</span>
+        <input onClick={handleChangeListName} type="text" readOnly value={list?.title} className={`${indieFlowerFont.className} crit_textinput`} />
+      </div>
       {user ? (
         <>
           <div className={styles.shareWrapper}>
@@ -57,6 +88,8 @@ const List = ({ params }: { params: { listId: string } }) => {
               text: "",
             })} />
           </div>
+
+
         </>
       ) : (
         <p>

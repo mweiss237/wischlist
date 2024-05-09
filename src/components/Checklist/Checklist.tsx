@@ -5,6 +5,7 @@ import { Indie_Flower } from "@next/font/google"
 import { useEntries } from "lib/entries"
 import { useGiver } from "lib/giver"
 import Loading from "components/Loading/Loading"
+import { useList } from "lib/list"
 
 
 
@@ -20,7 +21,7 @@ interface ChecklistParams {
 const Checklist = ({ params }: ChecklistParams) => {
   const { listId } = params
   const { entries } = useEntries(listId)
-
+  const { list } = useList(listId)
   const { giverName, setName, removeName } = useGiver()
 
 
@@ -56,11 +57,12 @@ const Checklist = ({ params }: ChecklistParams) => {
         <span>
 
           <span>Ich bin </span>
-          <input type="text" className={styles.giverInput} readOnly placeholder="anonym" value={giverName || ""} onClick={handleName} />
+          <input type="text" className="crit_textinput" readOnly placeholder="anonym" value={giverName || ""} onClick={handleName} />
         </span>
       </div>
       <div className={styles.checklist_wrapper}>
         <div className={styles.checklist}>
+        <h3 className={`${indieFlower.className} ${styles.headline} ${styles.invertColor}`}>{list?.title}</h3>
           {entries && Object.keys(entries).map((entryId) => {
             return (
               <ChecklistEntry

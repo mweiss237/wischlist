@@ -1,0 +1,20 @@
+.delete {
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  margin: 1em 2em;
+  height: auto;
+  filter: none;
+  transition: background-color 0.2s ease-in;
+
+  img {
+    transition: filter 0.2s ease-in;
+  }
+
+  &:hover {
+    background-color: red;
+    img {
+      filter: invert(100%);
+    }
+  }
+}
