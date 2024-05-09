@@ -1,13 +1,13 @@
-import { child, onValue, push, ref, remove } from "firebase/database"
+import { onValue, ref, remove, update } from "firebase/database"
 import { useCallback, useEffect, useState } from "react"
 import { List } from "types"
 import { database } from "./firebase"
 
 
-const PATH = "list"
+const PATH = "lists"
 
 export const useList = (listId: string) => {
-    const [entries, setList] = useState<List | null>(null)
+    const [list, setList] = useState<List | null>(null)
 
     useEffect(() => {
 
@@ -18,19 +18,18 @@ export const useList = (listId: string) => {
         });
 
         return unsubscriber
-    }, [database, PATH])
+    }, [database, listId, PATH])
 
-    const addEntry = useCallback((text: string) =>
-        push(child(ref(database), `${PATH}/${listId}`), {
-            text,
-            link: null,
+    const updateListTitle = useCallback((title: string) =>
+        update(ref(database, `${PATH}/${listId}`), {
+            title,
         })
         , [database, listId, PATH])
 
-    const removeEntry = useCallback((entryId: string) =>
-        remove(child(ref(database), `${PATH}/${listId}/${entryId}`))
-        , [database, listId, PATH])
+    const deleteList = useCallback(() => {
+        remove(ref(database, `${PATH}/${listId}`))
+    }, [])
 
-    return { entries, addEntry, removeEntry }
+    return { list, updateListTitle, deleteList }
 
 }
