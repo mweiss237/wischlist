@@ -1,6 +1,6 @@
 "use client"
 import Loading from "components/Loading/Loading"
-import { useAuth } from "lib/auth"
+import { useUser } from "lib/auth"
 import { useLists } from "lib/lists"
 
 
@@ -9,7 +9,7 @@ import React from "react"
 import styles from "./ListOverview.module.scss"
 
 const ListOverview = () => {
-  const { user, loading } = useAuth()
+  const { user, loading } = useUser()
 
 
   const { lists, addList } = useLists()

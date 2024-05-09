@@ -4,11 +4,12 @@ import Link from "next/link"
 import React, { FormEvent, useEffect, useState } from "react"
 import styles from "./Auth.module.scss"
 import Loading from "components/Loading/Loading"
-import { useAuth } from "lib/auth"
+import { useAuth, useUser } from "lib/auth"
 import { useRouter } from "next/navigation"
 
 const Login = () => {
-  const { user, login } = useAuth()
+  const { user } = useUser()
+  const { login } = useAuth()
   const router = useRouter()
   const emailRef = React.useRef<HTMLInputElement>(null)
   const passwordRef = React.useRef<HTMLInputElement>(null)

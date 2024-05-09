@@ -1,14 +1,14 @@
 import { ref, onValue, push, child, remove, query, equalTo, orderByChild } from "firebase/database"
 import { useCallback, useEffect, useState } from "react";
 import { List } from "types";
-import { useAuth } from "./auth";
+import { useUser } from "./auth";
 import { database } from "./firebase"
 
 export const useLists = () => {
 
     const [lists, setLists] = useState<Record<string, List> | null>(null)
 
-    const { user } = useAuth()
+    const { user } = useUser()
     const userId = user?.uid
 
     useEffect(() => {
