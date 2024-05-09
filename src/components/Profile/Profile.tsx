@@ -38,14 +38,17 @@ const Profile = () => {
           width="150"
           height="150"
         />
-        <input
-          type="text"
-          className="crit_textinput"
-          readOnly
-          style={{ marginTop: "1rem" }}
-          value={user?.displayName || ""}
-          onClick={handleChangeName}
-        />
+        
+        <div>
+          <input
+            type="text"
+            className="crit_textinput"
+            readOnly
+            style={{ width: "auto", marginTop: "1rem" }}
+            value={user?.displayName || ""}
+            onClick={handleChangeName}
+          />
+        </div>
         <p style={{ fontSize: "1.2rem" }}>Mein Wischlist Profil</p>
       </div>
       <button onClick={handleLogout}>Ausloggen</button>
