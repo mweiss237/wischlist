@@ -4,12 +4,12 @@ import Image from "next/image"
 import styles from "./Header.module.scss"
 import Link from "next/link"
 import { Indie_Flower } from "@next/font/google"
-import { useAuth } from "lib/auth"
+import { useUser } from "lib/auth"
 
 const indieFlower = Indie_Flower({ weight: "400", subsets: ["latin"] })
 
 const Header = () => {
-  const { user, loading } = useAuth()
+  const { user, loading } = useUser()
 
   return (
     <>

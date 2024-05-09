@@ -1,8 +1,9 @@
 "use client"
 
-import { useAuth } from "lib/auth"
+import { useAuth, useUser } from "lib/auth"
 import Link from "next/link"
-import React, { FormEvent, useState } from "react"
+import { useRouter } from "next/navigation"
+import React, { FormEvent, useState, useEffect } from "react"
 import styles from "./Auth.module.scss"
 
 const Register = () => {
@@ -11,8 +12,14 @@ const Register = () => {
   const passwordRef = React.useRef<HTMLInputElement>(null)
 
   const { register } = useAuth()
+  const { user } = useUser()
+  const router = useRouter()
 
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (user) router.push("/profile")
+  }, [user])
 
   const authorize = async (e: FormEvent) => {
     setLoading(true)
@@ -22,14 +29,12 @@ const Register = () => {
     const password = passwordRef.current?.value
     if (!email || !username || !password) return
 
-
-
-    const response = await register(
+    await register(
       email,
       password,
+      username
     )
-    
-    alert(response.user.email)
+
     setLoading(false)
   }
 

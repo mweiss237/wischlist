@@ -4,7 +4,7 @@ import AddCard from "components/AddCard/AddCard"
 import Card from "components/Card/Card"
 import { DeleteTrashCan } from "components/DeleteTrashCan/DeleteTrashCan"
 import Loading from "components/Loading/Loading"
-import { useAuth } from "lib/auth"
+import { useUser } from "lib/auth"
 import { useEntries } from "lib/entries"
 import { useList } from "lib/list"
 
@@ -19,7 +19,7 @@ const indieFlowerFont = Indie_Flower({ weight: "400", subsets: ["latin"] })
 
 const List = ({ params }: { params: { listId: string } }) => {
   const router = useRouter()
-  const { user, loading } = useAuth()
+  const { user, loading } = useUser()
 
   const { listId } = params
 

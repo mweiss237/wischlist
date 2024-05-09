@@ -1,6 +1,6 @@
 "use client"
 
-import { useAuth } from "lib/auth"
+import { useUser } from "lib/auth"
 import React from "react"
 
 import styles from "./AddCard.module.scss"
@@ -10,7 +10,7 @@ interface AddCardParams {
 }
 
 const AddCard = ({ callback }: AddCardParams) => {
-  const { user, loading } = useAuth()
+  const { user, loading } = useUser()
   const [isLoading, setLoading] = React.useState(false)
   const addEmptyCard = () => {
     setLoading(true)
