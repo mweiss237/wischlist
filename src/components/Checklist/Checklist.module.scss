@@ -22,6 +22,12 @@
   position: relative;
 }
 
+.centered {
+  display: flex;
+  align-self: center;
+  justify-self: center;
+}
+
 .headline {
   display: flex;
   justify-content: space-around;
