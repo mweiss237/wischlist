@@ -6,25 +6,22 @@ import React from "react"
 import styles from "./AddCard.module.scss"
 
 interface AddCardParams {
-  callback: (value: Omit<any, "id">) => void
+  callback: () => void
 }
 
 const AddCard = ({ callback }: AddCardParams) => {
   const { user, loading } = useUser()
-  const [isLoading, setLoading] = React.useState(false)
   const addEmptyCard = () => {
-    setLoading(true)
     if (!loading && !user) {
       alert("Bitte einloggen!")
-      setLoading(false)
       return
     }
-    callback({ wish: "" })
+    console.log("jes")
+    callback()
   }
   return (
     <button
       className={`${styles["add-note"]}`}
-      disabled={isLoading}
       type="button"
       onClick={addEmptyCard}
     >
