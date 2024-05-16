@@ -27,6 +27,8 @@ const Card = ({ id, value = "", link, onDelete, onSave, onAddLink }: CardParams)
       setText(changedText)
     },
     remove: () => {
+      if (!text) return onDelete(id)
+
       const doDelete = confirm("Eintrag von der Liste löschen?")
       if (doDelete) {
         onDelete(id)
@@ -50,13 +52,12 @@ const Card = ({ id, value = "", link, onDelete, onSave, onAddLink }: CardParams)
         />
       </button>
 
-
-
       <textarea
         onChange={({ target }) => handler.change(target.value)}
         className={styles.card}
         placeholder="Ich wünsche mir..."
         defaultValue={text}
+        onBlur={handler.save}
       ></textarea>
       <button
         className={`${styles.saveWish} ${pristine ? styles.active : ""}`}

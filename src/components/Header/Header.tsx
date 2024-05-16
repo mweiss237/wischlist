@@ -28,8 +28,18 @@ const Header = () => {
       </div>
       <nav className="crit_navigator">
         <span className="align-start">
-          <Link href={"/"}>Home</Link>
-          <Link href={"/list"}>Lists</Link>
+          <Link
+            href={"/"}
+            key="home"
+            id="home">
+            Home
+          </Link>
+          <Link
+            href={"/list"}
+            key={"lists"}
+            id={"lists"}>
+            Lists
+          </Link>
         </span>
         <span className="align-end">
           <Link href={user ? "/profile" : "/login"}>

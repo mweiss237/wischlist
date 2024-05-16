@@ -1,8 +1,8 @@
 import styles from "./Loading.module.scss"
 
 
-const Loading = () => (
-  <div className={styles["lds-heart"]}>
+const Loading = ({className}: {className?: string}) => (
+  <div className={`${styles["lds-heart"]} ${className || ""}`}>
     <div></div>
   </div>
 )

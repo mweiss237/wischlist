@@ -72,7 +72,7 @@ const Checklist = ({ params }: ChecklistParams) => {
               />
             )
           })}
-          {!entries ? <Loading /> : null}
+          {!entries ? <Loading className={styles.centered} /> : null}
         </div>
       </div>
     </>
