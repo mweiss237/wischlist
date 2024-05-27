@@ -1,19 +1,18 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from "react"
-import useLocalStorage from "./localStorage"
+import { createContext, PropsWithChildren, useCallback, useContext, useLayoutEffect, useState } from "react"
 
 
-const GiverContext = createContext<{ name: string, setName: (name: string) => void }>({ name: "", setName: () => { return } })
+
+const GiverContext = createContext<{ name: string | null, setName: (name: string) => void }>({ name: "", setName: () => { return } })
 
 export const GiverProvider = ({ children }: PropsWithChildren) => {
-    const [giver, setName] = useState("")
+    const [giver, setName] = useState<string | null>("")
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const name = localStorage.getItem("giver")
         console.log(name)
-        setName(name || "")
+        setName(name || null)
     }, [setName])
 
     const handleSetName = useCallback((name: string) => {

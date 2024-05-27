@@ -1,4 +1,4 @@
-
+import React from 'react'
 import styles from "./Checklist.module.scss"
 import ChecklistEntry from "./ChecklistEntry"
 import { Indie_Flower } from "@next/font/google"
@@ -39,8 +39,14 @@ const Checklist = ({ params }: ChecklistParams) => {
     if (confirm("Möchtest du den Namen löschen?"))
       return removeName()
 
-
   }
+
+  React.useEffect(() => {
+    if (giverName === null) {
+      const name = prompt("Möchtest du deinen Namen hinterlegen?")
+      setName(name || "")
+    }
+  }, [giverName, setName])
 
   return (
     <>
@@ -62,7 +68,7 @@ const Checklist = ({ params }: ChecklistParams) => {
       </div>
       <div className={styles.checklist_wrapper}>
         <div className={styles.checklist}>
-        <h3 className={`${indieFlower.className} ${styles.headline} ${styles.invertColor}`}>{list?.title}</h3>
+          <h3 className={`${indieFlower.className} ${styles.headline} ${styles.invertColor}`}>{list?.title}</h3>
           {entries && Object.keys(entries).map((entryId) => {
             return (
               <ChecklistEntry
