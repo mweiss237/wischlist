@@ -63,6 +63,8 @@ const Login = () => {
         ref={passwordRef}
         placeholder="Passwort"
       />
+      <Link className={`${styles.darktext} ${styles.sm}`} href={"/forgot-password"}>Password vergessen?</Link>
+      <br />
       <span className={styles.buttonWrapper}>
         <button type={"submit"}>Login</button>
         <button type={"reset"}>Zurücksetzen</button>
