@@ -1,7 +1,7 @@
 "use client"
 
 import { auth } from "lib/firebase";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User, updateProfile } from "firebase/auth"
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User, updateProfile, sendPasswordResetEmail } from "firebase/auth"
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from "react";
 import _ from "lodash";
 
@@ -82,9 +82,14 @@ export const useAuth = () => {
     return await user.reload()
   }
 
+  const resetPassword = async (email: string) =>
+    await sendPasswordResetEmail(auth, email)
+
+
   return {
     login,
     logout,
     register,
+    resetPassword,
   }
 }
