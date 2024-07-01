@@ -1,7 +1,10 @@
 .add-note {
-  height: 200px;
+  flex-basis: 160px;
+  flex-grow: 1;
+  flex-shrink: 0.8;
   max-width: 200px;
-  aspect-ratio: 1/1;
+  aspect-ratio: 1 / 1;
+
   padding: 0;
   border: none;
   background: rgba(0, 0, 0, 0.1);
@@ -13,5 +16,14 @@
 
   &:hover {
     background: rgba(0, 0, 0, 0.2);
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .add-note {
+    flex-basis: unset;
+    flex-grow: unset;
+    flex-shrink: unset;
+    min-width: 200px;
   }
 }
