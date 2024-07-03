@@ -6,6 +6,8 @@ import { useEntries } from "lib/entries"
 import { useGiver } from "lib/giver"
 import Loading from "components/Loading/Loading"
 import { useList } from "lib/list"
+import PriorityIcon from './Priority'
+import { Priority } from 'types'
 
 
 
@@ -17,6 +19,8 @@ interface ChecklistParams {
     listId: string
   }
 }
+
+const SORT_TO_THE_END = 10
 
 const Checklist = ({ params }: ChecklistParams) => {
   const { listId } = params
@@ -48,6 +52,15 @@ const Checklist = ({ params }: ChecklistParams) => {
     }
   }, [giverName, setName])
 
+  const sortedEntryIds = React.useMemo(() =>
+    entries
+      ? Object.keys(entries || {}).sort((a, b) =>
+        (entries[a].priority || SORT_TO_THE_END) - (entries[b].priority || SORT_TO_THE_END)
+      )
+      : [],
+    [entries]
+  )
+
   return (
     <>
       <h1
@@ -65,11 +78,23 @@ const Checklist = ({ params }: ChecklistParams) => {
           <span>Ich bin </span>
           <input type="text" className="crit_textinput" readOnly placeholder="anonym" value={giverName || ""} onClick={handleName} />
         </span>
+
+        <p className={styles.info}>
+          Mit den folgenden Symbolen werden Wunschprioritäten dargestellt:
+          <br />
+          <PriorityIcon priority={Priority.high} /> Hoch
+          <br />
+          <PriorityIcon priority={Priority.medium} /> Mittel
+          <br />
+          <PriorityIcon priority={Priority.low} /> Niedrig
+
+        </p>
+
       </div>
       <div className={styles.checklist_wrapper}>
         <div className={styles.checklist}>
           <h3 className={`${indieFlower.className} ${styles.headline} ${styles.invertColor}`}>{list?.title}</h3>
-          {entries && Object.keys(entries).map((entryId) => {
+          {sortedEntryIds.map((entryId) => {
             return (
               <ChecklistEntry
                 entryId={entryId}

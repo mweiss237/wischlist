@@ -1,6 +1,6 @@
 {
   "name": "wischlist",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@next/font": "^13.0.7",
+    "@svgr/webpack": "^8.1.0",
     "@types/lodash": "^4.17.1",
     "firebase": "^10.11.1",
     "lodash": "^4.17.21",

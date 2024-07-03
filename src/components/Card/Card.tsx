@@ -1,20 +1,23 @@
 "use client"
 
-import { parseAndActivateLinks } from "lib/link"
+import Menu from "components/Menu/Menu"
 import Image from "next/image"
 import React from "react"
+import { Priority } from "types"
 import styles from "./Card.module.scss"
 
 type CardParams = {
   id: string
   value?: string
   link?: string
+  priority?: Priority
   onDelete: (id: string) => void
   onSave: (id: string, value: string) => void
   onAddLink: (value: string) => void
+  onSetPriority: (priority: Priority) => void
 }
 
-const Card = ({ id, value = "", link, onDelete, onSave, onAddLink }: CardParams) => {
+const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onSetPriority }: CardParams) => {
   const [pristine, setPristine] = React.useState(false)
   const [text, setText] = React.useState(value)
   const handler = {
@@ -34,11 +37,11 @@ const Card = ({ id, value = "", link, onDelete, onSave, onAddLink }: CardParams)
         onDelete(id)
       }
     },
-    addLink: () => {
-      const newLink = prompt("Füge hier einen Link ein: (leer lassen zum Löschen)")
-      if (newLink !== null)
-        onAddLink(newLink)
-    }
+  }
+  const addLink = () => {
+    const newLink = prompt("Füge hier einen Link ein: (leer lassen zum Löschen)")
+    if (newLink !== null)
+      onAddLink(newLink)
   }
   return (
     <div className={styles.cardWrapper}>
@@ -72,7 +75,37 @@ const Card = ({ id, value = "", link, onDelete, onSave, onAddLink }: CardParams)
           loading="lazy"
         />
       </button>
-      <button
+      <Menu entries={[
+        {
+          active: !!link,
+          activeColor: "#5ac45a",
+          iconSrc: "/link.svg",
+          label: "Link hinzufügen",
+          onClick: addLink
+        },
+        {
+          active: priority === Priority.high,
+          activeColor: "#ff6361",
+          iconSrc: "/prio-high.svg",
+          label: "Hoch",
+          onClick: () => onSetPriority(Priority.high)
+        },
+        {
+          active: priority === Priority.medium,
+          activeColor: "#FF9100",
+          iconSrc: "/prio-medium.svg",
+          label: "Mittel",
+          onClick: () => onSetPriority(Priority.medium)
+        },
+        {
+          active: priority === Priority.low,
+          activeColor: "#84E6E6",
+          iconSrc: "/prio-low.svg",
+          label: "Niedrig", 
+          onClick: () => onSetPriority(Priority.low)
+        },
+      ]} />
+      {/* <button
         className={`${styles.link} ${link && styles.active}`}
         onClick={handler.addLink}
         title="Link hinzufügen"
@@ -86,7 +119,7 @@ const Card = ({ id, value = "", link, onDelete, onSave, onAddLink }: CardParams)
           loading="lazy"
         />
         <label>+</label>
-      </button>
+      </button> */}
     </div>
   )
 }
