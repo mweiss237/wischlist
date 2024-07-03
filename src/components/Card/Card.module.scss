@@ -1,5 +1,6 @@
 .cardWrapper {
   display: flex;
+  position: relative;
   flex-flow: column nowrap;
   flex-basis: 160px;
   flex-grow: 1;
@@ -38,7 +39,8 @@
 .saveWish {
   display: none;
   overflow: hidden;
-  transform: translate(155px, 165px);
+  bottom: 0;
+  right: 0;
   position: absolute;
   background: none;
   border: none;
@@ -89,42 +91,3 @@
   opacity: 1;
 }
 
-.link {
-  display: flex;
-  position: absolute;
-  background: none;
-  border: none;
-  align-self: flex-end;
-  transform: translateY(1px) translateX(-1px);
-  background-color: white;
-  padding: 2px;
-  border: 1px solid gray;
-  border-radius: 15px;
-  gap: 5px;
-  opacity: 0.3;
-
-  &.active {
-    opacity: 0.8;
-    background-color: #5ac45a;
-
-    > label {
-      color: white;
-    }
-  }
-
-  > label {
-    display: none;
-    align-self: center;
-    padding-right: 5px;
-    color: #555;
-    font-size: larger;
-    font-weight: bold;
-  }
-}
-
-.link:hover {
-  opacity: 1;
-  > label {
-    display: flex;
-  }
-}

@@ -78,9 +78,11 @@ const List = ({ params }: { params: { listId: string } }) => {
                   id={entryId}
                   value={entry.text}
                   link={entry.link}
+                  priority={entry.priority}
                   onDelete={() => removeEntry(entryId)}
                   onSave={(_id, value) => { updateEntry(entryId, { text: value }) }}
                   onAddLink={(value) => { updateEntry(entryId, { link: value }) }}
+                  onSetPriority={(priority) => { updateEntry(entryId, { priority }) }}
                 />
               )
             })}
