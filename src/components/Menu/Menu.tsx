@@ -32,9 +32,10 @@ const Menu = ({ entries }: MenuProps) => {
                 />
             </button>
             <div className={`${styles.entries} ${isShown ? styles.active : ""}`}>
-                {entries.map(entry => {
+                {entries.map((entry, index) => {
                     return (
                         <button
+                            key={`menu-entry-${index}`}
                             className={styles.entry}
                             style={
                                 entry.active
