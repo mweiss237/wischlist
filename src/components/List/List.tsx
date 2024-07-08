@@ -80,7 +80,7 @@ const List = ({ params }: { params: { listId: string } }) => {
           {donors.length > 0 ? <div className="crit_centered crit_row">
             <p>Aktuelle Schenker:</p>
             <ul>
-              {donors.map(donor => <li>{donor}</li>)}
+              {donors.map((donor, i) => <li key={`donorEntry_${i}`}>{donor}</li>)}
             </ul>
           </div> : null
           }
