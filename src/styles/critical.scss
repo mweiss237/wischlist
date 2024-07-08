@@ -25,7 +25,12 @@
 .crit_centered {
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 100%;
+}
+
+.crit_row {
+  flex-direction: column;
 }
 
 .crit_header_title {

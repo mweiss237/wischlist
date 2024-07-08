@@ -15,6 +15,8 @@ import React from "react"
 import { useState, useCallback } from "react"
 import styles from "./List.module.scss"
 
+import PresentSVG from "../../../public/present.svg"
+
 const indieFlowerFont = Indie_Flower({ weight: "400", subsets: ["latin"] })
 
 const List = ({ params }: { params: { listId: string } }) => {
@@ -26,6 +28,16 @@ const List = ({ params }: { params: { listId: string } }) => {
   const { list, updateListTitle, deleteList } = useList(listId)
   const { entries, addEntry, removeEntry, updateEntry } = useEntries(listId)
 
+  const alreadyPickedSome = React.useMemo(() =>
+    Object.values(entries || {})
+      .some(entry => entry.taken?.timestamp !== undefined)
+    , [entries])
+
+  const donors = React.useMemo(() =>
+    Object.values(entries || {})
+      .filter(entry => entry.taken !== undefined && entry.taken.giver)
+      .map(entry => entry.taken?.giver)
+    , [entries])
 
   const [isClicked, setClicked] = useState(false)
 
@@ -57,6 +69,24 @@ const List = ({ params }: { params: { listId: string } }) => {
 
   return (
     <>
+      {alreadyPickedSome ?
+        <div className={indieFlowerFont.className}>
+          <div className={`${styles.pickedInfo} crit_centered`}>
+            <PresentSVG color="#ffc107" />
+            <p >
+              Jemand schenkt etwas aus der Liste!
+            </p>
+          </div>
+          {donors.length > 0 ? <div className="crit_centered crit_row">
+            <p>Aktuelle Schenker:</p>
+            <ul>
+              {donors.map(donor => <li>{donor}</li>)}
+            </ul>
+          </div> : null
+          }
+
+        </div>
+        : null}
       <DeleteTrashCan onDelete={handleDeleteList} />
       <div className={`${styles.listNameWrapper} ${indieFlowerFont.className}`}>
 
