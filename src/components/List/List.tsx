@@ -40,7 +40,10 @@ const List = ({ params }: { params: { listId: string } }) => {
     , [entries])
 
   const [isClicked, setClicked] = useState(false)
-  const isShareAvailable = navigator.share !== undefined
+  const [isShareAvailable, setShareAvailable] = useState(false)
+  React.useEffect(() =>
+    setShareAvailable(navigator?.share !== undefined)
+    , [])
 
 
   const handleDeleteList = useCallback(() => {
