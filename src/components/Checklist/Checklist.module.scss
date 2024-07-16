@@ -9,6 +9,10 @@
 }
 
 
+.blurry {
+  filter: blur(8px);
+}
+
 .checklist_wrapper {
   max-width: 600px;
   margin: 1em auto;

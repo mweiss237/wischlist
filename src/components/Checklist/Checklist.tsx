@@ -8,6 +8,7 @@ import Loading from "components/Loading/Loading"
 import { useList } from "lib/list"
 import PriorityIcon from './Priority'
 import { Priority } from 'types'
+import { useUser } from 'lib/auth'
 
 
 
@@ -20,14 +21,20 @@ interface ChecklistParams {
   }
 }
 
-const SORT_TO_THE_END = 10
+const SORT_TO_THE_END = 4
 
 const Checklist = ({ params }: ChecklistParams) => {
   const { listId } = params
   const { entries } = useEntries(listId)
   const { list } = useList(listId)
   const { giverName, setName, removeName } = useGiver()
+  const { user } = useUser()
 
+
+  const isListOwner = !!list?.userId && !!user?.uid && list.userId === user.uid
+  const isSomeTaken = Object.values(entries || {}).some(entry => !!entry.taken?.timestamp)
+
+  const isBlurred = isListOwner && isSomeTaken
 
   const handleName = () => {
 
@@ -92,7 +99,7 @@ const Checklist = ({ params }: ChecklistParams) => {
 
       </div>
       <div className={styles.checklist_wrapper}>
-        <div className={styles.checklist}>
+        <div className={`${styles.checklist} ${isBlurred && styles.blurry}`}>
           <h3 className={`${indieFlower.className} ${styles.headline} ${styles.invertColor}`}>{list?.title}</h3>
           {sortedEntryIds.map((entryId) => {
             return (

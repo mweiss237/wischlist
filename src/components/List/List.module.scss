@@ -23,14 +23,24 @@
 
 .shareWrapper {
   display: flex;
+  justify-content: center;
   padding: 10px;
+
+  > input {
+    border: none;
+    background: none;
+    background-color: white;
+    border-radius: 5px 0 0 5px;
+    padding: .5em 1em;
+  }
 }
 
 .share {
   align-self: center;
-  margin: auto;
+  // margin: auto;
   transition: background-color 0.2s ease-out;
-
+  border-radius: 0 5px 5px 0;
+  border-left: 1px solid #009578;
   &.clicked {
     background-color: #5cb85c;
     color: white;
