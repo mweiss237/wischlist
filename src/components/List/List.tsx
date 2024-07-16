@@ -40,12 +40,7 @@ const List = ({ params }: { params: { listId: string } }) => {
     , [entries])
 
   const [isClicked, setClicked] = useState(false)
-  let canShare = false
-  try {
-    canShare = navigator.canShare()
-  } catch (_) {
-    console.log("WebShare api not available")
-  }
+  const isShareAvailable = navigator.share !== undefined
 
 
   const handleDeleteList = useCallback(() => {
@@ -70,14 +65,11 @@ const List = ({ params }: { params: { listId: string } }) => {
   const shareOrCopyUrlToClipboard = () => {
     setClicked(true)
 
-    canShare ? navigator.share({
+    isShareAvailable ? navigator.share({
       title: `Wischlist - ${list?.title} von ${user?.displayName}`,
       text: `Hey, ich möchte diese Wunschliste mit dir teilen!`,
       url: `${window.location.href}/share`
     }) : navigator.clipboard.writeText(`${window.location.href}/share`)
-
-
-
 
     setTimeout(() => setClicked(false), 2000)
   }
@@ -107,12 +99,12 @@ const List = ({ params }: { params: { listId: string } }) => {
 
               <input type="text" readOnly value={`${window.location.href}/share`} />
               <button
-                title={canShare ? "Liste teilen" : "Link kopieren"}
+                title={isShareAvailable ? "Liste teilen" : "Link kopieren"}
                 className={`crit_button ${styles.share} ${isClicked && styles.clicked}`}
                 onClick={shareOrCopyUrlToClipboard}>
                 <Image
-                  src={canShare ? "/link.svg" : "/copy.svg"}
-                  alt={canShare ? "Liste teilen" : "Link kopieren"}
+                  src={isShareAvailable ? "/link.svg" : "/copy.svg"}
+                  alt={isShareAvailable ? "Liste teilen" : "Link kopieren"}
                   height={20}
                   width={20}
                   unoptimized
