@@ -24,11 +24,16 @@ const Login = () => {
     const password = passwordRef.current?.value
     if (!email || !password) return
 
-    await login(
-      email,
-      password,
-    )
-    setLoading(false)
+    try {
+      await login(
+        email,
+        password,
+      )
+    } catch (e) {
+      alert("Die Anmeldung ist fehlgeschlagen! Überprüfe deine E-Mail oder dein Passwort.")
+    } finally {
+      setLoading(false)
+    }
   }
 
 
