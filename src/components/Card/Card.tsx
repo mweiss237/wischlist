@@ -61,7 +61,7 @@ const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onS
         placeholder="Ich wünsche mir..."
         defaultValue={text}
         onBlur={handler.save}
-      ></textarea>
+      />
       <button
         className={`${styles.saveWish} ${pristine ? styles.active : ""}`}
         onClick={handler.save}
