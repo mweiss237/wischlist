@@ -115,7 +115,7 @@ const List = ({ params }: { params: { listId: string } }) => {
                 />
               </button>
             </div>
-            <div className={styles.list}>
+            <div id="list" className={styles.list}>
 
               {entries && Object.keys(entries).map((entryId) => {
                 const entry = entries[entryId]
@@ -135,6 +135,9 @@ const List = ({ params }: { params: { listId: string } }) => {
               })}
               <AddCard callback={() => addEntry({
                 text: "",
+              }).then(() => {
+                const lastCard = document.querySelector<HTMLInputElement>("#list > :last-of-type textarea")
+                lastCard?.focus();
               })} />
             </div>
 
