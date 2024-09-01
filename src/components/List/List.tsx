@@ -17,6 +17,7 @@ import { useState, useCallback } from "react"
 import styles from "./List.module.scss"
 
 import PresentSVG from "../../../public/present.svg"
+import { Priority } from "types"
 
 const indieFlowerFont = Indie_Flower({ weight: "400", subsets: ["latin"] })
 
@@ -135,6 +136,7 @@ const List = ({ params }: { params: { listId: string } }) => {
               })}
               <AddCard callback={() => addEntry({
                 text: "",
+                priority: Priority.medium
               }).then(() => {
                 const lastCard = document.querySelector<HTMLInputElement>("#list > :last-of-type textarea")
                 lastCard?.focus();
