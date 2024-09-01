@@ -53,7 +53,7 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
       </span>
       {entry?.link ? <a href={entry.link} target="_blank" rel="noreferrer" className={styles.share}>
         <Image
-          src={"/external_link.svg"}
+          src={"/link.svg"}
           alt="Link öffnen"
           height={20}
           width={20}
