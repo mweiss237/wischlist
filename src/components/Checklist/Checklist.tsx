@@ -21,7 +21,7 @@ interface ChecklistParams {
   }
 }
 
-const SORT_TO_THE_END = 4
+const SORT_TO_THE_END = 0
 
 const Checklist = ({ params }: ChecklistParams) => {
   const { listId } = params
@@ -62,7 +62,7 @@ const Checklist = ({ params }: ChecklistParams) => {
   const sortedEntryIds = React.useMemo(() =>
     entries
       ? Object.keys(entries || {}).sort((a, b) =>
-        (entries[a].priority || SORT_TO_THE_END) - (entries[b].priority || SORT_TO_THE_END)
+        (entries[a].position || SORT_TO_THE_END) - (entries[b].position || SORT_TO_THE_END)
       )
       : [],
     [entries]

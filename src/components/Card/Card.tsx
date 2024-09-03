@@ -5,6 +5,8 @@ import Image from "next/image"
 import React from "react"
 import { Priority } from "types"
 import styles from "./Card.module.scss"
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 type CardParams = {
   id: string
@@ -38,13 +40,28 @@ const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onS
       }
     },
   }
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id });
+
+  const draggableStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+
   const addLink = () => {
     const newLink = prompt("Füge hier einen Link ein: (leer lassen zum Löschen)")
     if (newLink !== null)
       onAddLink(newLink)
   }
   return (
-    <div className={styles.cardWrapper}>
+    <div className={styles.cardWrapper} ref={setNodeRef} style={draggableStyle} {...attributes} {...listeners}>
       <button className={styles.deleteWish} onClick={handler.remove}>
         <Image
           src={"/close.svg"}
@@ -101,7 +118,7 @@ const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onS
           active: priority === Priority.low,
           activeColor: "#84E6E6",
           iconSrc: "/prio-low.svg",
-          label: "Niedrig", 
+          label: "Niedrig",
           onClick: () => onSetPriority(Priority.low)
         },
       ]} />

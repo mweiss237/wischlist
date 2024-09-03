@@ -18,7 +18,7 @@
   flex-flow: row wrap;
   justify-content: center;
   gap: 1em;
-  margin: 1em .5em;
+  margin: 1em 0.5em;
 }
 
 .shareWrapper {
@@ -31,10 +31,12 @@
     background: none;
     background-color: white;
     border-radius: 5px 0 0 5px;
-    padding: .5em 1em;
+    padding: 0.5em 1em;
   }
 }
-
+.text_centered {
+  text-align: center;
+}
 .share {
   align-self: center;
   // margin: auto;

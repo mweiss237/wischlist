@@ -18,6 +18,9 @@ import styles from "./List.module.scss"
 
 import PresentSVG from "../../../public/present.svg"
 import { Priority } from "types"
+import { DndContext, useSensors, DragEndEvent } from "@dnd-kit/core"
+import { KeyboardSensor, PointerSensor, useSensor, closestCenter } from '@dnd-kit/core';
+import { SortableContext, sortableKeyboardCoordinates, rectSwappingStrategy } from "@dnd-kit/sortable"
 
 const indieFlowerFont = Indie_Flower({ weight: "400", subsets: ["latin"] })
 
@@ -26,6 +29,21 @@ const List = ({ params }: { params: { listId: string } }) => {
   const { user, loading } = useUser()
 
   const { listId } = params
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+
+
 
   const { list, updateListTitle, deleteList } = useList(listId)
   const { entries, addEntry, removeEntry, updateEntry } = useEntries(listId)
@@ -66,6 +84,18 @@ const List = ({ params }: { params: { listId: string } }) => {
     updateListTitle(listName)
   }
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = sortedEntryArray.findIndex(([id]) => id === active.id);
+      const newIndex = sortedEntryArray.findIndex(([id]) => id === over?.id);
+      console.log({ oldIndex, newIndex })
+      updateEntry(active.id as string, { position: newIndex })
+      if (over) updateEntry(over.id as string, { position: oldIndex })
+    }
+  }
+
   const shareOrCopyUrlToClipboard = () => {
     setClicked(true)
 
@@ -78,7 +108,7 @@ const List = ({ params }: { params: { listId: string } }) => {
     setTimeout(() => setClicked(false), 2000)
   }
 
-
+  const sortedEntryArray = Object.entries(entries || {}).sort((a, b) => (a[1].position || 0) - (b[1].position || 0))
 
   return (
     <>
@@ -116,34 +146,53 @@ const List = ({ params }: { params: { listId: string } }) => {
                 />
               </button>
             </div>
+
             <div id="list" className={styles.list}>
 
-              {entries && Object.keys(entries).map((entryId) => {
-                const entry = entries[entryId]
-                return (
-                  <Card
-                    key={`wish_${entryId}`}
-                    id={entryId}
-                    value={entry.text}
-                    link={entry.link}
-                    priority={entry.priority}
-                    onDelete={() => removeEntry(entryId)}
-                    onSave={(_id, value) => { updateEntry(entryId, { text: value }) }}
-                    onAddLink={(value) => { updateEntry(entryId, { link: value }) }}
-                    onSetPriority={(priority) => { updateEntry(entryId, { priority }) }}
-                  />
-                )
-              })}
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={sortedEntryArray.map(entry => entry[0])}
+                  strategy={rectSwappingStrategy}
+                >
+                  {sortedEntryArray.map(([id, entry]) => (
+                    <Card
+                      key={`wish_${id}`}
+                      id={id}
+                      value={entry.text}
+                      link={entry.link}
+                      priority={entry.priority}
+                      onDelete={() => removeEntry(id)}
+                      onSave={(_id, value) => { updateEntry(id, { text: value }) }}
+                      onAddLink={(value) => { updateEntry(id, { link: value }) }}
+                      onSetPriority={(priority) => { updateEntry(id, { priority }) }}
+                    />))}
+                </SortableContext>
+              </DndContext>
+
               <AddCard callback={() => addEntry({
                 text: "",
-                priority: Priority.medium
+                priority: Priority.medium,
+                position: sortedEntryArray.length
               }).then(() => {
                 const lastCard = document.querySelector<HTMLInputElement>("#list > :last-of-type textarea")
                 lastCard?.focus();
               })} />
             </div>
 
+            <div className="crit_centered">
 
+              <p className={`${indieFlowerFont.className} ${styles.text_centered}`}>
+                <i>
+                  ℹ️<br />
+                  Die Reihenfolge spiegelt die der teilbaren Liste ab.
+                  Um sie zu änderen, selektiere und halte einen Eintrag.
+                </i>
+              </p>
+            </div>
           </>
         ) : (
           <p>
@@ -154,6 +203,8 @@ const List = ({ params }: { params: { listId: string } }) => {
       }
     </>
   )
+
+
 }
 
 export default List
