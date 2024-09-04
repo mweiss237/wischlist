@@ -20,7 +20,7 @@ import PresentSVG from "../../../public/present.svg"
 import { Priority } from "types"
 import { DndContext, useSensors, DragEndEvent } from "@dnd-kit/core"
 import { KeyboardSensor, PointerSensor, useSensor, closestCenter } from '@dnd-kit/core';
-import { SortableContext, sortableKeyboardCoordinates, rectSwappingStrategy } from "@dnd-kit/sortable"
+import { SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 
 const indieFlowerFont = Indie_Flower({ weight: "400", subsets: ["latin"] })
 
@@ -90,9 +90,12 @@ const List = ({ params }: { params: { listId: string } }) => {
     if (active.id !== over?.id) {
       const oldIndex = sortedEntryArray.findIndex(([id]) => id === active.id);
       const newIndex = sortedEntryArray.findIndex(([id]) => id === over?.id);
-      console.log({ oldIndex, newIndex })
-      updateEntry(active.id as string, { position: newIndex })
-      if (over) updateEntry(over.id as string, { position: oldIndex })
+      const movedEntry = sortedEntryArray.splice(oldIndex, 1)
+      sortedEntryArray.splice(newIndex, 0, movedEntry[0])
+
+      for (const index in sortedEntryArray) {
+        updateEntry(sortedEntryArray[index][0], { position: +index })
+      }
     }
   }
 
@@ -156,7 +159,6 @@ const List = ({ params }: { params: { listId: string } }) => {
               >
                 <SortableContext
                   items={sortedEntryArray.map(entry => entry[0])}
-                  strategy={rectSwappingStrategy}
                 >
                   {sortedEntryArray.map(([id, entry]) => (
                     <Card
