@@ -15,8 +15,24 @@ interface MenuProps {
 const Menu = ({ entries }: MenuProps) => {
     const [isShown, setShowMenu] = React.useState(false)
 
+    const menuRef = React.useRef(null);
+
+    React.useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            // @ts-ignore
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setShowMenu(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     return (
-        <div className={styles.wrapper}>
+        <div ref={menuRef} className={styles.wrapper} >
             <button
                 className={styles.toggle}
                 onClick={() => setShowMenu(value => !value)}
@@ -45,7 +61,6 @@ const Menu = ({ entries }: MenuProps) => {
                             title={entry.label}
                             onClick={() => {
                                 entry.onClick();
-                                setShowMenu(val => !val)
                             }}
                         >
                             <Image

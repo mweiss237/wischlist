@@ -21,11 +21,13 @@ type CardParams = {
 
 const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onSetPriority }: CardParams) => {
   const [pristine, setPristine] = React.useState(false)
+  const [dragable, setDragable] = React.useState(true)
   const [text, setText] = React.useState(value)
   const handler = {
     save: () => {
       onSave(id, text)
       setPristine(false)
+      setDragable(true)
     },
     change: (changedText: string) => {
       setPristine(text === changedText ? false : true)
@@ -60,8 +62,9 @@ const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onS
     if (newLink !== null)
       onAddLink(newLink)
   }
+  console.log(listeners)
   return (
-    <div className={styles.cardWrapper} ref={setNodeRef} style={draggableStyle} {...attributes} {...listeners}>
+    <div className={styles.cardWrapper} ref={setNodeRef} style={draggableStyle} {...attributes} {...dragable ? listeners : {}}>
       <button className={styles.deleteWish} onClick={handler.remove}>
         <Image
           src={"/close.svg"}
@@ -74,6 +77,7 @@ const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onS
 
       <textarea
         onChange={({ target }) => handler.change(target.value)}
+        onFocus={() => setDragable(false)}
         className={styles.card}
         placeholder="Ich wünsche mir..."
         defaultValue={text}
