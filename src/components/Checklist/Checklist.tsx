@@ -1,7 +1,9 @@
+"use client"
+
 import React from 'react'
 import styles from "./Checklist.module.scss"
 import ChecklistEntry from "./ChecklistEntry"
-import { Indie_Flower } from "@next/font/google"
+import { Indie_Flower } from "next/font/google"
 import { useEntries } from "lib/entries"
 import { useGiver } from "lib/giver"
 import Loading from "components/Loading/Loading"
@@ -9,6 +11,8 @@ import { useList } from "lib/list"
 import PriorityIcon from './Priority'
 import { Priority } from 'types'
 import { useUser } from 'lib/auth'
+import Favorite from './Favorite'
+import { useFavorites } from 'lib/favorite'
 
 
 
@@ -29,7 +33,7 @@ const Checklist = ({ params }: ChecklistParams) => {
   const { list } = useList(listId)
   const { giverName, setName, removeName } = useGiver()
   const { user } = useUser()
-
+  const { isFavorite, toggle } = useFavorites()
 
   const isListOwner = !!list?.userId && !!user?.uid && list.userId === user.uid
   const isSomeTaken = Object.values(entries || {}).some(entry => !!entry.taken?.timestamp)
@@ -100,7 +104,10 @@ const Checklist = ({ params }: ChecklistParams) => {
       </div>
       <div className={styles.checklist_wrapper}>
         <div className={`${styles.checklist} ${isBlurred && styles.blurry}`}>
-          <h3 className={`${indieFlower.className} ${styles.headline} ${styles.invertColor}`}>{list?.title}</h3>
+          <div className='d-flex'>
+            <h3 className={`${indieFlower.className} ${styles.headline} ${styles.invertColor}`}>{list?.title}</h3>
+            <Favorite isFavorite={isFavorite(listId)} setIsFavorite={() => toggle(listId, list?.title)} />
+          </div>
           {sortedEntryIds.map((entryId) => {
             return (
               <ChecklistEntry

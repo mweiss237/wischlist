@@ -3,7 +3,7 @@
 import Image from "next/image"
 import styles from "./Header.module.scss"
 import Link from "next/link"
-import { Indie_Flower } from "@next/font/google"
+import { Indie_Flower } from "next/font/google"
 import { useUser } from "lib/auth"
 
 const indieFlower = Indie_Flower({ weight: "400", subsets: ["latin"] })
@@ -42,6 +42,12 @@ const Header = () => {
           </Link>
         </span>
         <span className="align-end">
+          <Link
+            href={"/list/favorites"}
+            key={"favorites"}
+            id={"favorites"}>
+            Favoriten
+          </Link>
           <Link href={user ? "/profile" : "/login"}>
             <Image
               src={user ? "/user-active.svg" : "/user.svg"}

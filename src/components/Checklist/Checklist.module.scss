@@ -3,11 +3,9 @@
   padding: 30px 45px;
   display: flex;
   flex-direction: column;
-  gap: .5em 0;
+  gap: 0.5em 0;
   grid-template-columns: 30px auto;
-
 }
-
 
 .blurry {
   filter: blur(8px);
@@ -47,7 +45,7 @@
 
 .giverWrapper {
   padding: 10px 20px;
-  border: 1px solid #FFFFFFCC;
+  border: 1px solid #ffffffcc;
   border-radius: 5px;
   display: flex;
   flex-direction: column;

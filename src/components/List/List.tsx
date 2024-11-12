@@ -1,5 +1,5 @@
 "use client"
-import { Indie_Flower } from "@next/font/google"
+import { Indie_Flower } from "next/font/google"
 import AddCard from "components/AddCard/AddCard"
 import Card from "components/Card/Card"
 import { DeleteTrashCan } from "components/DeleteTrashCan/DeleteTrashCan"

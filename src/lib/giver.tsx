@@ -11,7 +11,6 @@ export const GiverProvider = ({ children }: PropsWithChildren) => {
 
     useLayoutEffect(() => {
         const name = localStorage.getItem("giver")
-        console.log(name)
         setName(name || null)
     }, [setName])
 

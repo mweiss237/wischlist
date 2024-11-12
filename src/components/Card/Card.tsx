@@ -62,7 +62,7 @@ const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onS
     if (newLink !== null)
       onAddLink(newLink)
   }
-  console.log(listeners)
+  
   return (
     <div className={styles.cardWrapper} ref={setNodeRef} style={draggableStyle} {...attributes} {...dragable ? listeners : {}}>
       <button className={styles.deleteWish} onClick={handler.remove}>

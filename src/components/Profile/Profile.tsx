@@ -23,8 +23,6 @@ const Profile = () => {
 
   }, [user?.displayName, updateUserName])
 
-  console.log(user?.displayName)
-
   return (
     <div style={{ width: "50%", minWidth: "300px", margin: "0 auto" }}>
       <div style={{ marginTop: "2rem" }}>
@@ -38,7 +36,7 @@ const Profile = () => {
           width="150"
           height="150"
         />
-        
+
         <div>
           <input
             type="text"

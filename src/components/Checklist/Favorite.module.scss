@@ -1,0 +1,26 @@
+.button {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  line-height: 0px;
+
+  padding: 4px;
+  align-content: center;
+  margin: 12px;
+  aspect-ratio: 1;
+  border: none;
+  background: none;
+  border-radius: 25%;
+
+  box-shadow: inset 0px 0px 3px lightgray;
+  border: 1px solid #cccccc;
+  transition:
+    0.2s background-color ease-out,
+    0.2s border-color ease-out;
+
+  &:hover {
+    background-color: #fefe7f;
+    border: 1px solid #ffffff;
+    cursor: pointer;
+  }
+}

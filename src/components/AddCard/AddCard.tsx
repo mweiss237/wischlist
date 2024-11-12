@@ -16,7 +16,6 @@ const AddCard = ({ callback }: AddCardParams) => {
       alert("Bitte einloggen!")
       return
     }
-    console.log("jes")
     callback()
   }
   return (

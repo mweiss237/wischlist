@@ -1,10 +1,10 @@
 import { useState } from "react"
 
-const useLocalStorage = (key: string, initialValue: string): [string, (value: string) => void] => {
-    const [state, setState] = useState<string>(() => {
+const useLocalStorage = <T>(key: string, initialValue: T): [T, (value: T) => void] => {
+    const [state, setState] = useState<T>(() => {
         // Initialize the state
         try {
-            const value = window.localStorage.getItem(key)
+            const value = (typeof window !== "undefined") ? window.localStorage.getItem(key) : null
             // Check if the local storage already has any values,
             // otherwise initialize it with the passed initialValue
             return value ? JSON.parse(value) : initialValue
@@ -13,11 +13,11 @@ const useLocalStorage = (key: string, initialValue: string): [string, (value: st
         }
     })
 
-    const setValue = (value: string) => {
+    const setValue = (value: T) => {
         try {
             // If the passed value is a callback function,
             //  then call it with the existing state.
-            window.localStorage.setItem(key, JSON.stringify(value))
+            if (typeof window !== "undefined") window.localStorage.setItem(key, JSON.stringify(value))
             setState(value)
         } catch (error) {
             console.log(error)
