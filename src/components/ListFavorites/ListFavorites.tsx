@@ -12,8 +12,8 @@ const ListFavorites = () => {
 
   return (
     <div className={styles.list}>
-      {favorites.map(favorite =>
-        <Link href={`/list/${favorite.listId}/share`} className={styles.addEntry}>
+      {favorites.map((favorite, index) =>
+        <Link key={index} href={`/list/${favorite.listId}/share`} className={styles.addEntry}>
           <p>{favorite.title || favorite.listId}</p>
         </Link>
       )}
