@@ -1,38 +1,37 @@
-import { useRouter } from "next/navigation"
-import React from "react"
-import { useList } from "./list"
-import useLocalStorage from "./localStorage"
+import { ref, onValue, push, child, set, remove, query, equalTo, orderByChild } from "firebase/database"
+import { useCallback, useEffect, useState } from "react";
+import { Favorite } from "types";
+import { useUser } from "./auth";
+import { database } from "./firebase"
 
-interface FavoriteList {
-    listId: string
-    title: string
+export const useFavorites = () => {
+
+    const [favorites, setFavorites] = useState<Record<string, Favorite> | null>(null)
+
+    const { user } = useUser()
+    const userId = user?.uid
+
+    useEffect(() => {
+        if (!userId) return
+        const favoritesRef = query(ref(database, `favorites/${userId}`));
+        const unsubscriber = onValue(favoritesRef, (snapshot) => {
+            const data = snapshot.val();
+            console.log(data)
+            setFavorites(data)
+        });
+
+        return unsubscriber
+    }, [userId, database])
+
+    const addFavorite = useCallback((listId: string, title: string) => {
+        set(child(ref(database), `favorites/${userId}/${listId}`), { title });
+    }, [userId, database])
+
+    const removeFavorite = useCallback((listId: string) => {
+        remove(ref(database, `favorites/${userId}/${listId}`));
+    }, [userId, database])
+
+    const checkIsFavorite = (listId: string) => !!favorites && Object.keys(favorites).some(key => key === listId)
+
+    return { favorites, addFavorite, removeFavorite, checkIsFavorite }
 }
-
-const LOCAL_STORAGE_KEY = "favorites"
-export function useFavorites() {
-    const { refresh } = useRouter()
-
-    const [favorites, setFavorites] = useLocalStorage<FavoriteList[]>(LOCAL_STORAGE_KEY, [])
-
-    const isFavorite = React.useCallback((listId: string) => favorites && favorites.some(entry => entry.listId === listId), [favorites])
-
-    const toggle = React.useCallback((listId: string, title?: string) => {
-
-        if (isFavorite(listId)) {
-            setFavorites(favorites.filter(entry => entry.listId !== listId))
-        } else {
-            favorites.push({ listId, title: title || "" })
-            setFavorites(favorites)
-        }
-
-        refresh()
-    }, [isFavorite, favorites, refresh])
-
-    return {
-        favorites,
-        isFavorite,
-        checkFavorite: (id: string) => favorites.some(entry => entry.listId === id),
-        toggle,
-    }
-
-} 

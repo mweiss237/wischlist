@@ -33,12 +33,14 @@ const Checklist = ({ params }: ChecklistParams) => {
   const { list } = useList(listId)
   const { giverName, setName, removeName } = useGiver()
   const { user } = useUser()
-  const { isFavorite, toggle } = useFavorites()
+  const { checkIsFavorite, addFavorite, removeFavorite } = useFavorites()
 
   const isListOwner = !!list?.userId && !!user?.uid && list.userId === user.uid
   const isSomeTaken = Object.values(entries || {}).some(entry => !!entry.taken?.timestamp)
 
   const isBlurred = isListOwner && isSomeTaken
+
+  const isFavorite = checkIsFavorite(listId)
 
   const handleName = () => {
 
@@ -104,20 +106,24 @@ const Checklist = ({ params }: ChecklistParams) => {
       </div>
       <div className={styles.checklist_wrapper}>
         <div className={`${styles.checklist} ${isBlurred && styles.blurry}`}>
-          <div className='d-flex'>
-            <h3 className={`${indieFlower.className} ${styles.headline} ${styles.invertColor}`}>{list?.title}</h3>
-            <Favorite isFavorite={isFavorite(listId)} setIsFavorite={() => toggle(listId, list?.title)} />
-          </div>
-          {sortedEntryIds.map((entryId) => {
-            return (
-              <ChecklistEntry
-                entryId={entryId}
-                listId={listId}
-                key={`wish${entryId}`}
-              />
-            )
-          })}
-          {!entries ? <Loading className={styles.centered} /> : null}
+          {!entries || !list ? <Loading className={styles.centered} /> :
+            <>
+              <div className='d-flex'>
+                <h3 className={`${indieFlower.className} ${styles.headline} ${styles.invertColor}`}>{list?.title}</h3>
+                <Favorite isFavorite={isFavorite} setIsFavorite={() => isFavorite ? removeFavorite(listId) : addFavorite(listId, list?.title)} />
+              </div>
+              {sortedEntryIds.map((entryId) => {
+                return (
+                  <ChecklistEntry
+                    entryId={entryId}
+                    listId={listId}
+                    key={`wish${entryId}`}
+                  />
+                )
+              })}
+            </>
+          }
+
         </div>
       </div>
     </>
