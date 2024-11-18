@@ -1,7 +1,6 @@
 "use client"
+
 import { useFavorites } from "lib/favorite"
-
-
 import Link from "next/link"
 import React from "react"
 import styles from "./ListFavorites.module.scss"
@@ -9,12 +8,11 @@ import styles from "./ListFavorites.module.scss"
 const ListFavorites = () => {
   const { favorites } = useFavorites()
 
-
   return (
     <div className={styles.list}>
-      {favorites.map((favorite, index) =>
-        <Link key={index} href={`/list/${favorite.listId}/share`} className={styles.addEntry}>
-          <p>{favorite.title || favorite.listId}</p>
+      {Object.entries(favorites || {}).map(([listId, favorite], index) =>
+        <Link key={index} href={`/list/${listId}/share`} className={styles.addEntry}>
+          <p>{favorite.title}</p>
         </Link>
       )}
     </div >
