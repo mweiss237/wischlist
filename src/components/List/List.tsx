@@ -60,10 +60,14 @@ const List = ({ params }: { params: { listId: string } }) => {
 
   const [isClicked, setClicked] = useState(false)
   const [isShareAvailable, setShareAvailable] = useState(false)
+  const [listName, setListName] = React.useState(list?.title)
   React.useEffect(() =>
     setShareAvailable(navigator?.share !== undefined)
     , [])
 
+  React.useEffect(() => {
+    if (list) setListName(list.title)
+  }, [list, setListName])
 
   const handleDeleteList = useCallback(() => {
     if (confirm("Möchtest du diese Liste wirklich unwiederbringlich löschen?")) {
@@ -74,15 +78,11 @@ const List = ({ params }: { params: { listId: string } }) => {
 
   if (loading) return <Loading />
 
-  const handleChangeListName = () => {
-    const listName = prompt("Ändere den Namen für diese Liste", list?.title)
+  const handleChangeListName: React.ChangeEventHandler<HTMLInputElement> = (event) => setListName(event.target.value)
 
-    if (listName === null) return
 
-    if (listName === "") return alert("Bitte gib einen Namen ein!")
+  const handleBlurListName = () => updateListTitle(listName || "")
 
-    updateListTitle(listName)
-  }
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -127,14 +127,14 @@ const List = ({ params }: { params: { listId: string } }) => {
       <div className={`${styles.listNameWrapper} ${indieFlowerFont.className}`}>
 
         <span>Liste:</span>
-        <input onClick={handleChangeListName} type="text" readOnly value={list?.title} className={`${indieFlowerFont.className} crit_textinput`} />
+        <input onChange={handleChangeListName} onBlur={handleBlurListName} type="text" value={listName} className={`${indieFlowerFont.className} crit_textinput`} />
       </div>
       {
         user ? (
           <>
             <div className={styles.shareWrapper}>
 
-              <input type="text" readOnly value={`${window.location.href}/share`} />
+              <input type="text" readOnly value={`${window.location.href}/share`} onClick={(e) => e.currentTarget.select()} />
               <button
                 title={isShareAvailable ? "Liste teilen" : "Link kopieren"}
                 className={`crit_button ${styles.share} ${isClicked && styles.clicked}`}

@@ -1,12 +1,14 @@
 "use client"
+import React from "react"
 import { useAuth, useUser } from "lib/auth"
 
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useCallback } from "react"
+import Loading from "components/Loading/Loading"
 
 const Profile = () => {
   const { user, updateUserName } = useUser()
+  const [name, setName] = React.useState(user?.displayName || "")
   const { logout } = useAuth()
   const router = useRouter()
 
@@ -15,13 +17,17 @@ const Profile = () => {
     router.push("/login")
   }
 
-  const handleChangeName = useCallback(async () => {
-    const value = prompt("Dein Nutzername:", user?.displayName || "")
-    if (value === null) return
+  React.useEffect(() => {
+    if (user?.displayName) setName(user.displayName)
+  }, [user, setName])
 
-    await updateUserName(value)
+  const handleChangeName: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    setName(event.target.value)
+  }
 
-  }, [user?.displayName, updateUserName])
+  const handleBlur: React.FocusEventHandler<HTMLInputElement> = () => {
+    updateUserName(name)
+  }
 
   return (
     <div style={{ width: "50%", minWidth: "300px", margin: "0 auto" }}>
@@ -29,25 +35,28 @@ const Profile = () => {
         <h2>Profil</h2>
       </div>
       <div style={{ textAlign: "center" }}>
-        <Image
-          src={user?.photoURL || "https://via.placeholder.com/150.png"}
-          alt="profile"
-          style={{ borderRadius: "50%", boxShadow: "0 1px 5px lightgray" }}
-          width="150"
-          height="150"
-        />
+        {user ? (
+          <>
+            <Image
+              src={user?.photoURL || "https://via.placeholder.com/150.png"}
+              alt="profile"
+              style={{ borderRadius: "50%", boxShadow: "0 1px 5px lightgray" }}
+              width="150"
+              height="150"
+            />
 
-        <div>
-          <input
-            type="text"
-            className="crit_textinput"
-            readOnly
-            style={{ width: "auto", marginTop: "1rem" }}
-            value={user?.displayName || ""}
-            onClick={handleChangeName}
-          />
-        </div>
-        <p style={{ fontSize: "1.2rem" }}>Mein Wischlist Profil</p>
+            <div>
+              <input
+                type="text"
+                className="crit_textinput"
+                style={{ width: "auto", marginTop: "1rem" }}
+                value={name}
+                onChange={handleChangeName}
+                onBlur={handleBlur}
+              />
+            </div>
+            <p style={{ fontSize: "1.2rem" }}>Mein Wischlist Profil</p>
+          </>) : <Loading />}
       </div>
       <button onClick={handleLogout}>Ausloggen</button>
     </div>
