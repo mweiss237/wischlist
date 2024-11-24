@@ -29,10 +29,5 @@ export const GiverProvider = ({ children }: PropsWithChildren) => {
 export const useGiver = () => {
     const { name, setName } = useContext(GiverContext)
 
-
-    const removeName = useCallback(() => {
-        setName("")
-    }, [setName])
-
-    return { giverName: name, setName, removeName }
+    return { giverName: name, setName }
 }

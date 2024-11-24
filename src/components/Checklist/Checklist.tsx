@@ -31,7 +31,7 @@ const Checklist = ({ params }: ChecklistParams) => {
   const { listId } = params
   const { entries } = useEntries(listId)
   const { list } = useList(listId)
-  const { giverName, setName, removeName } = useGiver()
+  const { giverName, setName } = useGiver()
   const { user } = useUser()
   const { checkIsFavorite, addFavorite, removeFavorite } = useFavorites()
 
@@ -42,21 +42,6 @@ const Checklist = ({ params }: ChecklistParams) => {
 
   const isFavorite = checkIsFavorite(listId)
 
-  const handleName = () => {
-
-    if (!giverName) {
-      const newName = prompt("Möchtest du deinen Namen hinterlegen?")
-      if (newName) {
-        setName(newName)
-      }
-      return
-    }
-
-
-    if (confirm("Möchtest du den Namen löschen?"))
-      return removeName()
-
-  }
 
   React.useEffect(() => {
     if (giverName === null) {
@@ -89,7 +74,7 @@ const Checklist = ({ params }: ChecklistParams) => {
         <span>
 
           <span>Ich bin </span>
-          <input type="text" className="crit_textinput" readOnly placeholder="anonym" value={giverName || ""} onClick={handleName} />
+          <input type="text" className="crit_textinput" placeholder="anonym" value={giverName || ""} onChange={(event) => setName(event.currentTarget.value)} />
         </span>
 
         <p className={styles.info}>

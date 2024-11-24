@@ -6,9 +6,12 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   User,
+  signInWithEmailLink,
   updateProfile,
   sendPasswordResetEmail,
-  fetchSignInMethodsForEmail
+  sendSignInLinkToEmail,
+  fetchSignInMethodsForEmail,
+  isSignInWithEmailLink
 } from "firebase/auth"
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from "react";
 import _ from "lodash";
@@ -90,6 +93,13 @@ export const useAuth = () => {
     return await user.reload()
   }
 
+  const sendLoginLink = (email: string, continueURL = window.location.href) => sendSignInLinkToEmail(auth, email, { url: continueURL, handleCodeInApp: true })
+  const checkLoginLink = () => isSignInWithEmailLink(auth, window.location.href)
+  const signInWithLink = async (email: string) => {
+    if (checkLoginLink())
+      await signInWithEmailLink(auth, email)
+  }
+
   const checkUserExists = async (email: string) => await fetchSignInMethodsForEmail(auth, email)
 
 
@@ -100,6 +110,9 @@ export const useAuth = () => {
 
   return {
     login,
+    sendLoginLink,
+    signInWithLink,
+    checkLoginLink,
     logout,
     register,
     resetPassword,

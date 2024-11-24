@@ -53,7 +53,7 @@
   font-size: smaller;
 }
 
-.buttonWrapper button {
+.wrapper button {
   background-color: #009577;
   border: none;
   border-radius: 3px;
@@ -63,10 +63,16 @@
   cursor: pointer;
 
   &:disabled {
-    background-color: #6B8276;
+    background-color: #6b8276;
   }
 
   &.secondary {
-    background-color: #816C61;
+    background-color: #816c61;
   }
+}
+
+.loginMethods {
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
 }
