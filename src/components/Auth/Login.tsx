@@ -40,8 +40,21 @@ const Login = () => {
   }
 
   const handleLoginWithLink = async () => {
-    setLoginMethod("link")
-    await sendLoginLink(email, window.location.href)
+    try {
+      setLoginMethod("link")
+      await sendLoginLink(email, window.location.href)
+    } catch (error) {
+      if (typeof error === "object" && error && "code" in error) {
+        if (error.code === "auth/quota-exceeded") {
+          alert("Hoppla, ohne Passwort anmelden geht gerade nicht. Bitte melde dich mit deinem Passwort an oder versuchs später nochmal.")
+          setLoginMethod("password")
+          return
+        }
+      }
+      console.warn(error)
+      alert("Hoppla, da lief etwas schief. Versuch's bitte nochmal.")
+      setLoginMethod("pending")
+    }
   }
 
 
