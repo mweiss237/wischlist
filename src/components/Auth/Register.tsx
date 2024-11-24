@@ -17,8 +17,6 @@ const Register = () => {
 
   const [loading, setLoading] = useState(false)
 
-  if (!email) return router.push("/auth")
-
   useEffect(() => {
     if (user) router.push("/profile")
   }, [user])
@@ -37,6 +35,8 @@ const Register = () => {
 
     setLoading(false)
   }
+
+  if (!email) return router.push("/auth")
 
   return (
     <form onSubmit={handleSignup} className={styles.wrapper}>

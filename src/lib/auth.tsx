@@ -13,7 +13,7 @@ import {
   fetchSignInMethodsForEmail,
   isSignInWithEmailLink
 } from "firebase/auth"
-import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from "react";
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from "react";
 import _ from "lodash";
 
 
@@ -94,11 +94,11 @@ export const useAuth = () => {
   }
 
   const sendLoginLink = (email: string, continueURL = window.location.href) => sendSignInLinkToEmail(auth, email, { url: continueURL, handleCodeInApp: true })
-  const checkLoginLink = () => isSignInWithEmailLink(auth, window.location.href)
-  const signInWithLink = async (email: string) => {
+  const checkLoginLink = React.useCallback(() => isSignInWithEmailLink(auth, window.location.href), [isSignInWithEmailLink, auth])
+  const signInWithLink = React.useCallback(async (email: string) => {
     if (checkLoginLink())
       await signInWithEmailLink(auth, email)
-  }
+  }, [checkLoginLink, signInWithEmailLink, auth])
 
   const checkUserExists = async (email: string) => await fetchSignInMethodsForEmail(auth, email)
 

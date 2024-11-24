@@ -17,7 +17,7 @@ const AuthDecision = () => {
 
     useEffect(() => {
         if (user) router.push("/profile")
-    }, [user])
+    }, [user, router])
 
     const authorize = async (e: FormEvent) => {
         setLoading(true)
@@ -31,7 +31,6 @@ const AuthDecision = () => {
         if (result.length != 0) return router.push(`login?email=${email}`)
 
         router.push(`register?email=${email}`)
-
     }
 
     return (

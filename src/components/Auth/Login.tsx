@@ -13,17 +13,11 @@ const Login = () => {
   const router = useRouter()
   const { get } = useSearchParams()
 
-
-
-
   const [loading, setLoading] = useState(false)
   const email = get("email") || ""
   const [password, setPassword] = React.useState("")
   const [loginMethod, setLoginMethod] = React.useState<"pending" | "password" | "link">("pending")
 
-
-
-  if (!email) return router.push("/auth")
 
   const handleLogin = async (e: FormEvent) => {
     setLoading(true)
@@ -56,12 +50,13 @@ const Login = () => {
 
     setLoading(true)
     signInWithLink(email).finally(() => setLoading(false))
-  }, [])
+  }, [email, checkLoginLink, signInWithLink])
 
   useEffect(() => {
     if (user) router.push("/profile")
   }, [router, user])
 
+  if (!email) return router.push("/auth")
 
   if (loading) return <Loading />
 
