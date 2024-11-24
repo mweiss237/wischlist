@@ -58,7 +58,7 @@ const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onS
 
 
   const addLink = () => {
-    const newLink = prompt("Füge hier einen Link ein: (leer lassen zum Löschen)")
+    const newLink = prompt("Füge hier einen Link ein: (leer lassen zum Löschen)", link)
     if (newLink !== null)
       onAddLink(newLink)
   }
