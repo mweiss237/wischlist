@@ -5,23 +5,29 @@ import React, { FormEvent, useEffect, useState } from "react"
 import styles from "./Auth.module.scss"
 import Loading from "components/Loading/Loading"
 import { useAuth, useUser } from "lib/auth"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 const Login = () => {
   const { user } = useUser()
   const { login } = useAuth()
   const router = useRouter()
-  const emailRef = React.useRef<HTMLInputElement>(null)
-  const passwordRef = React.useRef<HTMLInputElement>(null)
+  const { get } = useSearchParams()
+
+
 
   const [loading, setLoading] = useState(false)
+  const email = get("email") || ""
+  const [password, setPassword] = React.useState("")
+
+
+
+  if (!email) return router.push("/auth")
 
   const handleLogin = async (e: FormEvent) => {
     setLoading(true)
 
     e.preventDefault()
-    const email = emailRef.current?.value
-    const password = passwordRef.current?.value
+
     if (!email || !password) return
 
     try {
@@ -54,9 +60,10 @@ const Login = () => {
       <input
         id="email"
         type={"email"}
+        value={email}
         className={styles.textfield}
-        ref={emailRef}
-        placeholder="Email"
+        placeholder="E-Mail"
+        disabled
       />
       <label className={styles.inputlabel} htmlFor="#password">
         Passwort
@@ -65,20 +72,18 @@ const Login = () => {
         id="password"
         type={"password"}
         className={styles.textfield}
-        ref={passwordRef}
+        value={password}
+        onChange={(event) => setPassword(event.currentTarget.value)}
         placeholder="Passwort"
+        autoFocus
       />
-      <Link className={`${styles.darktext} ${styles.sm}`} href={"/forgot-password"}>Password vergessen?</Link>
+      <Link className={`${styles.darktext} ${styles.sm}`} href={`forgot-password?email=${email}`}>Password vergessen?</Link>
       <br />
       <span className={styles.buttonWrapper}>
+        <button className={styles.secondary} type="button" onClick={() => router.push("/auth")}>E-Mail ändern</button>
         <button type={"submit"}>Login</button>
-        <button type={"reset"}>Zurücksetzen</button>
       </span>
 
-      <br />
-      <p className={styles.darktext}>
-        Noch kein Account? <Link href={`/register`}>Hier registrieren</Link>
-      </p>
     </form>
   )
 }

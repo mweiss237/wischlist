@@ -17,9 +17,7 @@ const ListOverview = () => {
 
   if (loading) return <Loading />
 
-  if (!user) {
-    return <p>Not logged in. Please login first!</p>
-  }
+ 
 
   const handleAddList = async () => {
     const listName = prompt("Bitte listennamen eingeben:", "neue Liste")
@@ -54,7 +52,7 @@ const ListOverview = () => {
         </>
       ) : (
         <p>
-          <Link href="/login">Logge dich ein</Link>, um deine Liste sehen zu
+          <Link href="/auth">Logge dich ein</Link>, um deine Liste sehen zu
           können.
         </p>
       )}

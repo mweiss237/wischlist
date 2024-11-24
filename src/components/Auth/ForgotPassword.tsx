@@ -3,24 +3,24 @@
 import React, { useEffect } from "react"
 import styles from "./Auth.module.scss"
 import { useAuth, useUser } from "lib/auth"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 const ForgotPassword = () => {
   const { user } = useUser()
   const { resetPassword } = useAuth()
   const router = useRouter()
-  const emailRef = React.useRef<HTMLInputElement>(null)
+  const { get } = useSearchParams()
+  const [email, setEmail] = React.useState(get("email") || "")
 
   const handleReset: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault()
-    const email = emailRef.current?.value
 
     if (!email) return
 
     resetPassword(email)
     alert("Eine Email zum Passwort zurücksetzen wurde an die eingetragene Adresse verschickt.")
 
-    router.push("/login")
+    router.push(`/auth?email=${email}`)
   }
 
   useEffect(() => {
@@ -36,8 +36,9 @@ const ForgotPassword = () => {
         id="email"
         type={"email"}
         className={styles.textfield}
-        ref={emailRef}
-        placeholder="Email"
+        value={email}
+        onChange={(event) => setEmail(event.currentTarget.value)}
+        placeholder="E-Mail"
       />
 
       <span className={styles.buttonWrapper}>

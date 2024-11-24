@@ -62,7 +62,11 @@
   color: white;
   cursor: pointer;
 
-  &[type="reset"] {
-    background-color: #71827e;
+  &:disabled {
+    background-color: #6B8276;
+  }
+
+  &.secondary {
+    background-color: #816C61;
   }
 }

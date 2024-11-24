@@ -198,7 +198,7 @@ const List = ({ params }: { params: { listId: string } }) => {
           </>
         ) : (
           <p>
-            <Link href="/login">Logge dich ein</Link>, um deine Liste sehen zu
+            <Link href="/auth">Logge dich ein</Link>, um deine Liste sehen zu
             können.
           </p>
         )
