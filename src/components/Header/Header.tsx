@@ -48,7 +48,7 @@ const Header = () => {
             id={"favorites"}>
             Favoriten
           </Link>
-          <Link href={user ? "/profile" : "/login"}>
+          <Link href={user ? "/profile" : "/auth"}>
             <Image
               src={user ? "/user-active.svg" : "/user.svg"}
               width={18}

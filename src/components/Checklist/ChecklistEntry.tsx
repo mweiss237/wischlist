@@ -24,7 +24,10 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
     setValue(!selected)
 
     if (!selected) {
-      if (confirm("Möchtest du den Eintrag wirklich wieder freigeben?"))
+      if (entry?.taken?.giver && entry?.taken?.giver.trim() !== giverName?.trim())
+        return alert(`Dieser Eintrag kann nur von ${entry?.taken?.giver} geändert werden! \nFalls das du warst, kontrolliere deinen Namen oben in der Liste.`)
+
+      if (confirm("Bist du sicher, dass du diesen Eintrag wirklich wieder freigeben möchtest?"))
         unpick()
 
       return

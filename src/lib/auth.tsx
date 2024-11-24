@@ -1,8 +1,19 @@
 "use client"
 
 import { auth } from "lib/firebase";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User, updateProfile, sendPasswordResetEmail } from "firebase/auth"
-import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from "react";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  User,
+  signInWithEmailLink,
+  updateProfile,
+  sendPasswordResetEmail,
+  sendSignInLinkToEmail,
+  fetchSignInMethodsForEmail,
+  isSignInWithEmailLink
+} from "firebase/auth"
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from "react";
 import _ from "lodash";
 
 
@@ -82,14 +93,29 @@ export const useAuth = () => {
     return await user.reload()
   }
 
+  const sendLoginLink = (email: string, continueURL = window.location.href) => sendSignInLinkToEmail(auth, email, { url: continueURL, handleCodeInApp: true })
+  const checkLoginLink = React.useCallback(() => isSignInWithEmailLink(auth, window.location.href), [isSignInWithEmailLink, auth])
+  const signInWithLink = React.useCallback(async (email: string) => {
+    if (checkLoginLink())
+      await signInWithEmailLink(auth, email)
+  }, [checkLoginLink, signInWithEmailLink, auth])
+
+  const checkUserExists = async (email: string) => await fetchSignInMethodsForEmail(auth, email)
+
+
+
   const resetPassword = async (email: string) =>
     await sendPasswordResetEmail(auth, email)
 
 
   return {
     login,
+    sendLoginLink,
+    signInWithLink,
+    checkLoginLink,
     logout,
     register,
     resetPassword,
+    checkUserExists,
   }
 }
