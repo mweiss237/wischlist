@@ -1,3 +1,4 @@
+import { useUser } from "lib/auth"
 import { useEntry } from "lib/entries"
 import { useGiver } from "lib/giver"
 import { useCallback, useEffect, useState } from "react"
@@ -15,6 +16,9 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
 
   const [value, setValue] = useState<boolean>(false)
   const { giverName } = useGiver()
+  const { user } = useUser()
+
+  const userName = user?.displayName || giverName
 
   useEffect(() => {
     setValue(entry?.taken !== undefined)
@@ -24,7 +28,7 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
     setValue(!selected)
 
     if (!selected) {
-      if (entry?.taken?.giver && entry?.taken?.giver.trim() !== giverName?.trim())
+      if (entry?.taken?.giver && entry?.taken?.giver.trim() !== userName?.trim())
         return alert(`Dieser Eintrag kann nur von ${entry?.taken?.giver} geändert werden! \nFalls das du warst, kontrolliere deinen Namen oben in der Liste.`)
 
       if (confirm("Bist du sicher, dass du diesen Eintrag wirklich wieder freigeben möchtest?"))
@@ -33,8 +37,8 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
       return
     }
 
-    return pick(giverName)
-  }, [unpick, pick, giverName])
+    return pick(userName)
+  }, [unpick, pick, userName])
 
 
   return (
