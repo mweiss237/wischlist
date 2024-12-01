@@ -65,14 +65,22 @@ const List = ({ params }: { params: { listId: string } }) => {
     if (list) setListName(list.title)
   }, [list, setListName])
 
+  React.useEffect(() => {
+    if (!loading && user !== null && list && user.uid !== list.userId) {
+      alert("⛔ Diese Liste gehört einem anderen Account! ⛔")
+      router.replace("/list")
+    }
+
+  }, [user?.uid, list?.userId, router.push])
+
   const handleDeleteList = useCallback(() => {
     if (confirm("Möchtest du diese Liste wirklich unwiederbringlich löschen?")) {
       deleteList()
-      router.push("/list")
+      router.replace("/list")
     }
   }, [deleteList])
 
-  if (loading) return <Loading />
+  if (loading || (!loading && user !== null && list && user.uid !== list.userId)) return <Loading />
 
   const handleChangeListName: React.ChangeEventHandler<HTMLInputElement> = (event) => setListName(event.target.value)
 
