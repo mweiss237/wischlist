@@ -67,7 +67,7 @@
   transition-duration: 0.1s;
   transition-property: background-color, color, transform, box-shadow;
 
-  > img {
+  > svg {
     padding: 2px;
     opacity: 0.8;
     transition: filter 0.2s;
@@ -77,11 +77,11 @@
     transform: translate(-10px, -10px);
     transition-duration: 0.2s;
     background-color: rgb(255, 86, 86);
-    box-shadow: 0 0 15px #f00;
+    box-shadow: 0 0 15px red;
 
-    > img {
+    > svg {
       opacity: 1;
-      filter: invert(1);
+      filter: brightness(0) invert(1);
     }
   }
 }

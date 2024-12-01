@@ -1,14 +1,16 @@
 .giver {
   color: var(--text);
   font-style: italic;
-  opacity: .5;
+  opacity: 0.5;
 }
 
-.share {
-  display: flex;
-  margin-left: auto;
+.share > svg {
+  padding: 2px;
+  // display: flex;
+  // margin-left: auto;
+  color: var(--text);
   border-radius: 100%;
-  transition: background-color .2s ease-in;
+  transition: background-color 0.2s ease-in;
 
   &:hover {
     background-color: #00957770;
@@ -170,16 +172,25 @@
 @keyframes firework {
   0% {
     opacity: 1;
-    box-shadow: 0 0 0 -2px #4f29f0, 0 0 0 -2px #4f29f0, 0 0 0 -2px #4f29f0,
-      0 0 0 -2px #4f29f0, 0 0 0 -2px #4f29f0, 0 0 0 -2px #4f29f0;
+    box-shadow:
+      0 0 0 -2px #4f29f0,
+      0 0 0 -2px #4f29f0,
+      0 0 0 -2px #4f29f0,
+      0 0 0 -2px #4f29f0,
+      0 0 0 -2px #4f29f0,
+      0 0 0 -2px #4f29f0;
   }
   30% {
     opacity: 1;
   }
   100% {
     opacity: 0;
-    box-shadow: 0 -15px 0 0px #4f29f0, 14px -8px 0 0px #4f29f0,
-      14px 8px 0 0px #4f29f0, 0 15px 0 0px #4f29f0, -14px 8px 0 0px #4f29f0,
+    box-shadow:
+      0 -15px 0 0px #4f29f0,
+      14px -8px 0 0px #4f29f0,
+      14px 8px 0 0px #4f29f0,
+      0 15px 0 0px #4f29f0,
+      -14px 8px 0 0px #4f29f0,
       -14px -8px 0 0px #4f29f0;
   }
 }

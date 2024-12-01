@@ -1,6 +1,6 @@
 import React from "react"
 import styles from "./Favorite.module.scss"
-import { Star } from 'react-feather';
+import { Star } from 'react-feather'
 
 interface FavoriteProps {
     isFavorite?: boolean

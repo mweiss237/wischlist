@@ -5,6 +5,7 @@ import styles from "./Header.module.scss"
 import Link from "next/link"
 import { Indie_Flower } from "next/font/google"
 import { useUser } from "lib/auth"
+import { LogIn, User } from "react-feather"
 
 const indieFlower = Indie_Flower({ weight: "400", subsets: ["latin"] })
 
@@ -49,13 +50,7 @@ const Header = () => {
             Favoriten
           </Link>
           <Link href={user ? "/profile" : "/auth"}>
-            <Image
-              src={user ? "/user-active.svg" : "/user.svg"}
-              width={18}
-              height={18}
-              style={{ position: "relative" }}
-              alt="Login"
-            />
+            {user ? <User size={18} /> : <LogIn size={18} />}
           </Link>
         </span>
       </nav>

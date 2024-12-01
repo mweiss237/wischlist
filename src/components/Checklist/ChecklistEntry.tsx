@@ -1,7 +1,7 @@
 import { useEntry } from "lib/entries"
 import { useGiver } from "lib/giver"
-import Image from "next/image"
 import { useCallback, useEffect, useState } from "react"
+import { Link } from "react-feather"
 import styles from "./ChecklistEntry.module.scss"
 import PriorityIcon from "./Priority"
 
@@ -38,7 +38,7 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
 
 
   return (
-    <span style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+    <span style={{ display: "flex", flexDirection: "row", justifyContent: "center", gap: ".5rem" }}>
       <span style={{ display: "flex", flex: 1, flexDirection: "row" }}>
         <input
           className={styles.input}
@@ -54,15 +54,10 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
           ? (<span className={styles.giver}>(schenkt {entry.taken.giver || "jemand"})</span>)
           : null}
       </span>
-      {entry?.link ? <a href={entry.link} target="_blank" rel="noreferrer" className={styles.share}>
-        <Image
-          src={"/link.svg"}
-          alt="Link öffnen"
-          height={20}
-          width={20}
-          unoptimized
-          loading="lazy"
-        /></a>
+      {entry?.link ?
+        <a href={entry.link} target="_blank" rel="noreferrer" className={styles.share}>
+          <Link />
+        </a>
         : null}
       <PriorityIcon priority={entry?.priority} />
 

@@ -10,17 +10,16 @@ import { useList } from "lib/list"
 
 
 import Link from "next/link"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
 import React from "react"
 import { useState, useCallback } from "react"
 import styles from "./List.module.scss"
 
-import PresentSVG from "../../../public/present.svg"
 import { Priority } from "types"
 import { DndContext, useSensors, DragEndEvent } from "@dnd-kit/core"
 import { KeyboardSensor, PointerSensor, useSensor, closestCenter } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
+import { Copy, Gift, Link as FeatherLink, } from "react-feather"
 
 const indieFlowerFont = Indie_Flower({ weight: "400", subsets: ["latin"] })
 
@@ -41,9 +40,6 @@ const List = ({ params }: { params: { listId: string } }) => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-
-
-
 
   const { list, updateListTitle, deleteList } = useList(listId)
   const { entries, addEntry, removeEntry, updateEntry } = useEntries(listId)
@@ -103,8 +99,8 @@ const List = ({ params }: { params: { listId: string } }) => {
     setClicked(true)
 
     isShareAvailable ? navigator.share({
-      title: `Wischlist - ${list?.title} von ${user?.displayName}`,
-      text: `Hey, ich möchte diese Wunschliste mit dir teilen!`,
+      title: `Wischlist`,
+      text: `Wunschliste "${list?.title} von ${user?.displayName}"`,
       url: `${window.location.href}/share`
     }) : navigator.clipboard.writeText(`${window.location.href}/share`)
 
@@ -117,7 +113,7 @@ const List = ({ params }: { params: { listId: string } }) => {
     <>
       {alreadyPickedSome ?
         <div className={`${indieFlowerFont.className} ${styles.pickedInfo} crit_centered`}>
-          <PresentSVG color="#ffc107" />
+          <Gift size={30} stroke="#00231C" fill="#FF9F00" />
           <p>
             Bereits {takenEntries.length} Wünsche reserviert!
           </p>
@@ -139,14 +135,9 @@ const List = ({ params }: { params: { listId: string } }) => {
                 title={isShareAvailable ? "Liste teilen" : "Link kopieren"}
                 className={`crit_button ${styles.share} ${isClicked && styles.clicked}`}
                 onClick={shareOrCopyUrlToClipboard}>
-                <Image
-                  src={isShareAvailable ? "/link.svg" : "/copy.svg"}
-                  alt={isShareAvailable ? "Liste teilen" : "Link kopieren"}
-                  height={20}
-                  width={20}
-                  unoptimized
-                  loading="lazy"
-                />
+                {isShareAvailable ?
+                  <FeatherLink size={20} /> :
+                  <Copy size={20} />}
               </button>
             </div>
 

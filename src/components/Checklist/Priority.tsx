@@ -1,8 +1,6 @@
 import React from "react"
-import PrioHighSVG from "../../../public/prio-high.svg"
-import PrioMediumSVG from "../../../public/prio-medium.svg"
-import PrioLowSVG from "../../../public/prio-low.svg"
 import { Priority } from "types"
+import { ChevronDown, ChevronUp, Minus } from "react-feather"
 
 interface PriorityProps {
     priority?: Priority
@@ -15,13 +13,13 @@ const PriorityIcon = ({ priority }: PriorityProps) => {
     switch (priority) {
 
         case Priority.high:
-            return <PrioHighSVG color="#ff6361" {...svgProps} />
+            return <ChevronUp color="#ff6361" {...svgProps} />
 
         case Priority.medium:
-            return <PrioMediumSVG color="#FF9100" {...svgProps} />
+            return <Minus color="#FF9100" {...svgProps} />
 
         case Priority.low:
-            return <PrioLowSVG color="#84E6E6" {...svgProps} />
+            return <ChevronDown color="#84E6E6" {...svgProps} />
 
         default:
             return null

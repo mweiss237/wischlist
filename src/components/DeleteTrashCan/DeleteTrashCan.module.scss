@@ -13,8 +13,8 @@
 
   &:hover {
     background-color: red;
-    img {
-      filter: invert(100%);
+    svg {
+      filter:  brightness(0) invert(1);
     }
   }
 }

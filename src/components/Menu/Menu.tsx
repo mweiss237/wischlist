@@ -1,10 +1,10 @@
 import React from "react"
-import Image from "next/image"
 import styles from "./Menu.module.scss"
+import { MoreVertical } from "react-feather"
 
 interface MenuProps {
     entries: {
-        iconSrc: string
+        Icon: JSX.Element
         label: string
         onClick: () => void
         active?: boolean
@@ -38,14 +38,7 @@ const Menu = ({ entries }: MenuProps) => {
                 onClick={() => setShowMenu(value => !value)}
                 title="Menü öffnen"
             >
-                <Image
-                    src={"/dots.svg"}
-                    alt="Menu öffnen"
-                    height={20}
-                    width={20}
-                    unoptimized
-                    loading="lazy"
-                />
+                <MoreVertical size={20} />
             </button>
             <div className={`${styles.entries} ${isShown ? styles.active : ""}`}>
                 {entries.map((entry, index) => {
@@ -63,14 +56,7 @@ const Menu = ({ entries }: MenuProps) => {
                                 entry.onClick();
                             }}
                         >
-                            <Image
-                                src={entry.iconSrc}
-                                alt={entry.label}
-                                height={20}
-                                width={20}
-                                unoptimized
-                                loading="lazy"
-                            />
+                            {entry.Icon}
 
                         </button>
                     )
