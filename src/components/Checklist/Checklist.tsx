@@ -13,6 +13,7 @@ import { Priority } from 'types'
 import { useUser } from 'lib/auth'
 import Favorite from './Favorite'
 import { useFavorites } from 'lib/favorite'
+import Link from 'next/link'
 
 
 
@@ -32,7 +33,7 @@ const Checklist = ({ params }: ChecklistParams) => {
   const { entries } = useEntries(listId)
   const { list } = useList(listId)
   const { giverName, setName } = useGiver()
-  const { user } = useUser()
+  const { user, loading } = useUser()
   const { checkIsFavorite, addFavorite, removeFavorite } = useFavorites()
 
   const isListOwner = !!list?.userId && !!user?.uid && list.userId === user.uid
@@ -44,7 +45,7 @@ const Checklist = ({ params }: ChecklistParams) => {
 
 
   React.useEffect(() => {
-    if (giverName === null) {
+    if (!loading && !user && giverName === null) {
       const name = prompt("Möchtest du deinen Namen hinterlegen?")
       setName(name || "")
     }
@@ -67,15 +68,31 @@ const Checklist = ({ params }: ChecklistParams) => {
         Ich wünsche mir...
       </h1>
       <div className={styles.giverWrapper}>
-        <p className={styles.info}>
-          Wenn du möchtest, kannst du hier deinen Namen eintragen,
-          um anderen zu zeigen, was du schenkst:
-        </p>
-        <span>
-
-          <span>Ich bin </span>
-          <input type="text" className="crit_textinput" placeholder="anonym" value={giverName || ""} onChange={(event) => setName(event.currentTarget.value)} />
-        </span>
+        {user === null ? (<>
+          <p className={styles.info}>
+            Wenn du möchtest, kannst du hier deinen Namen eintragen,
+            um anderen zu zeigen, was du schenkst:
+          </p>
+          <span>
+            <span>Ich bin </span>
+            <input
+              type="text"
+              className="crit_textinput"
+              placeholder="anonym"
+              disabled={loading || user !== null}
+              value={giverName || ""}
+              onChange={(event) => setName(event.currentTarget.value)}
+            />
+          </span>
+        </>
+        ) : (
+          <p>
+            <i>
+              Du schenkst als  <Link href={"/profile"}>{user.displayName}</Link>
+            </i>
+          </p>
+        )
+        }
 
         <p className={styles.info}>
           Mit den folgenden Symbolen werden Wunschprioritäten dargestellt:
