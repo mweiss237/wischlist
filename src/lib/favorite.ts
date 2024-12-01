@@ -16,7 +16,6 @@ export const useFavorites = () => {
         const favoritesRef = query(ref(database, `favorites/${userId}`));
         const unsubscriber = onValue(favoritesRef, (snapshot) => {
             const data = snapshot.val();
-            console.log(data)
             setFavorites(data)
         });
 
