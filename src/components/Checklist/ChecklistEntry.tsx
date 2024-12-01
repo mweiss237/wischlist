@@ -1,7 +1,6 @@
 import { useUser } from "lib/auth"
 import { useEntry } from "lib/entries"
 import { useGiver } from "lib/giver"
-import { useCallback, useEffect, useState } from "react"
 import { Link } from "react-feather"
 import styles from "./ChecklistEntry.module.scss"
 import PriorityIcon from "./Priority"
@@ -14,18 +13,12 @@ interface ChecklistEntryParams {
 const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
   const { entry, pick, unpick } = useEntry(listId, entryId)
 
-  const [value, setValue] = useState<boolean>(false)
   const { giverName } = useGiver()
   const { user } = useUser()
 
   const userName = user?.displayName || giverName
 
-  useEffect(() => {
-    setValue(entry?.taken !== undefined)
-  }, [entry?.taken])
-
-  const handleSelect = useCallback((selected: boolean) => {
-    setValue(!selected)
+  const handleSelect = (selected: boolean) => {
 
     if (!selected) {
       if (entry?.taken?.giver && entry?.taken?.giver.trim() !== userName?.trim())
@@ -38,7 +31,7 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
     }
 
     return pick(userName)
-  }, [unpick, pick, userName])
+  }
 
 
   return (
@@ -48,7 +41,7 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
           className={styles.input}
           id={entryId}
           type="checkbox"
-          checked={value}
+          checked={entry?.taken !== undefined}
           onClick={({ currentTarget: { checked } }) => handleSelect(checked)}
         />
         <label className={styles.label} htmlFor={entryId}>
