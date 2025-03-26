@@ -144,6 +144,7 @@ const List = ({ params }: { params: { listId: string } }) => {
       {
         user ? (
           <>
+          {/* TODO: checkbox states are not reflected the right way */}
             <input
               value={isListShared ? 1 : 0}
               type="checkbox"
