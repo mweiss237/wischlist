@@ -41,7 +41,7 @@ const List = ({ params }: { params: { listId: string } }) => {
     })
   );
 
-  const { list, updateListTitle, deleteList } = useList(listId)
+  const { list, updateListTitle, deleteList, updateListOptions } = useList(listId)
   const { entries, addEntry, removeEntry, updateEntry } = useEntries(listId)
 
   const alreadyPickedSome = React.useMemo(() =>
@@ -57,13 +57,21 @@ const List = ({ params }: { params: { listId: string } }) => {
   const [isClicked, setClicked] = useState(false)
   const [isShareAvailable, setShareAvailable] = useState(false)
   const [listName, setListName] = React.useState(list?.title)
+  const [isListShared, setListShared] = React.useState(list?.options?.isShared || false)
+  const [isListBlurry, setListBlurry] = React.useState(list?.options?.blurForOwner || false)
+
   React.useEffect(() =>
     setShareAvailable(navigator?.share !== undefined)
     , [])
 
   React.useEffect(() => {
-    if (list) setListName(list.title)
-  }, [list, setListName])
+    if (list) {
+      setListName(list.title)
+      setListShared(!!list.options?.isShared)
+      setListBlurry(!!list.options?.blurForOwner)
+    }
+
+  }, [list, setListName, setListShared, setListBlurry])
 
   React.useEffect(() => {
     if (!loading && user !== null && list && user.uid !== list.userId) {
@@ -136,7 +144,29 @@ const List = ({ params }: { params: { listId: string } }) => {
       {
         user ? (
           <>
-            <div className={styles.shareWrapper}>
+            <input
+              value={isListShared ? 1 : 0}
+              type="checkbox"
+              id="share"
+              onChange={() => {
+                setListShared(state => !state);
+                updateListOptions({ isShared: !isListShared })
+              }}
+              className={styles.shareCheckbox} />
+            <label htmlFor="share" className={styles.optionLabel}>Teilen</label>
+            <input
+              disabled={!isListShared}
+              value={isListBlurry ? 1 : 0}
+              type="checkbox"
+              id="blur"
+              onChange={() => {
+                setListBlurry(state => !state);
+                updateListOptions({ blurForOwner: !isListBlurry })
+              }}
+              className={styles.shareCheckbox} />
+            <label htmlFor="blur" className={styles.optionLabel}>Liste für mich unkenntlich</label>
+
+            <div className={`${styles.shareWrapper} ${isListShared ? "" : "crit_hidden"}`}>
 
               <input type="text" readOnly value={`${window.location.href}/share`} onClick={(e) => e.currentTarget.select()} />
               <button
