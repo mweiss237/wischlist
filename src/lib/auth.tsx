@@ -1,6 +1,6 @@
 "use client"
 
-import { auth } from "lib/firebase";
+import { auth, storage } from "lib/firebase";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -15,6 +15,7 @@ import {
 } from "firebase/auth"
 import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from "react";
 import _ from "lodash";
+import { getDownloadURL, ref, uploadBytes, deleteObject } from "firebase/storage";
 
 
 const AuthContext = createContext<{ user: User | null, loading: boolean }>({ user: null, loading: false })
@@ -63,6 +64,30 @@ export const useUser = () => {
       displayName,
     })
 
+
+    return await user.reload()
+
+  }, [user, user?.displayName])
+
+  const updateProfilePicture = useCallback(async (file: File) => {
+    if (!user) return
+
+    const storageRef = ref(storage, `uploads/${file.name}`);
+
+    try {
+      const snapshot = await uploadBytes(storageRef, file);
+      const photoURL = await getDownloadURL(snapshot.ref);
+
+      await updateProfile(user, {
+        photoURL,
+      })
+
+      await deleteObject(storageRef)
+
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+
     return await user.reload()
 
   }, [user, user?.displayName])
@@ -70,6 +95,7 @@ export const useUser = () => {
   return {
     user,
     loading,
+    updateProfilePicture,
     updateUserName
   }
 }

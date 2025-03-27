@@ -5,9 +5,10 @@ import { useAuth, useUser } from "lib/auth"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import Loading from "components/Loading/Loading"
+import styles from "./Profile.module.scss"
 
 const Profile = () => {
-  const { user, updateUserName } = useUser()
+  const { user, updateUserName, updateProfilePicture } = useUser()
   const [name, setName] = React.useState(user?.displayName || "")
   const { logout } = useAuth()
   const router = useRouter()
@@ -29,21 +30,34 @@ const Profile = () => {
     updateUserName(name)
   }
 
+  const handleClickImage = () => {
+    document.getElementById("image-input")?.click()
+  }
+  const handleChangeImage: React.ChangeEventHandler<HTMLInputElement> = ({ target }) => {
+
+    const file = target.files && target.files[0]
+    if (!file) return
+
+    updateProfilePicture(file)
+  }
+
   return (
-    <div style={{ width: "50%", minWidth: "300px", margin: "0 auto" }}>
-      <div style={{ marginTop: "2rem" }}>
-        <h2>Profil</h2>
-      </div>
-      <div style={{ textAlign: "center" }}>
+    <div className={styles.container}>
+
+      <h2>Profil</h2>
+
+      <div className={styles.centered}>
         {user ? (
           <>
             <Image
               src={user?.photoURL || "https://via.placeholder.com/150.png"}
-              alt="profile"
+              alt="profile picture"
               style={{ borderRadius: "50%", boxShadow: "0 1px 5px lightgray" }}
               width="150"
               height="150"
+              onClick={handleClickImage}
             />
+            <input id="image-input" type={"file"} className={styles.hidden} onChange={handleChangeImage} />
 
             <div>
               <input

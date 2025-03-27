@@ -1,6 +1,6 @@
 import { onValue, ref, remove, update } from "firebase/database"
 import { useCallback, useEffect, useState } from "react"
-import { List } from "types"
+import { List, ListOptions } from "types"
 import { database } from "./firebase"
 
 
@@ -30,6 +30,12 @@ export const useList = (listId: string) => {
         remove(ref(database, `${PATH}/${listId}`))
     }, [])
 
-    return { list, updateListTitle, deleteList }
+    const updateListOptions = useCallback((options: Partial<ListOptions>) =>
+        update(ref(database, `${PATH}/${listId}/options`), {
+            ...options,
+        })
+        , [database, listId, PATH])
+
+    return { list, updateListTitle, deleteList, updateListOptions }
 
 }

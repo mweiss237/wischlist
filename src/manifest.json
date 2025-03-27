@@ -1,15 +1,16 @@
 {
     "name": "Wischlist - digitale Wunschliste",
     "short_name": "Wischlist",
+    "description": "Wischlist ist eine digitale Wunschliste, die dir hilft, deine Wünsche zu organisieren und mit Freunden und Familie zu teilen.",
     "display": "standalone",
     "orientation": "portrait",
-    "start_url": "https://www.wischlist.app/",
-    "scope": "https://www.wischlist.app",
+    "start_url": "/",
     "icons": [
         {
             "src": "/wischlist-color.ico",
             "sizes": "256x256",
             "type": "image/x-icon"
         }
-    ]
+    ],
+    "background_color": "#009578"
 }

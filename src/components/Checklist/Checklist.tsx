@@ -39,7 +39,8 @@ const Checklist = ({ params }: ChecklistParams) => {
   const isListOwner = !!list?.userId && !!user?.uid && list.userId === user.uid
   const isSomeTaken = Object.values(entries || {}).some(entry => !!entry.taken?.timestamp)
 
-  const isBlurred = isListOwner && isSomeTaken
+  const isShared = list?.options?.isShared
+  const isBlurred = isListOwner && isSomeTaken && list?.options?.blurForOwner && isShared
 
   const isFavorite = checkIsFavorite(listId)
 
@@ -49,7 +50,7 @@ const Checklist = ({ params }: ChecklistParams) => {
       const name = prompt("Möchtest du deinen Namen hinterlegen?")
       setName(name || "")
     }
-  }, [giverName, setName])
+  }, [giverName, loading, setName, user])
 
   const sortedEntryIds = React.useMemo(() =>
     entries
@@ -107,26 +108,33 @@ const Checklist = ({ params }: ChecklistParams) => {
 
       </div>
       <div className={styles.checklist_wrapper}>
+        <Favorite 
+          isFavorite={isFavorite} 
+          setIsFavorite={() => isFavorite ? removeFavorite(listId) : addFavorite(listId, list?.title || "")} 
+          />
         <div className={`${styles.checklist} ${isBlurred && styles.blurry}`}>
-          {!entries || !list ? <Loading className={styles.centered} /> :
-            <>
-              <div className='d-flex'>
-                <h3 className={`${indieFlower.className} ${styles.headline} ${styles.invertColor}`}>{list?.title}</h3>
-                <Favorite isFavorite={isFavorite} setIsFavorite={() => isFavorite ? removeFavorite(listId) : addFavorite(listId, list?.title)} />
-              </div>
-              {sortedEntryIds.map((entryId) => {
-                return (
-                  <ChecklistEntry
-                    entryId={entryId}
-                    listId={listId}
-                    key={`wish${entryId}`}
-                  />
-                )
-              })}
-            </>
-          }
+          {
+            isShared ?
+              !entries || !list ? <Loading className={styles.centered} /> :
+                <>
+                  <div className='d-flex'>
+                    <h3 className={`${indieFlower.className} ${styles.headline} ${styles.invertColor}`}>{list?.title}</h3>
+                  </div>
+                  {sortedEntryIds.map((entryId) => {
+                    return (
+                      <ChecklistEntry
+                        entryId={entryId}
+                        listId={listId}
+                        key={`wish${entryId}`}
+                      />
+                    )
+                  })}
+                </>
 
+              : <p className={styles.invertColor}>Liste wird aktuell nicht geteilt.</p>
+          }
         </div>
+
       </div>
     </>
   )
