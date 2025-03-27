@@ -20,6 +20,7 @@ import { DndContext, useSensors, DragEndEvent } from "@dnd-kit/core"
 import { KeyboardSensor, PointerSensor, useSensor, closestCenter } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import { Copy, Gift, Link as FeatherLink, } from "react-feather"
+import Checkbox from "./ListOptions"
 
 const indieFlowerFont = Indie_Flower({ weight: "400", subsets: ["latin"] })
 
@@ -145,27 +146,15 @@ const List = ({ params }: { params: { listId: string } }) => {
         user ? (
           <>
           {/* TODO: checkbox states are not reflected the right way */}
-            <input
-              value={isListShared ? 1 : 0}
-              type="checkbox"
-              id="share"
-              onChange={() => {
+          <Checkbox checked={isListShared} label="Teilen" onToggle={() => {
                 setListShared(state => !state);
                 updateListOptions({ isShared: !isListShared })
-              }}
-              className={styles.shareCheckbox} />
-            <label htmlFor="share" className={styles.optionLabel}>Teilen</label>
-            <input
-              disabled={!isListShared}
-              value={isListBlurry ? 1 : 0}
-              type="checkbox"
-              id="blur"
-              onChange={() => {
+              }} />
+            <Checkbox disabled={!isListShared} checked={isListBlurry} label="Geteilte Liste für mich unkenntlich machen" onToggle={() => {
                 setListBlurry(state => !state);
                 updateListOptions({ blurForOwner: !isListBlurry })
-              }}
-              className={styles.shareCheckbox} />
-            <label htmlFor="blur" className={styles.optionLabel}>Liste für mich unkenntlich</label>
+              }} />
+
 
             <div className={`${styles.shareWrapper} ${isListShared ? "" : "crit_hidden"}`}>
 

@@ -39,8 +39,8 @@ const Checklist = ({ params }: ChecklistParams) => {
   const isListOwner = !!list?.userId && !!user?.uid && list.userId === user.uid
   const isSomeTaken = Object.values(entries || {}).some(entry => !!entry.taken?.timestamp)
 
-  const isBlurred = isListOwner && isSomeTaken && list?.options?.blurForOwner
   const isShared = list?.options?.isShared
+  const isBlurred = isListOwner && isSomeTaken && list?.options?.blurForOwner && isShared
 
   const isFavorite = checkIsFavorite(listId)
 
@@ -50,7 +50,7 @@ const Checklist = ({ params }: ChecklistParams) => {
       const name = prompt("Möchtest du deinen Namen hinterlegen?")
       setName(name || "")
     }
-  }, [giverName, setName])
+  }, [giverName, loading, setName, user])
 
   const sortedEntryIds = React.useMemo(() =>
     entries
@@ -108,6 +108,10 @@ const Checklist = ({ params }: ChecklistParams) => {
 
       </div>
       <div className={styles.checklist_wrapper}>
+        <Favorite 
+          isFavorite={isFavorite} 
+          setIsFavorite={() => isFavorite ? removeFavorite(listId) : addFavorite(listId, list?.title || "")} 
+          />
         <div className={`${styles.checklist} ${isBlurred && styles.blurry}`}>
           {
             isShared ?
@@ -115,7 +119,6 @@ const Checklist = ({ params }: ChecklistParams) => {
                 <>
                   <div className='d-flex'>
                     <h3 className={`${indieFlower.className} ${styles.headline} ${styles.invertColor}`}>{list?.title}</h3>
-                    <Favorite isFavorite={isFavorite} setIsFavorite={() => isFavorite ? removeFavorite(listId) : addFavorite(listId, list?.title)} />
                   </div>
                   {sortedEntryIds.map((entryId) => {
                     return (

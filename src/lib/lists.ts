@@ -20,18 +20,22 @@ export const useLists = () => {
         });
 
         return unsubscriber
-    }, [userId, database])
+    }, [userId])
 
     const addList = useCallback((listName: string) => {
         push(child(ref(database), `lists`), {
             title: listName,
             userId,
+            options: {
+                blurForOwner: false,
+                isShared: false
+            }
         });
-    }, [userId, database])
+    }, [userId])
 
     const removeList = useCallback((listId: string) => {
         remove(ref(database, `lists/${listId}`));
-    }, [userId, database])
+    }, [])
 
     return { lists, addList, removeList }
 }
