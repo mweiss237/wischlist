@@ -146,7 +146,7 @@ const List = ({ params }: { params: { listId: string } }) => {
         user ? (
           <>
           {/* TODO: checkbox states are not reflected the right way */}
-          <Checkbox checked={isListShared} label="Teilen" onToggle={() => {
+          <Checkbox checked={isListShared} label="Liste teilen" onToggle={() => {
                 setListShared(state => !state);
                 updateListOptions({ isShared: !isListShared })
               }} />
