@@ -145,15 +145,18 @@ const List = ({ params }: { params: { listId: string } }) => {
       {
         user ? (
           <>
-          {/* TODO: checkbox states are not reflected the right way */}
-          <Checkbox checked={isListShared} label="Liste teilen" onToggle={() => {
+            <div className="crit_page_content">
+
+              {/* TODO: checkbox states are not reflected the right way */}
+              <Checkbox checked={isListShared} label="Liste teilen" onToggle={() => {
                 setListShared(state => !state);
                 updateListOptions({ isShared: !isListShared })
               }} />
-            <Checkbox disabled={!isListShared} checked={isListBlurry} label="Geteilte Liste für mich unkenntlich machen" onToggle={() => {
+              <Checkbox disabled={!isListShared} checked={isListBlurry} label="Geteilte Liste für mich unkenntlich machen" onToggle={() => {
                 setListBlurry(state => !state);
                 updateListOptions({ blurForOwner: !isListBlurry })
               }} />
+            </div>
 
 
             <div className={`${styles.shareWrapper} ${isListShared ? "" : "crit_hidden"}`}>
