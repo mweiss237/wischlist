@@ -80,7 +80,7 @@ const List = ({ params }: { params: { listId: string } }) => {
       router.replace("/list")
     }
 
-  }, [user?.uid, list?.userId, router.push])
+  }, [user?.uid, list?.userId, router.replace])
 
   const handleDeleteList = useCallback(() => {
     if (confirm("Möchtest du diese Liste wirklich unwiederbringlich löschen?")) {
