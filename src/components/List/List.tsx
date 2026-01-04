@@ -202,8 +202,9 @@ const List = ({ params }: { params: { listId: string } }) => {
                 priority: Priority.medium,
                 position: sortedEntryArray.length
               }).then(() => {
-                const lastCard = document.querySelector<HTMLInputElement>("#list > :last-of-type textarea")
-                lastCard?.focus();
+                const cards = document.querySelectorAll<HTMLInputElement>("#list > .wish-card")
+                const lastCard = cards[cards.length - 1]
+                lastCard?.querySelector("textarea")?.focus();
               })} />
             </div>
 

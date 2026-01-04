@@ -64,7 +64,7 @@ const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onS
   }
 
   return (
-    <div className={styles.cardWrapper} ref={setNodeRef} style={draggableStyle} {...attributes} {...dragable ? listeners : {}}>
+    <div className={`${styles.cardWrapper} wish-card`} ref={setNodeRef} style={draggableStyle} {...attributes} {...dragable ? listeners : {}}>
       <button className={styles.deleteWish} onClick={handler.remove}>
         <X />
       </button>
