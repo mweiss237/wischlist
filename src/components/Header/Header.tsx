@@ -15,30 +15,36 @@ const Header = () => {
   return (
     <>
       <div className="crit_header">
-        <Link href="/" className="crit_header_logo">
-          <Image
-            src={"/wischlist-color.svg"}
-            alt="wischlist logo"
-            width={60}
-            height={60}
-            unoptimized
-          />
-        </Link>
+        <div className={styles.logoWrap}>
+          <Link href="/" className="crit_header_logo">
+            <Image
+              src={"/wischlist-color.svg"}
+              alt="wischlist logo"
+              width={56}
+              height={56}
+              unoptimized
+            />
+          </Link>
 
-        <h1 className={`crit_header_title ${styles.headline} ${indieFlower.className}`}>Wischlist</h1>
+          <h1
+            className={`crit_header_title ${styles.headline} ${indieFlower.className}`}
+          >
+            Wischlist
+          </h1>
+        </div>
       </div>
+
       <nav className="crit_navigator">
         <span className="align-start">
-          <Link
-            href={"/"}
-            key="home"
-            id="home">
+          <Link href="/" key="home" id="home" className="btn btn-ghost">
             Home
           </Link>
           <Link
-            href={"/list"}
+            href="/list"
             key={"lists"}
-            id={"lists"}>
+            id={"lists"}
+            className="btn btn-ghost"
+          >
             Lists
           </Link>
         </span>
@@ -46,10 +52,12 @@ const Header = () => {
           <Link
             href={"/list/favorites"}
             key={"favorites"}
-            id={"favorites"}>
+            id={"favorites"}
+            className="btn btn-ghost"
+          >
             Favoriten
           </Link>
-          <Link href={user ? "/profile" : "/auth"}>
+          <Link href={user ? "/profile" : "/auth"} className="btn btn-ghost">
             {user ? <User size={18} /> : <LogIn size={18} />}
           </Link>
         </span>

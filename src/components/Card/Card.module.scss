@@ -21,18 +21,17 @@
   height: 100%;
   width: 100%;
   box-sizing: border-box;
-  color: #333;
-  background-color: #fff;
-  padding: 16px;
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 0 7px rgba(0, 0, 0, 0.15);
+  color: var(--text);
+  background-color: var(--surface);
+  padding: 12px;
+  border: 1px solid rgba(15,23,42,0.04);
+  border-radius: calc(var(--radius) - 2px);
+  box-shadow: var(--shadow-sm);
   resize: none;
-  font-family: sans-serif;
-  font-size: 16px;
+  font-size: 15px;
 
   &:hover {
-    box-shadow: 0 0 12px #a3a3a3;
+    box-shadow: var(--shadow-md);
   }
 }
 
@@ -58,10 +57,10 @@
   height: 20px;
   padding: 0; /* ios fix for stretching delete button */
   color: #444;
-  background-color: #fff;
+  background-color: var(--surface);
   transform: translate(-10px, -10px);
   border: none;
-  box-shadow: 0px 0px 2px black;
+  box-shadow: 0 1px 3px rgba(2,6,23,0.08);
   border-radius: 50%;
   cursor: pointer;
   transition-duration: 0.1s;
@@ -74,15 +73,12 @@
   }
 
   &:hover {
-    transform: translate(-10px, -10px);
-    transition-duration: 0.2s;
-    background-color: rgb(255, 86, 86);
-    box-shadow: 0 0 15px red;
+    transform: translate(-10px, -10px) scale(1.02);
+    transition-duration: 0.18s;
+    background-color: #ff6b6b;
+    box-shadow: 0 6px 18px rgba(255,107,107,0.12);
 
-    > svg {
-      opacity: 1;
-      filter: brightness(0) invert(1);
-    }
+    > svg { opacity: 1; filter: brightness(0) invert(1); }
   }
 }
 
