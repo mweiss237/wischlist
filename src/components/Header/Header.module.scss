@@ -1,5 +1,14 @@
 .headline {
     text-align: center;
-    font-style: italic;
-    text-decoration: underline;
+    font-style: normal;
+    font-weight: 700;
+    text-transform: capitalize;
+    color: var(--primary-600);
+    margin: 0;
+    padding: 0 0.25rem;
+    letter-spacing: 0.6px;
+}
+
+.logoWrap{
+    display:flex; align-items:center; gap:0.6rem;
 }

@@ -11,7 +11,7 @@ export default function RootLayout({
   return (
     <>
       <Header />
-      <main>
+      <main className="app_container">
         <span className="crit_content">{children}</span>
       </main>
       <Footer />
