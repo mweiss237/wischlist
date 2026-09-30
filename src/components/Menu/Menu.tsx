@@ -1,6 +1,6 @@
 import React from "react"
 import styles from "./Menu.module.scss"
-import { MoreVertical } from "react-feather"
+import { MoreHorizontal } from "react-feather"
 
 interface MenuProps {
     entries: {
@@ -15,12 +15,11 @@ interface MenuProps {
 const Menu = ({ entries }: MenuProps) => {
     const [isShown, setShowMenu] = React.useState(false)
 
-    const menuRef = React.useRef(null);
+    const menuRef = React.useRef<HTMLDivElement>(null);
 
     React.useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            // @ts-ignore
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
                 setShowMenu(false);
             }
         };
@@ -32,36 +31,31 @@ const Menu = ({ entries }: MenuProps) => {
     }, []);
 
     return (
-        <div ref={menuRef} className={styles.wrapper} >
+        <div ref={menuRef} className={styles.wrapper}>
             <button
-                className={styles.toggle}
+                type="button"
+                className={`${styles.toggle} ${isShown ? styles.open : ""}`}
                 onClick={() => setShowMenu(value => !value)}
                 title="Menü öffnen"
+                aria-expanded={isShown}
             >
-                <MoreVertical size={20} />
+                <MoreHorizontal size={18} />
             </button>
-            <div className={`${styles.entries} ${isShown ? styles.active : ""}`}>
-                {entries.map((entry, index) => {
-                    return (
-                        <button
-                            key={`menu-entry-${index}`}
-                            className={styles.entry}
-                            style={
-                                entry.active
-                                    ? { backgroundColor: entry.activeColor || "lightgreen" }
-                                    : undefined
-                            }
-                            title={entry.label}
-                            onClick={() => {
-                                entry.onClick();
-                            }}
-                        >
-                            {entry.Icon}
-
-                        </button>
-                    )
-                }
-                )}
+            <div className={`${styles.entries} ${isShown ? styles.active : ""}`} role="menu">
+                {entries.map((entry, index) => (
+                    <button
+                        type="button"
+                        role="menuitem"
+                        key={`menu-entry-${index}`}
+                        className={`${styles.entry} ${entry.active ? styles.entryActive : ""}`}
+                        style={entry.activeColor ? { ["--active" as string]: entry.activeColor } : undefined}
+                        title={entry.label}
+                        onClick={entry.onClick}
+                    >
+                        {entry.Icon}
+                        <span>{entry.label}</span>
+                    </button>
+                ))}
             </div>
         </div>
     )

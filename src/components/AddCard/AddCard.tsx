@@ -2,6 +2,7 @@
 
 import { useUser } from "lib/auth"
 import React from "react"
+import { Plus } from "react-feather"
 
 import styles from "./AddCard.module.scss"
 
@@ -24,7 +25,10 @@ const AddCard = ({ callback }: AddCardParams) => {
       type="button"
       onClick={addEmptyCard}
     >
-      +
+      <span className={styles.icon}>
+        <Plus size={22} aria-hidden />
+      </span>
+      Wunsch hinzufügen
     </button>
   )
 }

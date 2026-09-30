@@ -1,4 +1,4 @@
-import { ref, onValue, push, child, set, remove, query, equalTo, orderByChild } from "firebase/database"
+import { ref, onValue, set, remove } from "firebase/database"
 import { useCallback, useEffect, useState } from "react";
 import { Favorite } from "types";
 import { useUser } from "./auth";
@@ -12,23 +12,27 @@ export const useFavorites = () => {
     const userId = user?.uid
 
     useEffect(() => {
+        setFavorites(null)
         if (!userId) return
-        const favoritesRef = query(ref(database, `favorites/${userId}`));
-        const unsubscriber = onValue(favoritesRef, (snapshot) => {
-            const data = snapshot.val();
-            setFavorites(data)
-        });
+        const path = `favorites/${userId}`
+        const unsubscriber = onValue(
+            ref(database, path),
+            (snapshot) => setFavorites(snapshot.val()),
+            (error) => console.error(`[rtdb] ${path}`, error)
+        );
 
         return unsubscriber
-    }, [userId, database])
+    }, [userId])
 
     const addFavorite = useCallback((listId: string, title: string) => {
-        set(child(ref(database), `favorites/${userId}/${listId}`), { title });
-    }, [userId, database])
+        if (!userId) return
+        set(ref(database, `favorites/${userId}/${listId}`), { title });
+    }, [userId])
 
     const removeFavorite = useCallback((listId: string) => {
+        if (!userId) return
         remove(ref(database, `favorites/${userId}/${listId}`));
-    }, [userId, database])
+    }, [userId])
 
     const checkIsFavorite = (listId: string) => !!favorites && Object.keys(favorites).some(key => key === listId)
 

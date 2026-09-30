@@ -1,4 +1,4 @@
-import { onValue, ref, remove, update } from "firebase/database"
+import { onValue, ref, update } from "firebase/database"
 import { useCallback, useEffect, useState } from "react"
 import { List, ListOptions } from "types"
 import { database } from "./firebase"
@@ -6,36 +6,48 @@ import { database } from "./firebase"
 
 const PATH = "lists"
 
+/** Removes the list and its entries in one atomic multi-path update. */
+export const deleteListWithEntries = (listId: string) =>
+    update(ref(database), {
+        [`${PATH}/${listId}`]: null,
+        [`entries/${listId}`]: null,
+    })
+
 export const useList = (listId: string) => {
     const [list, setList] = useState<List | null>(null)
 
     useEffect(() => {
-
-        const listRef = ref(database, `${PATH}/${listId}`);
-        const unsubscriber = onValue(listRef, (snapshot) => {
-            const data = snapshot.val();
-            setList(data)
-        });
+        setList(null)
+        const path = `${PATH}/${listId}`
+        const unsubscriber = onValue(
+            ref(database, path),
+            (snapshot) => setList(snapshot.val()),
+            (error) => console.error(`[rtdb] ${path}`, error)
+        );
 
         return unsubscriber
-    }, [database, listId, PATH])
+    }, [listId])
 
     const updateListTitle = useCallback((title: string) =>
         update(ref(database, `${PATH}/${listId}`), {
             title,
         })
-        , [database, listId, PATH])
+        , [listId])
 
-    const deleteList = useCallback(() => {
-        remove(ref(database, `${PATH}/${listId}`))
-    }, [])
+    const updateListEventDate = useCallback((eventDate: string | null) =>
+        update(ref(database, `${PATH}/${listId}`), {
+            eventDate,
+        })
+        , [listId])
+
+    const deleteList = useCallback(() => deleteListWithEntries(listId), [listId])
 
     const updateListOptions = useCallback((options: Partial<ListOptions>) =>
         update(ref(database, `${PATH}/${listId}/options`), {
             ...options,
         })
-        , [database, listId, PATH])
+        , [listId])
 
-    return { list, updateListTitle, deleteList, updateListOptions }
+    return { list, updateListTitle, updateListEventDate, deleteList, updateListOptions }
 
 }

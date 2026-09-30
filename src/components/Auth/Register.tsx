@@ -40,7 +40,12 @@ const Register = () => {
 
   return (
     <form onSubmit={handleSignup} className={styles.wrapper}>
-      <label className={styles.inputlabel} htmlFor="#email">
+      <div className={styles.heading}>
+        <span className="eyebrow">Neu hier?</span>
+        <h1>Konto erstellen</h1>
+        <p>Nur noch Name und Passwort – dann kann es losgehen.</p>
+      </div>
+      <label className={styles.inputlabel} htmlFor="email">
         E-Mail
       </label>
       <input
@@ -51,7 +56,7 @@ const Register = () => {
         placeholder="E-Mail"
         disabled
       />
-      <label className={styles.inputlabel} htmlFor="#username">
+      <label className={styles.inputlabel} htmlFor="username">
         Nutzername
       </label>
       <input
@@ -63,7 +68,7 @@ const Register = () => {
         placeholder="Benutzername"
         disabled={loading}
       />
-      <label className={styles.inputlabel} htmlFor="#password">
+      <label className={styles.inputlabel} htmlFor="password">
         Passwort
       </label>
       <input
@@ -76,8 +81,8 @@ const Register = () => {
         disabled={loading}
       />
       <span className={styles.buttonWrapper}>
-        <button type={"button"} disabled={loading} onClick={() => router.push("/auth")}>E-Mail ändern</button>
-        <button type={"submit"} disabled={loading}>Registrieren</button>
+        <button type={"button"} className="btn btn-ghost" disabled={loading} onClick={() => router.push("/auth")}>E-Mail ändern</button>
+        <button type={"submit"} className="btn btn-primary" disabled={loading}>Registrieren</button>
       </span>
     </form>
   )

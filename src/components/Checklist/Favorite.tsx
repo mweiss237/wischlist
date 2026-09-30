@@ -9,8 +9,14 @@ interface FavoriteProps {
 
 
 const Favorite = ({ isFavorite, setIsFavorite }: FavoriteProps) => (
-    <button className={styles.button} onClick={setIsFavorite}>
-        <Star color="#FFB91D" fill={isFavorite ? "#FFB91D" : "#fff"} size={20} />
+    <button
+        type="button"
+        className={`${styles.button} ${isFavorite ? styles.active : ""}`}
+        onClick={setIsFavorite}
+        title={isFavorite ? "Aus Favoriten entfernen" : "Als Favorit merken"}
+        aria-pressed={!!isFavorite}
+    >
+        <Star size={18} />
     </button>
 )
 

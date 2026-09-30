@@ -6,20 +6,20 @@ interface PriorityProps {
     priority?: Priority
 }
 
-const svgProps = { alt: "Priorität", title: "Priorität", width: 20, height: 20 }
+const svgProps = { "aria-label": "Priorität", width: 20, height: 20 }
 
 const PriorityIcon = ({ priority }: PriorityProps) => {
 
     switch (priority) {
 
         case Priority.high:
-            return <ChevronUp color="#ff6361" {...svgProps} />
+            return <ChevronUp style={{ color: "var(--prio-high)" }} {...svgProps}><title>Priorität hoch</title></ChevronUp>
 
         case Priority.medium:
-            return <Minus color="#FF9100" {...svgProps} />
+            return <Minus style={{ color: "var(--prio-medium)" }} {...svgProps}><title>Priorität mittel</title></Minus>
 
         case Priority.low:
-            return <ChevronDown color="#84E6E6" {...svgProps} />
+            return <ChevronDown style={{ color: "var(--prio-low)" }} {...svgProps}><title>Priorität niedrig</title></ChevronDown>
 
         default:
             return null

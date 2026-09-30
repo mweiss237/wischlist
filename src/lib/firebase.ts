@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app';
+import { getApp, getApps, initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
 import { getDatabase } from 'firebase/database';
@@ -13,7 +13,8 @@ const firebaseConfig = {
 };
 const DB_URL = "https://wischlist-cd9c6-default-rtdb.europe-west1.firebasedatabase.app"
 
-export const app = initializeApp(firebaseConfig);
+// reuse existing app on HMR / repeated module evaluation
+export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 export const auth = getAuth(app)
 
