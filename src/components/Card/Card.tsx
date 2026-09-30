@@ -64,9 +64,16 @@ const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onS
   }
 
   return (
-    <div className={`${styles.cardWrapper} wish-card`} ref={setNodeRef} style={draggableStyle} {...attributes} {...dragable ? listeners : {}}>
-      <button className={styles.deleteWish} onClick={handler.remove}>
-        <X />
+    <div
+      className={`${styles.cardWrapper} wish-card`}
+      data-priority={priority}
+      ref={setNodeRef}
+      style={draggableStyle}
+      {...attributes}
+      {...dragable ? listeners : {}}
+    >
+      <button type="button" className={styles.deleteWish} onClick={handler.remove} title="Wunsch löschen">
+        <X size={14} />
       </button>
 
       <textarea
@@ -77,43 +84,56 @@ const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onS
         defaultValue={text}
         onBlur={handler.save}
       />
+      {link ? (
+        <a
+          href={link}
+          target="_blank"
+          rel="noreferrer"
+          className={styles.linkBadge}
+          title={link}
+          onPointerDown={(event) => event.stopPropagation()}
+        >
+          <Link size={12} /> Link
+        </a>
+      ) : null}
       <button
+        type="button"
         className={`${styles.saveWish} ${pristine ? styles.active : ""}`}
         onClick={handler.save}
+        title="Speichern"
       >
-        <Check />
+        <Check size={16} />
       </button>
       <Menu entries={[
         {
           active: !!link,
-          activeColor: "#5ac45a",
+          activeColor: "var(--primary)",
           Icon: <Link />,
-          label: "Link hinzufügen",
+          label: link ? "Link ändern" : "Link hinzufügen",
           onClick: addLink
         },
         {
           active: priority === Priority.high,
-          activeColor: "#ff6361",
+          activeColor: "var(--prio-high)",
           Icon: <ChevronUp />,
-          label: "Hoch",
+          label: "Priorität hoch",
           onClick: () => onSetPriority(Priority.high)
         },
         {
           active: priority === Priority.medium,
-          activeColor: "#FF9100",
+          activeColor: "var(--prio-medium)",
           Icon: <Minus />,
-          label: "Mittel",
+          label: "Priorität mittel",
           onClick: () => onSetPriority(Priority.medium)
         },
         {
           active: priority === Priority.low,
-          activeColor: "#84E6E6",
+          activeColor: "var(--prio-low)",
           Icon: <ChevronDown />,
-          label: "Niedrig",
+          label: "Priorität niedrig",
           onClick: () => onSetPriority(Priority.low)
         },
       ]} />
-      
     </div>
   )
 }

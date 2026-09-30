@@ -1,7 +1,20 @@
 import "styles/globals.scss"
 import "styles/critical.scss"
 import { AuthProvider } from "lib/auth"
-import Head from "next/head"
+import type { Metadata } from "next"
+import { fontBody, fontDisplay, fontHand } from "styles/fonts"
+
+export const metadata: Metadata = {
+  title: "Wischlist",
+  description: "Deine persönliche Wunschliste für Freunde und Familie!",
+  manifest: "/manifest.json",
+  icons: { icon: "/favicon.ico" },
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f4ecdd" },
+    { media: "(prefers-color-scheme: dark)", color: "#0d1512" },
+  ],
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "Wischlist" },
+}
 
 export default function RootLayout({
   children,
@@ -10,14 +23,10 @@ export default function RootLayout({
 }) {
 
   return (
-    <html>
-      <Head>
-        <title>Wischlist</title>
-        <meta name="viewport" content="width=device-width" />
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-      </Head>
+    <html
+      lang="de"
+      className={`${fontBody.variable} ${fontDisplay.variable} ${fontHand.variable}`}
+    >
       <body>
         <AuthProvider>
           {children}

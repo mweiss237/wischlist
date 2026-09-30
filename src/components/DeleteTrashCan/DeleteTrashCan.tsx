@@ -1,4 +1,3 @@
-import styles from "./DeleteTrashCan.module.scss"
 import { Trash2 } from 'react-feather'
 
 interface DeleteTrashCanProps {
@@ -7,7 +6,13 @@ interface DeleteTrashCanProps {
 }
 
 export const DeleteTrashCan = ({ onDelete }: DeleteTrashCanProps) => {
-    return <button className={`crit_button ${styles.delete}`} onClick={onDelete}>
-        <Trash2 size={20} />
+    return <button
+        type="button"
+        className="btn btn-ghost btn-icon btn-danger"
+        onClick={onDelete}
+        title="Liste löschen"
+        aria-label="Liste löschen"
+    >
+        <Trash2 size={18} />
     </button>
 }

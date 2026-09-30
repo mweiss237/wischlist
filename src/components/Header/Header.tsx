@@ -1,68 +1,73 @@
 "use client"
 
 import Image from "next/image"
-import styles from "./Header.module.scss"
 import Link from "next/link"
-import { Indie_Flower } from "next/font/google"
+import { usePathname } from "next/navigation"
 import { useUser } from "lib/auth"
-import { LogIn, User } from "react-feather"
+import { Gift, Home, LogIn, Star, User } from "react-feather"
+import styles from "./Header.module.scss"
 
-const indieFlower = Indie_Flower({ weight: "400", subsets: ["latin"] })
+const navItems = [
+  { href: "/", label: "Start", Icon: Home },
+  { href: "/list", label: "Meine Listen", Icon: Gift },
+  { href: "/list/favorites", label: "Favoriten", Icon: Star },
+]
+
+// most specific match wins, so /list/favorites does not also light up /list
+const findActiveHref = (pathname: string) =>
+  navItems
+    .filter(({ href }) => href === pathname || (href !== "/" && pathname.startsWith(`${href}/`)))
+    .reduce<string | null>((best, { href }) => (!best || href.length > best.length ? href : best), null)
 
 const Header = () => {
-  const { user, loading } = useUser()
+  const { user } = useUser()
+  const pathname = usePathname() || "/"
+  const activeHref = findActiveHref(pathname)
+  const isAccountActive = ["/profile", "/auth", "/login", "/register"].includes(pathname)
 
   return (
-    <>
-      <div className="crit_header">
-        <div className={styles.logoWrap}>
-          <Link href="/" className="crit_header_logo">
-            <Image
-              src={"/wischlist-color.svg"}
-              alt="wischlist logo"
-              width={56}
-              height={56}
-              unoptimized
-            />
-          </Link>
+    <header className={styles.header}>
+      <div className={styles.inner}>
+        <Link href="/" className={styles.brand} aria-label="Wischlist Startseite">
+          <span className={styles.logo}>
+            <Image src="/wischlist-color.svg" alt="" width={34} height={34} unoptimized />
+          </span>
+          <span className={styles.wordmark}>Wischlist</span>
+        </Link>
 
-          <h1
-            className={`crit_header_title ${styles.headline} ${indieFlower.className}`}
-          >
-            Wischlist
-          </h1>
-        </div>
+        <nav className={styles.nav} aria-label="Hauptnavigation">
+          {navItems.map(({ href, label, Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`${styles.navLink} ${activeHref === href ? styles.active : ""}`}
+              aria-current={activeHref === href ? "page" : undefined}
+            >
+              <Icon size={18} aria-hidden />
+              <span>{label}</span>
+            </Link>
+          ))}
+        </nav>
+
+        <Link
+          href={user ? "/profile" : "/auth"}
+          className={`${styles.account} ${isAccountActive ? styles.accountActive : ""}`}
+          title={user ? "Profil" : "Anmelden"}
+        >
+          {user?.photoURL ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={user.photoURL} alt="" className={styles.avatar} />
+          ) : user ? (
+            <User size={18} aria-hidden />
+          ) : (
+            <LogIn size={18} aria-hidden />
+          )}
+          <span className={styles.accountLabel}>
+            {user ? user.displayName || "Profil" : "Anmelden"}
+          </span>
+        </Link>
       </div>
-
-      <nav className="crit_navigator">
-        <span className="align-start">
-          <Link href="/" key="home" id="home" className="btn btn-ghost">
-            Home
-          </Link>
-          <Link
-            href="/list"
-            key={"lists"}
-            id={"lists"}
-            className="btn btn-ghost"
-          >
-            Lists
-          </Link>
-        </span>
-        <span className="align-end">
-          <Link
-            href={"/list/favorites"}
-            key={"favorites"}
-            id={"favorites"}
-            className="btn btn-ghost"
-          >
-            Favoriten
-          </Link>
-          <Link href={user ? "/profile" : "/auth"} className="btn btn-ghost">
-            {user ? <User size={18} /> : <LogIn size={18} />}
-          </Link>
-        </span>
-      </nav>
-    </>
+    </header>
   )
 }
 

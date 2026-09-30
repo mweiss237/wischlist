@@ -1,7 +1,7 @@
 import { useUser } from "lib/auth"
 import { pickEntry, unpickEntry } from "lib/entries"
 import { useGiver } from "lib/giver"
-import { Link } from "react-feather"
+import { ExternalLink, Gift } from "react-feather"
 import { Entry } from "types"
 import styles from "./ChecklistEntry.module.scss"
 import PriorityIcon from "./Priority"
@@ -18,6 +18,7 @@ const ChecklistEntry = ({ entry, entryId, listId }: ChecklistEntryParams) => {
   const { user } = useUser()
 
   const userName = user?.displayName || giverName
+  const isTaken = entry?.taken !== undefined
 
   const handleSelect = (selected: boolean) => {
 
@@ -40,30 +41,30 @@ const ChecklistEntry = ({ entry, entryId, listId }: ChecklistEntryParams) => {
 
 
   return (
-    <span style={{ display: "flex", flexDirection: "row", justifyContent: "center", gap: ".5rem" }}>
-      <span style={{ display: "flex", flex: 1, flexDirection: "row" }}>
-        <input
-          className={styles.input}
-          id={entryId}
-          type="checkbox"
-          checked={entry?.taken !== undefined}
-          onClick={({ currentTarget: { checked } }) => handleSelect(checked)}
-        />
-        <label className={styles.label} htmlFor={entryId}>
-          {entry?.text}
-        </label>
-        {entry?.taken !== undefined
-          ? (<span className={styles.giver}>(schenkt {entry.taken.giver || "jemand"})</span>)
+    <div className={`${styles.row} ${isTaken ? styles.taken : ""}`}>
+      <input
+        className={styles.input}
+        id={entryId}
+        type="checkbox"
+        checked={isTaken}
+        readOnly
+        onClick={({ currentTarget: { checked } }) => handleSelect(checked)}
+      />
+      <label className={styles.label} htmlFor={entryId}>
+        <span className={styles.text}>{entry?.text}</span>
+        {isTaken
+          ? (<span className={styles.giver}><Gift size={12} aria-hidden /> schenkt {entry.taken?.giver || "jemand"}</span>)
           : null}
-      </span>
+      </label>
       {entry?.link ?
-        <a href={entry.link} target="_blank" rel="noreferrer" className={styles.share}>
-          <Link />
+        <a href={entry.link} target="_blank" rel="noreferrer" className={styles.share} title="Link öffnen">
+          <ExternalLink size={16} />
         </a>
         : null}
-      <PriorityIcon priority={entry?.priority} />
-
-    </span >
+      <span className={styles.priority}>
+        <PriorityIcon priority={entry?.priority} />
+      </span>
+    </div>
   )
 }
 

@@ -29,6 +29,11 @@ const ForgotPassword = () => {
 
   return (
     <form className={styles.wrapper}>
+      <div className={styles.heading}>
+        <span className="eyebrow">Kein Problem</span>
+        <h1>Passwort vergessen?</h1>
+        <p>Wir schicken dir eine E-Mail, mit der du ein neues Passwort setzen kannst.</p>
+      </div>
       <label className={styles.inputlabel} htmlFor="email">
         Email
       </label>
@@ -42,7 +47,7 @@ const ForgotPassword = () => {
       />
 
       <span className={styles.buttonWrapper}>
-        <button type={"submit"} onClick={handleReset}>Passwort zurücksetzen</button>
+        <button type={"submit"} className="btn btn-primary btn-lg" onClick={handleReset}>Passwort zurücksetzen</button>
       </span>
     </form>
   )

@@ -77,6 +77,11 @@ const Login = () => {
 
   return (
     <form onSubmit={handleLogin} className={`${styles.wrapper} ${styles.darktext}`}>
+      <div className={styles.heading}>
+        <span className="eyebrow">Schön, dass du da bist</span>
+        <h1>Anmelden</h1>
+        <p>Wie möchtest du dich anmelden?</p>
+      </div>
       <label className={styles.inputlabel} htmlFor="email">
         Email
       </label>
@@ -90,9 +95,9 @@ const Login = () => {
       />
       {loginMethod === "pending" &&
         <div className={styles.loginMethods}>
-          <button onClick={() => setLoginMethod("password")}>Passwort eingeben</button>
-          <span> oder </span>
-          <button onClick={handleLoginWithLink}>Ohne Passwort anmelden</button>
+          <button type="button" className="btn btn-primary btn-lg" onClick={() => setLoginMethod("password")}>Passwort eingeben</button>
+          <span className={styles.divider}>oder</span>
+          <button type="button" className="btn btn-ghost btn-lg" onClick={handleLoginWithLink}>Link per E-Mail erhalten</button>
         </div>}
       {loginMethod === "password" && <>
         <label className={styles.inputlabel} htmlFor="current-password">
@@ -107,15 +112,14 @@ const Login = () => {
           placeholder="Passwort"
           autoFocus
         />
-        <Link className={`${styles.darktext} ${styles.sm}`} href={`forgot-password?email=${email}`}>Password vergessen?</Link>
-        <br />
+        <Link className={`${styles.darktext} ${styles.sm}`} href={`forgot-password?email=${email}`}>Passwort vergessen?</Link>
         <span className={styles.buttonWrapper}>
-          <button className={styles.secondary} type="button" onClick={() => router.push("/auth")}>E-Mail ändern</button>
-          <button type={"submit"}>Login</button>
+          <button className="btn btn-ghost" type="button" onClick={() => router.push("/auth")}>E-Mail ändern</button>
+          <button className="btn btn-primary" type={"submit"}>Anmelden</button>
         </span>
       </>}
       {loginMethod === "link" && <>
-        <p>Prüfe dein E-Mail Postfach!</p>
+        <p className={styles.notice}>Prüfe dein E-Mail-Postfach!</p>
       </>}
     </form>
   )

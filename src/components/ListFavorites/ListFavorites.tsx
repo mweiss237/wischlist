@@ -1,61 +1,58 @@
 "use client"
 
+import { ListCard } from "components/ListCard/ListCard"
+import cardStyles from "components/ListCard/ListCard.module.scss"
 import { useUser } from "lib/auth"
 import { useFavorites } from "lib/favorite"
 import Link from "next/link"
-import React from "react"
-import styles from "./ListFavorites.module.scss"
+import { Star } from "react-feather"
 
 const ListFavorites = () => {
   const { user } = useUser()
   const { favorites } = useFavorites()
 
-  const computeAccent = (id: string) => {
-    let h = 0
-    for (let i = 0; i < id.length; i++) {
-      h = (h * 31 + id.charCodeAt(i)) % 360
-    }
-    return `hsl(${h}, 65%, 55%)`
-  }
-
   if (!user) {
     return (
-      <p>
-        <Link href="/auth">Logge dich ein</Link>, um deine Favoriten sehen zu können.
-      </p>
+      <div className="empty_state paper">
+        <span className="eyebrow">Gemerkt</span>
+        <h2>Deine Favoriten</h2>
+        <p>Melde dich an, um die Listen anderer zu merken und schnell wiederzufinden.</p>
+        <Link href="/auth" className="btn btn-primary">Anmelden</Link>
+      </div>
     )
   }
 
-  return (
-    <div className={styles.list}>
-      <div className={styles.grid}>
-        {Object.keys(favorites || {}).map((listId) => {
-          const favorite = (favorites || {})[listId]
-          const accent = computeAccent(listId)
-          const style = { ['--accent' as any]: accent } as React.CSSProperties
+  const favoriteEntries = Object.entries(favorites || {})
 
-          return (
-            <Link
-              href={`/list/${listId}/share`}
+  return (
+    <>
+      <header className="page_header">
+        <span className="eyebrow">Gemerkt</span>
+        <h1>Favoriten</h1>
+        <p>Wunschlisten von Familie und Freunden, die du dir mit dem Stern gemerkt hast.</p>
+      </header>
+
+      {favoriteEntries.length ? (
+        <div className={cardStyles.grid}>
+          {favoriteEntries.map(([listId, favorite]) => (
+            <ListCard
               key={listId}
               id={listId}
-              className={styles.card}
-              style={style}
-            >
-              <div className={styles.cardHeader} aria-hidden>
-                <div className={styles.emoji}>⭐</div>
-              </div>
-              <div className={styles.cardBody}>
-                <h3 className={styles.title}>{favorite?.title || 'Unnamed'}</h3>
-                <div className={styles.meta}>
-                  <span className={styles.badge}>Favorit</span>
-                </div>
-              </div>
-            </Link>
-          )
-        })}
-      </div>
-    </div>
+              href={`/list/${listId}/share`}
+              title={favorite?.title}
+              badge="Favorit"
+              variant="favorite"
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="empty_state paper">
+          <Star size={28} style={{ color: "var(--gold)" }} aria-hidden />
+          <h2>Noch keine Favoriten</h2>
+          <p>Öffne eine geteilte Liste und tippe auf den Stern, um sie hier zu sammeln.</p>
+        </div>
+      )}
+    </>
   )
 }
 

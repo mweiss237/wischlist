@@ -3,7 +3,6 @@
 import React from 'react'
 import styles from "./Checklist.module.scss"
 import ChecklistEntry from "./ChecklistEntry"
-import { Indie_Flower } from "next/font/google"
 import { useEntries } from "lib/entries"
 import { useGiver } from "lib/giver"
 import Loading from "components/Loading/Loading"
@@ -14,11 +13,8 @@ import { useUser } from 'lib/auth'
 import Favorite from './Favorite'
 import { useFavorites } from 'lib/favorite'
 import Link from 'next/link'
-
-
-
-
-const indieFlower = Indie_Flower({ weight: "400", subsets: ["latin"] })
+import { Calendar } from 'react-feather'
+import { describeCountdown, formatEventDate } from 'lib/date'
 
 interface ChecklistParams {
   params: {
@@ -62,82 +58,74 @@ const Checklist = ({ params }: ChecklistParams) => {
   )
 
   return (
-    <>
-      <h1
-        className={`crit_header_title ${styles.headline} ${indieFlower.className}`}
-      >
-        Ich wünsche mir...
-      </h1>
-      <div className={styles.giverWrapper}>
-        {user === null ? (<>
-          <p className={styles.info}>
-            Wenn du möchtest, kannst du hier deinen Namen eintragen,
-            um anderen zu zeigen, was du schenkst:
-          </p>
-          <span>
-            <span>Ich bin </span>
-            <input
-              type="text"
-              className="crit_textinput"
-              placeholder="anonym"
-              disabled={loading || user !== null}
-              value={giverName || ""}
-              onChange={(event) => setName(event.currentTarget.value)}
-            />
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <span className="eyebrow">Ich wünsche mir…</span>
+        <h1 className={styles.title}>{(isShared && list?.title) || "Wunschliste"}</h1>
+        {isShared && list?.eventDate ? (
+          <span className="chip chip-gold">
+            <Calendar size={12} aria-hidden /> {formatEventDate(list.eventDate)} · {describeCountdown(list.eventDate)}
           </span>
-        </>
+        ) : null}
+      </header>
+
+      <div className={styles.giverWrapper}>
+        {user === null ? (
+          <>
+            <label className={styles.giverField}>
+              <span>Ich bin</span>
+              <input
+                type="text"
+                className="crit_textinput"
+                placeholder="anonym"
+                disabled={loading || user !== null}
+                value={giverName || ""}
+                onChange={(event) => setName(event.currentTarget.value)}
+              />
+            </label>
+            <p className={styles.info}>
+              Trag deinen Namen ein, damit andere sehen, was du schenkst.
+            </p>
+          </>
         ) : (
-          <p>
-            <i>
-              Du schenkst als  <Link href={"/profile"}>{user.displayName}</Link>
-            </i>
+          <p className={styles.giverField}>
+            Du schenkst als <Link href={"/profile"} className="link">{user.displayName}</Link>
           </p>
-        )
-        }
-
-        <p className={styles.info}>
-          Mit den folgenden Symbolen werden Wunschprioritäten dargestellt:
-          <br />
-          <PriorityIcon priority={Priority.high} /> Hoch
-          <br />
-          <PriorityIcon priority={Priority.medium} /> Mittel
-          <br />
-          <PriorityIcon priority={Priority.low} /> Niedrig
-
-        </p>
-
+        )}
       </div>
-      <div className={styles.checklist_wrapper}>
-        <Favorite 
-          isFavorite={isFavorite} 
-          setIsFavorite={() => isFavorite ? removeFavorite(listId) : addFavorite(listId, list?.title || "")} 
+
+      <div className={`${styles.checklist_wrapper} paper`}>
+        <span className={styles.tape} aria-hidden />
+        {user ? (
+          <Favorite
+            isFavorite={isFavorite}
+            setIsFavorite={() => isFavorite ? removeFavorite(listId) : addFavorite(listId, list?.title || "")}
           />
-        <div className={`${styles.checklist} ${isBlurred && styles.blurry}`}>
+        ) : null}
+        <div className={`${styles.checklist} ${isBlurred ? styles.blurry : ""}`}>
           {
             isShared ?
               !entries || !list ? <Loading className={styles.centered} /> :
-                <>
-                  <div className='d-flex'>
-                    <h3 className={`${indieFlower.className} ${styles.headline} ${styles.invertColor}`}>{list?.title}</h3>
-                  </div>
-                  {sortedEntryIds.map((entryId) => {
-                    return (
-                      <ChecklistEntry
-                        entry={entries[entryId]}
-                        entryId={entryId}
-                        listId={listId}
-                        key={`wish${entryId}`}
-                      />
-                    )
-                  })}
-                </>
-
-              : <p className={styles.invertColor}>Liste wird aktuell nicht geteilt.</p>
+                sortedEntryIds.map((entryId) => (
+                  <ChecklistEntry
+                    entry={entries[entryId]}
+                    entryId={entryId}
+                    listId={listId}
+                    key={`wish${entryId}`}
+                  />
+                ))
+              : <p className={styles.notShared}>Diese Liste wird aktuell nicht geteilt.</p>
           }
         </div>
 
+        <footer className={styles.legend}>
+          <span>Priorität:</span>
+          <span><PriorityIcon priority={Priority.high} /> Hoch</span>
+          <span><PriorityIcon priority={Priority.medium} /> Mittel</span>
+          <span><PriorityIcon priority={Priority.low} /> Niedrig</span>
+        </footer>
       </div>
-    </>
+    </div>
   )
 }
 

@@ -1,69 +1,102 @@
 .wrapper {
-    display: flex;
     position: absolute;
-    flex-direction: column;
-    align-self: flex-end;
+    top: 8px;
+    right: 8px;
+    z-index: 3;
+}
+
+.toggle {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--muted);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition:
+        color 0.18s var(--ease),
+        border-color 0.18s var(--ease),
+        box-shadow 0.18s var(--ease);
+
+    &:hover,
+    &.open {
+        color: var(--text);
+        border-color: var(--gold);
+        box-shadow: var(--shadow-md);
+    }
 }
 
 .entries {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
     display: flex;
-    margin-top: 33px;
-    opacity: 0.3;
-    transform: translateY(-50%) scaleY(0);
-    transition:
-        transform 0.25s,
-        opacity 0.2s;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
+    min-width: 170px;
+    padding: 0.35rem;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    box-shadow: var(--shadow-lg);
+    transform-origin: top right;
+    transform: scale(0.94) translateY(-4px);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+        transform 0.18s var(--ease),
+        opacity 0.18s var(--ease),
+        visibility 0s linear 0.18s;
 
     &.active {
-        transform: translateY(0%) scaleY(1);
+        transform: none;
         opacity: 1;
+        visibility: visible;
+        transition-delay: 0s;
     }
 }
 
 .entry {
+    --active: var(--primary);
     display: flex;
-    background: none;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.6rem;
     border: none;
-    background-color: white;
-    padding: 2px;
-    margin: 0 3px;
-    border: 1px solid gray;
-    border-radius: 10px;
+    border-radius: 9px;
+    background: none;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.88rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.15s var(--ease);
 
     svg {
-        height: 20px;
-        width: 20px;
+        width: 18px;
+        height: 18px;
+        color: var(--active);
+    }
+
+    &:hover {
+        background: var(--surface-2);
     }
 }
 
-.toggle {
-    display: flex;
-    position: absolute;
-    background: none;
-    border: none;
-    align-self: flex-end;
-    transform: translateY(3px) translateX(-3px);
-    background-color: white;
-    padding: 2px;
-    border: 1px solid gray;
-    border-radius: 7px;
-    opacity: 0.3;
-    transition: background-color 0.2s;
+.entryActive {
+    font-weight: 600;
+    background: color-mix(in srgb, var(--active) 14%, transparent);
 
-    &.active {
-        opacity: 0.8;
-        background-color: #5ac45a;
-    }
-}
-
-.toggle:hover {
-    opacity: 1;
-
-    > label {
-        padding: 0 5px;
-        width: 20px;
-        opacity: 1;
+    &::after {
+        content: "";
+        width: 7px;
+        height: 7px;
+        margin-left: auto;
+        border-radius: 50%;
+        background: var(--active);
     }
 }
