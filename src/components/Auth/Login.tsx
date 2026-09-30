@@ -77,7 +77,7 @@ const Login = () => {
 
   return (
     <form onSubmit={handleLogin} className={`${styles.wrapper} ${styles.darktext}`}>
-      <label className={styles.inputlabel} htmlFor="#email">
+      <label className={styles.inputlabel} htmlFor="email">
         Email
       </label>
       <input
@@ -95,7 +95,7 @@ const Login = () => {
           <button onClick={handleLoginWithLink}>Ohne Passwort anmelden</button>
         </div>}
       {loginMethod === "password" && <>
-        <label className={styles.inputlabel} htmlFor="#current-password">
+        <label className={styles.inputlabel} htmlFor="current-password">
           Passwort
         </label>
         <input

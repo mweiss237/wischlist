@@ -123,6 +123,7 @@ const Checklist = ({ params }: ChecklistParams) => {
                   {sortedEntryIds.map((entryId) => {
                     return (
                       <ChecklistEntry
+                        entry={entries[entryId]}
                         entryId={entryId}
                         listId={listId}
                         key={`wish${entryId}`}

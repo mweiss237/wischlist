@@ -35,7 +35,7 @@ const AuthDecision = () => {
 
     return (
         <form className={styles.wrapper}>
-            <label className={styles.inputlabel} htmlFor="#email">
+            <label className={styles.inputlabel} htmlFor="email">
                 E-Mail
             </label>
             <input

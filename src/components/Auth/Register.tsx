@@ -40,7 +40,7 @@ const Register = () => {
 
   return (
     <form onSubmit={handleSignup} className={styles.wrapper}>
-      <label className={styles.inputlabel} htmlFor="#email">
+      <label className={styles.inputlabel} htmlFor="email">
         E-Mail
       </label>
       <input
@@ -51,7 +51,7 @@ const Register = () => {
         placeholder="E-Mail"
         disabled
       />
-      <label className={styles.inputlabel} htmlFor="#username">
+      <label className={styles.inputlabel} htmlFor="username">
         Nutzername
       </label>
       <input
@@ -63,7 +63,7 @@ const Register = () => {
         placeholder="Benutzername"
         disabled={loading}
       />
-      <label className={styles.inputlabel} htmlFor="#password">
+      <label className={styles.inputlabel} htmlFor="password">
         Passwort
       </label>
       <input

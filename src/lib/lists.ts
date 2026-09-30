@@ -1,8 +1,9 @@
-import { ref, onValue, push, child, remove, query, equalTo, orderByChild } from "firebase/database"
+import { ref, onValue, push, child, query, equalTo, orderByChild } from "firebase/database"
 import { useCallback, useEffect, useState } from "react";
 import { List } from "types";
 import { useUser } from "./auth";
 import { database } from "./firebase"
+import { deleteListWithEntries } from "./list";
 
 export const useLists = () => {
 
@@ -12,17 +13,20 @@ export const useLists = () => {
     const userId = user?.uid
 
     useEffect(() => {
+        setLists(null)
         if (!userId) return
-        const listsRef = query(ref(database, `lists`), ...[orderByChild("userId"), equalTo(userId)]);
-        const unsubscriber = onValue(listsRef, (snapshot) => {
-            const data = snapshot.val();
-            setLists(data)
-        });
+        const listsRef = query(ref(database, `lists`), orderByChild("userId"), equalTo(userId));
+        const unsubscriber = onValue(
+            listsRef,
+            (snapshot) => setLists(snapshot.val()),
+            (error) => console.error("[rtdb] lists", error)
+        );
 
         return unsubscriber
     }, [userId])
 
     const addList = useCallback((listName: string) => {
+        if (!userId) return
         push(child(ref(database), `lists`), {
             title: listName,
             userId,
@@ -33,9 +37,7 @@ export const useLists = () => {
         });
     }, [userId])
 
-    const removeList = useCallback((listId: string) => {
-        remove(ref(database, `lists/${listId}`));
-    }, [])
+    const removeList = useCallback((listId: string) => deleteListWithEntries(listId), [])
 
     return { lists, addList, removeList }
 }

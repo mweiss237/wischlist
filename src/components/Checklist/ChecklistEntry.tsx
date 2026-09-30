@@ -1,17 +1,18 @@
 import { useUser } from "lib/auth"
-import { useEntry } from "lib/entries"
+import { pickEntry, unpickEntry } from "lib/entries"
 import { useGiver } from "lib/giver"
 import { Link } from "react-feather"
+import { Entry } from "types"
 import styles from "./ChecklistEntry.module.scss"
 import PriorityIcon from "./Priority"
 
 interface ChecklistEntryParams {
+  entry: Entry
   entryId: string
   listId: string
 }
 
-const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
-  const { entry, pick, unpick } = useEntry(listId, entryId)
+const ChecklistEntry = ({ entry, entryId, listId }: ChecklistEntryParams) => {
 
   const { giverName } = useGiver()
   const { user } = useUser()
@@ -25,12 +26,16 @@ const ChecklistEntry = ({ entryId, listId }: ChecklistEntryParams) => {
         return alert(`Dieser Eintrag kann nur von ${entry?.taken?.giver} geändert werden! \nFalls das du warst, kontrolliere deinen Namen oben in der Liste.`)
 
       if (confirm("Bist du sicher, dass du diesen Eintrag wirklich wieder freigeben möchtest?"))
-        unpick()
+        unpickEntry(listId, entryId).catch(() => alert("Eintrag konnte nicht freigegeben werden."))
 
       return
     }
 
-    return pick(userName)
+    pickEntry(listId, entryId, userName)
+      .then((committed) => {
+        if (!committed) alert("Dieser Eintrag wurde bereits von jemand anderem vergeben.")
+      })
+      .catch(() => alert("Eintrag konnte nicht ausgewählt werden."))
   }
 
 
