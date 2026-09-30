@@ -28,6 +28,13 @@ import Checkbox from "./ListOptions"
 
 const indieFlowerFont = Indie_Flower({ weight: "400", subsets: ["latin"] })
 
+const todayIsoDate = () => {
+  const now = new Date()
+  const month = String(now.getMonth() + 1).padStart(2, "0")
+  const day = String(now.getDate()).padStart(2, "0")
+  return `${now.getFullYear()}-${month}-${day}`
+}
+
 const List = ({ params }: { params: { listId: string } }) => {
   const router = useRouter()
   const { user, loading } = useUser()
@@ -46,26 +53,30 @@ const List = ({ params }: { params: { listId: string } }) => {
     })
   )
 
-  const { list, updateListTitle, deleteList, updateListOptions } =
-    useList(listId)
-  const { entries, addEntry, removeEntry, updateEntry, reorderEntries } =
-    useEntries(listId)
+  const {
+    list,
+    updateListTitle,
+    updateListEventDate,
+    deleteList,
+    updateListOptions,
+  } = useList(listId)
+  const {
+    entries,
+    addEntry,
+    removeEntry,
+    removeEntries,
+    updateEntry,
+    reorderEntries,
+  } = useEntries(listId)
 
-  const alreadyPickedSome = React.useMemo(
+  const takenEntryIds = React.useMemo(
     () =>
-      Object.values(entries || {}).some(
-        (entry) => entry.taken?.timestamp !== undefined
+      Object.entries(entries || {}).flatMap(([id, entry]) =>
+        entry.taken?.timestamp ? [id] : []
       ),
     [entries]
   )
-
-  const takenEntries = React.useMemo(
-    () =>
-      Object.values(entries || {}).filter(
-        (entry) => entry.taken !== undefined && entry.taken.timestamp
-      ),
-    [entries]
-  )
+  const alreadyPickedSome = takenEntryIds.length > 0
 
   const [isClicked, setClicked] = useState(false)
   const [isShareAvailable, setShareAvailable] = useState(false)
@@ -119,6 +130,26 @@ const List = ({ params }: { params: { listId: string } }) => {
 
   const handleBlurListName = () => updateListTitle(listName || "")
 
+  const handleChangeEventDate: React.ChangeEventHandler<HTMLInputElement> = (
+    event
+  ) => updateListEventDate(event.target.value || null)
+
+  // only reveal which entries were taken once the occasion is over
+  const isEventOver = !!list?.eventDate && list.eventDate < todayIsoDate()
+
+  const handleRemoveTakenEntries = () => {
+    if (
+      confirm(
+        `${takenEntryIds.length} reservierte Wünsche endgültig von der Liste entfernen?`
+      )
+    ) {
+      removeEntries(takenEntryIds).catch((error) => {
+        console.error("[rtdb] remove taken entries", error)
+        alert("Reservierte Wünsche konnten nicht entfernt werden.")
+      })
+    }
+  }
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
 
@@ -158,7 +189,12 @@ const List = ({ params }: { params: { listId: string } }) => {
           className={`${indieFlowerFont.className} ${styles.pickedInfo} crit_centered`}
         >
           <Gift size={30} stroke="#00231C" fill="#FF9F00" />
-          <p>Bereits {takenEntries.length} Wünsche reserviert!</p>
+          <p>Bereits {takenEntryIds.length} Wünsche reserviert!</p>
+          {isEventOver ? (
+            <button className="crit_button" onClick={handleRemoveTakenEntries}>
+              Reservierte entfernen
+            </button>
+          ) : null}
         </div>
       ) : null}
       <DeleteTrashCan onDelete={handleDeleteList} />
@@ -193,6 +229,18 @@ const List = ({ params }: { params: { listId: string } }) => {
                 updateListOptions({ blurForOwner: !isListBlurry })
               }}
             />
+            <label
+              className={styles.eventDate}
+              title="Nach diesem Datum können reservierte Wünsche entfernt werden"
+            >
+              Anlass am
+              <input
+                type="date"
+                value={list?.eventDate || ""}
+                onChange={handleChangeEventDate}
+                className="crit_textinput"
+              />
+            </label>
           </div>
 
           <div

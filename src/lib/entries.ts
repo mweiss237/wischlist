@@ -28,6 +28,12 @@ export const useEntries = (listId: string) => {
         remove(ref(database, `entries/${listId}/${entryId}`))
         , [listId])
 
+    const removeEntries = useCallback((entryIds: string[]) =>
+        update(ref(database, `entries/${listId}`),
+            Object.fromEntries(entryIds.map((entryId) => [entryId, null]))
+        )
+        , [listId])
+
     const updateEntry = useCallback((entryId: string, entry: Partial<Entry>) =>
         update(ref(database, `entries/${listId}/${entryId}`), entry)
         , [listId])
@@ -39,7 +45,7 @@ export const useEntries = (listId: string) => {
         )
         , [listId])
 
-    return { entries, addEntry, removeEntry, updateEntry, reorderEntries }
+    return { entries, addEntry, removeEntry, removeEntries, updateEntry, reorderEntries }
 }
 
 /**

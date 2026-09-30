@@ -34,6 +34,12 @@ export const useList = (listId: string) => {
         })
         , [listId])
 
+    const updateListEventDate = useCallback((eventDate: string | null) =>
+        update(ref(database, `${PATH}/${listId}`), {
+            eventDate,
+        })
+        , [listId])
+
     const deleteList = useCallback(() => deleteListWithEntries(listId), [listId])
 
     const updateListOptions = useCallback((options: Partial<ListOptions>) =>
@@ -42,6 +48,6 @@ export const useList = (listId: string) => {
         })
         , [listId])
 
-    return { list, updateListTitle, deleteList, updateListOptions }
+    return { list, updateListTitle, updateListEventDate, deleteList, updateListOptions }
 
 }

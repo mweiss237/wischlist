@@ -12,6 +12,14 @@
   margin-top: 1em;
   gap: 1em;
   align-content: center;
+  flex-wrap: wrap;
+}
+
+.eventDate {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 4px;
 }
 
 .list {

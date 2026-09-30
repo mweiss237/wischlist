@@ -1,0 +1,42 @@
+{
+  "rules": {
+    "entries": {
+      "$listId": {
+        ".read": "root.child('lists').child($listId).child('options/isShared').val() === true || (auth != null && root.child('lists').child($listId).child('userId').val() === auth.uid)",
+        ".write": "auth != null && root.child('lists').child($listId).child('userId').val() === auth.uid",
+        "$entryId": {
+          "taken": {
+            ".write": "data.exists() ? !newData.exists() : root.child('lists').child($listId).child('options/isShared').val() === true && data.parent().child('text').exists()",
+            ".validate": "newData.hasChildren(['timestamp'])",
+            "timestamp": {
+              ".validate": "newData.isString() && newData.val().length <= 30"
+            },
+            "giver": {
+              ".validate": "newData.isString() && newData.val().length <= 100"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      }
+    },
+    "lists": {
+      ".read": "auth != null && query.orderByChild == 'userId' && query.equalTo == auth.uid",
+      ".indexOn": ["userId"],
+      "$listId": {
+        ".read": true,
+        ".write": "auth != null && (data.exists() ? data.child('userId').val() === auth.uid : newData.child('userId').val() === auth.uid)",
+        "eventDate": {
+          ".validate": "newData.isString() && newData.val().matches(/^(19|20)[0-9][0-9]-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/)"
+        }
+      }
+    },
+    "favorites": {
+      "$userId": {
+        ".read": "auth != null && auth.uid === $userId",
+        ".write": "auth != null && auth.uid === $userId"
+      }
+    }
+  }
+}
