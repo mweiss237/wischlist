@@ -9,7 +9,8 @@
   margin: 3rem auto;
   padding: 2em;
   box-shadow: 0 0 5px lightslategray;
-  background-color: white;
+  background-color: var(--surface);
+  color: var(--text);
 }
 
 .buttonWrapper {
@@ -21,7 +22,7 @@
 .inputlabel {
   opacity: 0;
   font-size: small;
-  color: #333;
+  color: var(--muted);
   transition: opacity 0.2s;
 
   /* show label when next input is filled */
@@ -31,7 +32,8 @@
 }
 
 .textfield {
-  background-color: #f5f5f5;
+  background-color: color-mix(in srgb, var(--text) 5%, var(--surface));
+  color: var(--text);
   outline-width: 0;
   padding: 0.5em;
   margin-bottom: 1em;
@@ -40,12 +42,21 @@
   transition: background-color 0.2s;
 
   &:focus {
-    background-color: #eee;
+    background-color: color-mix(in srgb, var(--text) 9%, var(--surface));
+  }
+
+  &::placeholder {
+    color: var(--muted);
+  }
+
+  &:disabled {
+    color: var(--muted);
+    opacity: 1;
   }
 }
 
 .darktext {
-  color: #333;
+  color: var(--text);
 }
 
 .sm {
