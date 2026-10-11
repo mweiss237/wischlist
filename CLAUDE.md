@@ -86,7 +86,10 @@ favorites/{uid}/{listId}   { title }
   nur ihre `gifts` werden geleert.
 
 ## Konventionen
-- Die UI-Sprache ist Deutsch (Labels, `confirm`, `prompt`, Metadaten). Neue Texte auf Deutsch schreiben.
+- Die UI-Sprache ist Deutsch (Labels, Dialoge, Metadaten). Neue Texte auf Deutsch schreiben.
+- Keine nativen Browser-Dialoge (`alert`, `confirm`, `prompt`; per ESLint `no-alert` gesperrt).
+  Hinweise und Rückfragen laufen über `useDialog()` aus `components/Dialog/Dialog` (`alert()`, `confirm()`,
+  beide als Promise, `danger: true` für Löschen). Texteingaben kommen inline über `components/InlinePrompt/InlinePrompt`.
 - Dateien sind UTF-8 kodiert und enthalten Umlaute. Beim Bearbeiten nicht umkodieren.
 - Komponenten mit Hooks oder Browser-APIs bekommen `"use client"`.
 - Prettier: kein Semikolon, doppelte Anführungszeichen, 2 Spaces, `trailingComma: es5`.

@@ -2,6 +2,7 @@
 import AddCard from "components/AddCard/AddCard"
 import Card from "components/Card/Card"
 import { DeleteTrashCan } from "components/DeleteTrashCan/DeleteTrashCan"
+import { useDialog } from "components/Dialog/Dialog"
 import Loading from "components/Loading/Loading"
 import { useUser } from "lib/auth"
 import { useEntries } from "lib/entries"
@@ -31,6 +32,7 @@ import { describeCountdown, formatEventDate, todayIsoDate } from "lib/date"
 const List = ({ params }: { params: { listId: string } }) => {
   const router = useRouter()
   const { user, loading } = useUser()
+  const dialog = useDialog()
 
   const { listId } = params
 
@@ -93,25 +95,41 @@ const List = ({ params }: { params: { listId: string } }) => {
     }
   }, [list, setListName, setListShared, setListBlurry])
 
-  React.useEffect(() => {
-    if (!loading && user !== null && list && user.uid !== list.userId) {
-      alert("⛔ Diese Liste gehört einem anderen Account! ⛔")
-      router.replace("/list")
-    }
-  }, [user, list, router, loading])
+  // the dialog is not blocking, so the effect could fire again before the redirect is done
+  const isRedirecting = React.useRef(false)
 
-  const handleDeleteList = useCallback(() => {
+  React.useEffect(() => {
     if (
-      confirm("Möchtest du diese Liste wirklich unwiederbringlich löschen?")
+      !isRedirecting.current &&
+      !loading &&
+      user !== null &&
+      list &&
+      user.uid !== list.userId
     ) {
+      isRedirecting.current = true
+      router.replace("/list")
+      dialog.alert("Diese Liste gehört einem anderen Account.", {
+        title: "Kein Zugriff",
+      })
+    }
+  }, [user, list, router, loading, dialog])
+
+  const handleDeleteList = useCallback(async () => {
+    const confirmed = await dialog.confirm(
+      "Die Liste und alle Wünsche darauf werden unwiederbringlich gelöscht.",
+      { title: "Liste löschen?", confirmLabel: "Löschen", danger: true }
+    )
+    if (confirmed) {
       deleteList()
         .then(() => router.replace("/list"))
         .catch((error) => {
           console.error("[rtdb] delete list", error)
-          alert("Liste konnte nicht gelöscht werden.")
+          dialog.alert("Liste konnte nicht gelöscht werden.", {
+            title: "Hoppla",
+          })
         })
     }
-  }, [deleteList, router])
+  }, [deleteList, router, dialog])
 
   if (
     loading ||
@@ -133,7 +151,7 @@ const List = ({ params }: { params: { listId: string } }) => {
   const isEventOver = !!list?.eventDate && list.eventDate < todayIsoDate()
 
   // multi entries ("Dauerbrenner") stay on the list for the next occasion, only their gifts are cleared
-  const handleRemoveTakenEntries = () => {
+  const handleRemoveTakenEntries = async () => {
     const multiEntryIds = takenEntryIds.filter((id) => entries?.[id]?.multi)
     const closedEntryIds = takenEntryIds.filter((id) => !entries?.[id]?.multi)
 
@@ -147,10 +165,17 @@ const List = ({ params }: { params: { listId: string } }) => {
             : "",
         ].join(" ").trim()
 
-    if (confirm(message)) {
+    const confirmed = await dialog.confirm(message, {
+      title: "Reservierte entfernen?",
+      confirmLabel: closedEntryIds.length ? "Entfernen" : "Freigeben",
+      danger: closedEntryIds.length > 0,
+    })
+    if (confirmed) {
       resetEntries(closedEntryIds, multiEntryIds).catch((error) => {
         console.error("[rtdb] remove taken entries", error)
-        alert("Reservierte Wünsche konnten nicht entfernt werden.")
+        dialog.alert("Reservierte Wünsche konnten nicht entfernt werden.", {
+          title: "Hoppla",
+        })
       })
     }
   }
@@ -369,7 +394,10 @@ const List = ({ params }: { params: { listId: string } }) => {
                           setEntryMulti(id, entry, !entry.multi).catch(
                             (error) => {
                               console.error("[rtdb] toggle multi entry", error)
-                              alert("Wunsch konnte nicht geändert werden.")
+                              dialog.alert(
+                                "Wunsch konnte nicht geändert werden.",
+                                { title: "Hoppla" }
+                              )
                             }
                           )
                         }}

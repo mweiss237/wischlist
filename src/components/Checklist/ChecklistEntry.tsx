@@ -1,3 +1,4 @@
+import { useDialog } from "components/Dialog/Dialog"
 import { useUser } from "lib/auth"
 import { pickEntry, removeGift, unpickEntry } from "lib/entries"
 import { useGiver } from "lib/giver"
@@ -17,6 +18,7 @@ const ChecklistEntry = ({ entry, entryId, listId }: ChecklistEntryParams) => {
 
   const { giverName, ownGiftIds, forgetGift } = useGiver()
   const { user } = useUser()
+  const dialog = useDialog()
 
   const userName = user?.displayName || giverName
   const isTaken = isEntryClosed(entry)
@@ -26,37 +28,51 @@ const ChecklistEntry = ({ entry, entryId, listId }: ChecklistEntryParams) => {
     ? [entry.taken.giver || "jemand"]
     : gifts.map(([, gift]) => gift.giver || "jemand")
 
-  const handleRemoveOwnGift = () => {
+  const alertNotOwn = (owners: string) => dialog.alert(
+    `Dieser Eintrag kann nur von ${owners} geändert werden.\nFalls das du warst, kontrolliere deinen Namen oben in der Liste.`,
+    { title: "Nicht deine Zusage" }
+  )
+
+  const handleRemoveOwnGift = async () => {
     const ownGift = gifts.find((gift) => isOwnGift(gift, ownGiftIds, userName))
-    if (!ownGift)
-      return alert(`Dieser Eintrag kann nur von ${givers.join(", ")} geändert werden! \nFalls das du warst, kontrolliere deinen Namen oben in der Liste.`)
+    if (!ownGift) return alertNotOwn(givers.join(", "))
 
     const [giftId] = ownGift
-    if (confirm("Möchtest du deine Zusage wirklich zurückziehen?"))
+    const confirmed = await dialog.confirm("Deine Zusage wird von der Liste entfernt.", {
+      title: "Zusage zurückziehen?",
+      confirmLabel: "Zurückziehen",
+      danger: true,
+    })
+    if (confirmed)
       removeGift(listId, entryId, giftId)
         .then(() => forgetGift(giftId))
-        .catch(() => alert("Zusage konnte nicht entfernt werden."))
+        .catch(() => dialog.alert("Zusage konnte nicht entfernt werden.", { title: "Hoppla" }))
   }
 
-  const handleSelect = (selected: boolean) => {
+  const handleSelect = async (selected: boolean) => {
 
     if (!selected && gifts.length) return handleRemoveOwnGift()
 
     if (!selected) {
       if (entry?.taken?.giver && entry?.taken?.giver.trim() !== userName?.trim())
-        return alert(`Dieser Eintrag kann nur von ${entry?.taken?.giver} geändert werden! \nFalls das du warst, kontrolliere deinen Namen oben in der Liste.`)
+        return alertNotOwn(entry.taken.giver)
 
-      if (confirm("Bist du sicher, dass du diesen Eintrag wirklich wieder freigeben möchtest?"))
-        unpickEntry(listId, entryId).catch(() => alert("Eintrag konnte nicht freigegeben werden."))
+      const confirmed = await dialog.confirm("Der Wunsch ist danach wieder für andere frei.", {
+        title: "Eintrag wieder freigeben?",
+        confirmLabel: "Freigeben",
+        danger: true,
+      })
+      if (confirmed)
+        unpickEntry(listId, entryId).catch(() => dialog.alert("Eintrag konnte nicht freigegeben werden.", { title: "Hoppla" }))
 
       return
     }
 
     pickEntry(listId, entryId, userName)
       .then((committed) => {
-        if (!committed) alert("Dieser Eintrag wurde bereits von jemand anderem vergeben.")
+        if (!committed) dialog.alert("Dieser Eintrag wurde bereits von jemand anderem vergeben.", { title: "Schon vergeben" })
       })
-      .catch(() => alert("Eintrag konnte nicht ausgewählt werden."))
+      .catch(() => dialog.alert("Eintrag konnte nicht ausgewählt werden.", { title: "Hoppla" }))
   }
 
 

@@ -2,6 +2,7 @@
 
 import React, { useEffect } from "react"
 import styles from "./Auth.module.scss"
+import { useDialog } from "components/Dialog/Dialog"
 import { useAuth, useUser } from "lib/auth"
 import { useRouter, useSearchParams } from "next/navigation"
 
@@ -10,6 +11,7 @@ const ForgotPassword = () => {
   const { resetPassword } = useAuth()
   const router = useRouter()
   const { get } = useSearchParams()
+  const dialog = useDialog()
   const [email, setEmail] = React.useState(get("email") || "")
 
   const handleReset: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
@@ -18,7 +20,7 @@ const ForgotPassword = () => {
     if (!email) return
 
     resetPassword(email)
-    alert("Eine Email zum Passwort zurücksetzen wurde an die eingetragene Adresse verschickt.")
+    await dialog.alert("Wir haben dir eine E-Mail zum Zurücksetzen deines Passworts geschickt.", { title: "E-Mail ist unterwegs" })
 
     router.push(`/auth?email=${email}`)
   }

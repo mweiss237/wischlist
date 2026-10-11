@@ -42,14 +42,6 @@ const Checklist = ({ params }: ChecklistParams) => {
 
   const isFavorite = checkIsFavorite(listId)
 
-
-  React.useEffect(() => {
-    if (!loading && !user && giverName === null) {
-      const name = prompt("Möchtest du deinen Namen hinterlegen?")
-      setName(name || "")
-    }
-  }, [giverName, loading, setName, user])
-
   const sortOrder = list?.options?.sortOrder
   const sortedEntryIds = React.useMemo(() =>
     sortEntries(entries, sortOrder).map(([id]) => id),
@@ -77,12 +69,15 @@ const Checklist = ({ params }: ChecklistParams) => {
                 type="text"
                 className="crit_textinput"
                 placeholder="anonym"
+                maxLength={100}
+                autoComplete="name"
+                aria-describedby="giver-info"
                 disabled={loading || user !== null}
                 value={giverName || ""}
                 onChange={(event) => setName(event.currentTarget.value)}
               />
             </label>
-            <p className={styles.info}>
+            <p id="giver-info" className={styles.info}>
               Trag deinen Namen ein, damit andere sehen, was du schenkst.
             </p>
           </>

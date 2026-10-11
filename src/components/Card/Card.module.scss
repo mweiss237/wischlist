@@ -168,6 +168,20 @@
   color: color-mix(in srgb, var(--gold) 80%, var(--text));
 }
 
+/* link field lies on the lower part of the note, the wish text stays readable */
+.linkPrompt {
+  position: absolute;
+  z-index: 4;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  padding: 0.55rem;
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  box-shadow: var(--shadow-md);
+}
+
 .saveWish {
   position: absolute;
   z-index: 2;

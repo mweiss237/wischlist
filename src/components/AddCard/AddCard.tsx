@@ -1,5 +1,6 @@
 "use client"
 
+import { useDialog } from "components/Dialog/Dialog"
 import { useUser } from "lib/auth"
 import React from "react"
 import { Plus } from "react-feather"
@@ -12,9 +13,10 @@ interface AddCardParams {
 
 const AddCard = ({ callback }: AddCardParams) => {
   const { user, loading } = useUser()
+  const dialog = useDialog()
   const addEmptyCard = () => {
     if (!loading && !user) {
-      alert("Bitte einloggen!")
+      dialog.alert("Bitte melde dich an, um Wünsche hinzuzufügen.", { title: "Nicht angemeldet" })
       return
     }
     callback()

@@ -1,5 +1,7 @@
 "use client"
 
+import { useDialog } from "components/Dialog/Dialog"
+import InlinePrompt from "components/InlinePrompt/InlinePrompt"
 import Menu from "components/Menu/Menu"
 import React from "react"
 import { Priority } from "types"
@@ -25,6 +27,7 @@ const Card = ({ id, value = "", link, priority, multi, onDelete, onSave, onAddLi
   const [pristine, setPristine] = React.useState(false)
   const [dragable, setDragable] = React.useState(true)
   const [text, setText] = React.useState(value)
+  const dialog = useDialog()
   const handler = {
     save: () => {
       onSave(id, text)
@@ -35,10 +38,14 @@ const Card = ({ id, value = "", link, priority, multi, onDelete, onSave, onAddLi
       setPristine(text === changedText ? false : true)
       setText(changedText)
     },
-    remove: () => {
+    remove: async () => {
       if (!text) return onDelete(id)
 
-      const doDelete = confirm("Eintrag von der Liste löschen?")
+      const doDelete = await dialog.confirm(`„${text}“ wird von der Liste entfernt.`, {
+        title: "Wunsch löschen?",
+        confirmLabel: "Löschen",
+        danger: true,
+      })
       if (doDelete) {
         onDelete(id)
       }
@@ -59,10 +66,21 @@ const Card = ({ id, value = "", link, priority, multi, onDelete, onSave, onAddLi
   };
 
 
-  const addLink = () => {
-    const newLink = prompt("Füge hier einen Link ein: (leer lassen zum Löschen)", link)
-    if (newLink !== null)
+  const [isEditingLink, setEditingLink] = React.useState(false)
+
+  const linkEditor = {
+    open: () => {
+      setEditingLink(true)
+      setDragable(false)
+    },
+    close: () => {
+      setEditingLink(false)
+      setDragable(true)
+    },
+    save: (newLink: string) => {
       onAddLink(newLink)
+      linkEditor.close()
+    },
   }
 
   return (
@@ -87,7 +105,22 @@ const Card = ({ id, value = "", link, priority, multi, onDelete, onSave, onAddLi
         defaultValue={text}
         onBlur={handler.save}
       />
-      {link || multi ? (
+      {isEditingLink ? (
+        <InlinePrompt
+          className={styles.linkPrompt}
+          label="Link zum Wunsch"
+          hint={link ? "Leer speichern entfernt den Link." : undefined}
+          placeholder="https://…"
+          type="url"
+          defaultValue={link}
+          submitLabel="Link speichern"
+          allowEmpty={!!link}
+          compact
+          onSubmit={linkEditor.save}
+          onCancel={linkEditor.close}
+        />
+      ) : null}
+      {(link || multi) && !isEditingLink ? (
         <div className={styles.badges}>
           {link ? (
             <a
@@ -122,7 +155,8 @@ const Card = ({ id, value = "", link, priority, multi, onDelete, onSave, onAddLi
           activeColor: "var(--primary)",
           Icon: <Link />,
           label: link ? "Link ändern" : "Link hinzufügen",
-          onClick: addLink
+          onClick: linkEditor.open,
+          closesMenu: true
         },
         {
           active: !!multi,

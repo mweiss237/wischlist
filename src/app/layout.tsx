@@ -1,6 +1,7 @@
 import "styles/globals.scss"
 import "styles/critical.scss"
 import { AuthProvider } from "lib/auth"
+import { DialogProvider } from "components/Dialog/Dialog"
 import type { Metadata } from "next"
 import { fontBody, fontDisplay, fontHand } from "styles/fonts"
 
@@ -29,7 +30,9 @@ export default function RootLayout({
     >
       <body>
         <AuthProvider>
-          {children}
+          <DialogProvider>
+            {children}
+          </DialogProvider>
         </AuthProvider>
       </body>
     </html>

@@ -1,4 +1,7 @@
+import { useDialog } from "components/Dialog/Dialog"
+import InlinePrompt from "components/InlinePrompt/InlinePrompt"
 import { useUser } from "lib/auth"
+import React from "react"
 import { addGift, removeGift } from "lib/entries"
 import { useGiver } from "lib/giver"
 import { getGifts, isOwnGift, NOTE_MAX_LENGTH } from "lib/gifts"
@@ -19,6 +22,7 @@ const ChecklistMultiEntry = ({ entry, entryId, listId }: ChecklistMultiEntryPara
 
   const { giverName, ownGiftIds, rememberGift, forgetGift } = useGiver()
   const { user } = useUser()
+  const dialog = useDialog()
 
   const userName = user?.displayName || giverName
   const gifts = getGifts(entry)
@@ -26,30 +30,36 @@ const ChecklistMultiEntry = ({ entry, entryId, listId }: ChecklistMultiEntryPara
   const hasOwnGift = ownGifts.length > 0
   // anonymous givers without a name can't be told apart, so they may commit several times
   const canAdd = !hasOwnGift || !userName?.trim()
+  // asks for the note right below the entry before the gift is saved
+  const [isAdding, setAdding] = React.useState(false)
 
-  const handleAdd = () => {
-    const note = prompt("Was genau schenkst du? Das sehen nur andere Schenkende, damit nichts doppelt kommt. (Leer lassen ist auch okay)")
-    if (note === null) return
+  const handleAdd = (note: string) => {
+    setAdding(false)
 
-    const giftRef = addGift(listId, entryId, userName?.trim() || null, note.trim().slice(0, NOTE_MAX_LENGTH))
+    const giftRef = addGift(listId, entryId, userName?.trim() || null, note.slice(0, NOTE_MAX_LENGTH))
     const giftId = giftRef.key
     if (giftId) rememberGift(giftId)
 
     giftRef.catch(() => {
       if (giftId) forgetGift(giftId)
-      alert("Du konntest nicht eingetragen werden.")
+      dialog.alert("Du konntest nicht eingetragen werden.", { title: "Hoppla" })
     })
   }
 
-  const handleRemove = (giftId: string) => {
-    if (confirm("Möchtest du deine Zusage wirklich zurückziehen?"))
+  const handleRemove = async (giftId: string) => {
+    const confirmed = await dialog.confirm("Deine Zusage wird von der Liste entfernt.", {
+      title: "Zusage zurückziehen?",
+      confirmLabel: "Zurückziehen",
+      danger: true,
+    })
+    if (confirmed)
       removeGift(listId, entryId, giftId)
         .then(() => forgetGift(giftId))
-        .catch(() => alert("Zusage konnte nicht entfernt werden."))
+        .catch(() => dialog.alert("Zusage konnte nicht entfernt werden.", { title: "Hoppla" }))
   }
 
   const handleToggle = () => {
-    if (!hasOwnGift) return handleAdd()
+    if (!hasOwnGift) return setAdding((value) => !value)
     // with several own gifts the latest one is withdrawn
     handleRemove(ownGifts[ownGifts.length - 1][0])
   }
@@ -106,9 +116,22 @@ const ChecklistMultiEntry = ({ entry, entryId, listId }: ChecklistMultiEntryPara
             </li>
           )
         })}
-        {canAdd ? (
+        {canAdd && isAdding ? (
+          <li className={styles.prompt}>
+            <InlinePrompt
+              label="Was genau schenkst du?"
+              hint="Das sehen nur andere Schenkende, damit nichts doppelt kommt. Leer lassen ist auch okay."
+              placeholder="z. B. Band 3"
+              maxLength={NOTE_MAX_LENGTH}
+              submitLabel="Eintragen"
+              allowEmpty
+              onSubmit={handleAdd}
+              onCancel={() => setAdding(false)}
+            />
+          </li>
+        ) : canAdd ? (
           <li>
-            <button type="button" className={styles.add} onClick={handleAdd}>
+            <button type="button" className={styles.add} onClick={() => setAdding(true)}>
               <Plus size={14} aria-hidden />
               {gifts.length ? "Ich schenke auch etwas davon" : "Ich schenke etwas davon"}
             </button>

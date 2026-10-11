@@ -126,6 +126,11 @@
   }
 }
 
+.prompt {
+  max-width: 420px;
+  padding: 0.25rem 0 0.35rem;
+}
+
 .add {
   display: inline-flex;
   align-items: center;
