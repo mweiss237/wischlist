@@ -51,6 +51,17 @@
 
 .checklist_wrapper {
   padding: 2rem 1.75rem 1.25rem;
+  /* clears the sticky header when scrolled into view */
+  scroll-margin-top: 6rem;
+  transition:
+    opacity 0.4s var(--ease),
+    filter 0.4s var(--ease);
+}
+
+/* list waits behind the name question, still clickable */
+.dimmed {
+  opacity: 0.45;
+  filter: grayscale(0.35);
 }
 
 .tape {

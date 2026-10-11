@@ -1,5 +1,7 @@
 import { useDialog } from "components/Dialog/Dialog"
+import InlinePrompt from "components/InlinePrompt/InlinePrompt"
 import { useUser } from "lib/auth"
+import React from "react"
 import { pickEntry, removeGift, unpickEntry } from "lib/entries"
 import { useGiver } from "lib/giver"
 import { getGifts, isEntryClosed, isOwnGift } from "lib/gifts"
@@ -16,11 +18,14 @@ interface ChecklistEntryParams {
 
 const ChecklistEntry = ({ entry, entryId, listId }: ChecklistEntryParams) => {
 
-  const { giverName, ownGiftIds, forgetGift } = useGiver()
+  const { giverName, setName, hasSkipped, skip, ownGiftIds, forgetGift } = useGiver()
   const { user } = useUser()
   const dialog = useDialog()
+  // asks an anonymous giver for a name right below the wish before reserving it
+  const [isAskingName, setAskingName] = React.useState(false)
 
   const userName = user?.displayName || giverName
+  const needsName = !user && !giverName?.trim() && !hasSkipped
   const isTaken = isEntryClosed(entry)
   // a former multi entry keeps its gifts and counts as taken by all of them
   const gifts = entry?.taken ? [] : getGifts(entry)
@@ -68,11 +73,23 @@ const ChecklistEntry = ({ entry, entryId, listId }: ChecklistEntryParams) => {
       return
     }
 
-    pickEntry(listId, entryId, userName)
+    if (needsName) return setAskingName(true)
+
+    reserve(userName)
+  }
+
+  const reserve = (giver: string | null) =>
+    pickEntry(listId, entryId, giver)
       .then((committed) => {
         if (!committed) dialog.alert("Dieser Eintrag wurde bereits von jemand anderem vergeben.", { title: "Schon vergeben" })
       })
       .catch(() => dialog.alert("Eintrag konnte nicht ausgewählt werden.", { title: "Hoppla" }))
+
+  const handleNameSubmit = (name: string) => {
+    setAskingName(false)
+    if (name) setName(name)
+    else skip()
+    reserve(name || null)
   }
 
 
@@ -100,6 +117,19 @@ const ChecklistEntry = ({ entry, entryId, listId }: ChecklistEntryParams) => {
       <span className={styles.priority}>
         <PriorityIcon priority={entry?.priority} />
       </span>
+      {isAskingName && !isTaken ? (
+        <InlinePrompt
+          className={styles.namePrompt}
+          label="Unter welchem Namen schenkst du?"
+          hint="Leer lassen, um anonym zu schenken."
+          placeholder="Dein Name"
+          maxLength={100}
+          submitLabel="Reservieren"
+          allowEmpty
+          onSubmit={handleNameSubmit}
+          onCancel={() => setAskingName(false)}
+        />
+      ) : null}
     </div>
   )
 }

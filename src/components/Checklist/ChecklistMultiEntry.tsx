@@ -20,23 +20,37 @@ interface ChecklistMultiEntryParams {
 // a "Dauerbrenner": stays open, every giver is listed below with an optional note
 const ChecklistMultiEntry = ({ entry, entryId, listId }: ChecklistMultiEntryParams) => {
 
-  const { giverName, ownGiftIds, rememberGift, forgetGift } = useGiver()
+  const { giverName, setName, hasSkipped, skip, ownGiftIds, rememberGift, forgetGift } = useGiver()
   const { user } = useUser()
   const dialog = useDialog()
 
   const userName = user?.displayName || giverName
+  const needsName = !user && !giverName?.trim() && !hasSkipped
   const gifts = getGifts(entry)
   const ownGifts = gifts.filter((gift) => isOwnGift(gift, ownGiftIds, userName))
   const hasOwnGift = ownGifts.length > 0
   // anonymous givers without a name can't be told apart, so they may commit several times
   const canAdd = !hasOwnGift || !userName?.trim()
-  // asks for the note right below the entry before the gift is saved
-  const [isAdding, setAdding] = React.useState(false)
+  // asks for a missing name and then the note right below the entry before the gift is saved
+  const [step, setStep] = React.useState<"name" | "note" | null>(null)
+  // the context name may still be stale in the render right after the name step
+  const [pendingName, setPendingName] = React.useState<string | null>(null)
+
+  const startAdding = () => setStep(needsName ? "name" : "note")
+
+  const handleName = (name: string) => {
+    if (name) setName(name)
+    else skip()
+    setPendingName(name)
+    setStep("note")
+  }
 
   const handleAdd = (note: string) => {
-    setAdding(false)
+    setStep(null)
 
-    const giftRef = addGift(listId, entryId, userName?.trim() || null, note.slice(0, NOTE_MAX_LENGTH))
+    const giver = pendingName ?? userName
+    setPendingName(null)
+    const giftRef = addGift(listId, entryId, giver?.trim() || null, note.slice(0, NOTE_MAX_LENGTH))
     const giftId = giftRef.key
     if (giftId) rememberGift(giftId)
 
@@ -44,6 +58,11 @@ const ChecklistMultiEntry = ({ entry, entryId, listId }: ChecklistMultiEntryPara
       if (giftId) forgetGift(giftId)
       dialog.alert("Du konntest nicht eingetragen werden.", { title: "Hoppla" })
     })
+  }
+
+  const cancelAdding = () => {
+    setStep(null)
+    setPendingName(null)
   }
 
   const handleRemove = async (giftId: string) => {
@@ -59,7 +78,7 @@ const ChecklistMultiEntry = ({ entry, entryId, listId }: ChecklistMultiEntryPara
   }
 
   const handleToggle = () => {
-    if (!hasOwnGift) return setAdding((value) => !value)
+    if (!hasOwnGift) return step ? cancelAdding() : startAdding()
     // with several own gifts the latest one is withdrawn
     handleRemove(ownGifts[ownGifts.length - 1][0])
   }
@@ -116,9 +135,24 @@ const ChecklistMultiEntry = ({ entry, entryId, listId }: ChecklistMultiEntryPara
             </li>
           )
         })}
-        {canAdd && isAdding ? (
+        {canAdd && step === "name" ? (
           <li className={styles.prompt}>
             <InlinePrompt
+              key="name"
+              label="Unter welchem Namen schenkst du?"
+              hint="Leer lassen, um anonym zu schenken."
+              placeholder="Dein Name"
+              maxLength={100}
+              submitLabel="Weiter"
+              allowEmpty
+              onSubmit={handleName}
+              onCancel={cancelAdding}
+            />
+          </li>
+        ) : canAdd && step === "note" ? (
+          <li className={styles.prompt}>
+            <InlinePrompt
+              key="note"
               label="Was genau schenkst du?"
               hint="Das sehen nur andere Schenkende, damit nichts doppelt kommt. Leer lassen ist auch okay."
               placeholder="z. B. Band 3"
@@ -126,12 +160,12 @@ const ChecklistMultiEntry = ({ entry, entryId, listId }: ChecklistMultiEntryPara
               submitLabel="Eintragen"
               allowEmpty
               onSubmit={handleAdd}
-              onCancel={() => setAdding(false)}
+              onCancel={cancelAdding}
             />
           </li>
         ) : canAdd ? (
           <li>
-            <button type="button" className={styles.add} onClick={() => setAdding(true)}>
+            <button type="button" className={styles.add} onClick={startAdding}>
               <Plus size={14} aria-hidden />
               {gifts.length ? "Ich schenke auch etwas davon" : "Ich schenke etwas davon"}
             </button>

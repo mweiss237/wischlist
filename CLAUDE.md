@@ -35,8 +35,8 @@ Imports laufen absolut über `baseUrl: ./src`: `import { useList } from "lib/lis
   - `entries.ts`: `useEntries(id)`, `pickEntry()`/`unpickEntry()` und `addGift()`/`removeGift()` für Schenkende
   - `gifts.ts`: reine Hilfsfunktionen für Dauerbrenner (`getGifts`, `hasCommitment`, `isEntryClosed`, `isOwnGift`)
   - `favorite.ts`: `useFavorites()`
-  - `giver.tsx`: `GiverProvider` merkt sich den Namen anonymer Schenkender und die auf diesem Gerät
-    angelegten Zusagen (`giftIds`) in localStorage
+  - `giver.tsx`: `GiverProvider` merkt sich den Namen anonymer Schenkender, ob sie bewusst ohne Namen
+    schenken (`giverSkipped`) und die auf diesem Gerät angelegten Zusagen (`giftIds`) in localStorage
   - `date.ts`: Event-Datum formatieren, Countdown
 - `src/types/`: `List`, `ListOptions`, `Entry`, `Priority` (1 hoch, 2 mittel, 3 niedrig), `Favorite`
 
@@ -73,6 +73,8 @@ favorites/{uid}/{listId}   { title }
 - Der Besitzer soll nicht sehen, was schon geschenkt wurde. Bei `blurForOwner` wird die eigene
   Share-Ansicht unscharf dargestellt, das darf nicht kaputtgehen.
 - Ist eine Liste nicht geteilt (`isShared: false`), zeigt die Share-Seite einen Hinweis statt der Einträge.
+- Anonyme Schenkende ohne gespeicherten Namen sehen zuerst `GiverIntro` (Namensfrage, Liste ausgeblasst).
+  „Ohne Namen weiter“ wird gemerkt. Wer nur weiterscrollt, wird beim Abhaken inline nach dem Namen gefragt.
 - Einträge werden nach `options.sortOrder` sortiert (`lib/sort.ts`, in Editier- und Share-Ansicht gleich):
   `custom` (Standard, nach `position`; fehlt `position`, landen sie am Ende), `priority` oder `alphabetical`.
   Bei Gleichstand entscheidet `position`. Manuelles Verschieben setzt die Sortierung wieder auf `custom`.

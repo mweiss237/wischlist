@@ -4,6 +4,7 @@ import React from 'react'
 import styles from "./Checklist.module.scss"
 import ChecklistEntry from "./ChecklistEntry"
 import ChecklistMultiEntry from "./ChecklistMultiEntry"
+import GiverIntro from "./GiverIntro"
 import { useEntries } from "lib/entries"
 import { useGiver } from "lib/giver"
 import Loading from "components/Loading/Loading"
@@ -29,7 +30,7 @@ const Checklist = ({ params }: ChecklistParams) => {
   const { listId } = params
   const { entries } = useEntries(listId)
   const { list } = useList(listId)
-  const { giverName, setName } = useGiver()
+  const { giverName, setName, isReady, hasSkipped, skip } = useGiver()
   const { user, loading } = useUser()
   const { checkIsFavorite, addFavorite, removeFavorite } = useFavorites()
 
@@ -39,6 +40,43 @@ const Checklist = ({ params }: ChecklistParams) => {
 
   const isShared = list?.options?.isShared
   const isBlurred = isListOwner && isSomeTaken && list?.options?.blurForOwner && isShared
+
+  // anonymous first-time givers are asked for their name before the list, decided once per visit
+  const [isIntroActive, setIntroActive] = React.useState(false)
+  const [isDimmed, setDimmed] = React.useState(false)
+  const isIntroDecided = React.useRef(false)
+  const listRef = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    if (isIntroDecided.current || !isReady || loading || !list) return
+    isIntroDecided.current = true
+    if (user === null && isShared && !giverName?.trim() && !hasSkipped) {
+      setIntroActive(true)
+      setDimmed(true)
+    }
+  }, [isReady, loading, list, user, isShared, giverName, hasSkipped])
+
+  const dismissIntro = React.useCallback(() => {
+    setIntroActive(false)
+    setDimmed(false)
+    // after the intro collapsed, so the list lands where it ends up
+    requestAnimationFrame(() => listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }))
+  }, [])
+
+  // answered further down, e.g. in the name prompt of a wish
+  React.useEffect(() => {
+    if (giverName?.trim() || hasSkipped) setIntroActive(false)
+  }, [giverName, hasSkipped])
+
+  // scrolling down only brightens the list, the intro stays put so nothing jumps under the finger
+  React.useEffect(() => {
+    if (!isDimmed) return
+    const handleScroll = () => {
+      if (window.scrollY > 60) setDimmed(false)
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [isDimmed])
 
   const isFavorite = checkIsFavorite(listId)
 
@@ -60,7 +98,18 @@ const Checklist = ({ params }: ChecklistParams) => {
         ) : null}
       </header>
 
-      <div className={styles.giverWrapper}>
+      {isIntroActive ? (
+        <GiverIntro
+          onSubmit={(name) => {
+            setName(name)
+            dismissIntro()
+          }}
+          onSkip={() => {
+            skip()
+            dismissIntro()
+          }}
+        />
+      ) : <div className={styles.giverWrapper}>
         {user === null ? (
           <>
             <label className={styles.giverField}>
@@ -86,9 +135,13 @@ const Checklist = ({ params }: ChecklistParams) => {
             Du schenkst als <Link href={"/profile"} className="link">{user.displayName}</Link>
           </p>
         )}
-      </div>
+      </div>}
 
-      <div className={`${styles.checklist_wrapper} paper`}>
+      <div
+        ref={listRef}
+        className={`${styles.checklist_wrapper} ${isDimmed ? styles.dimmed : ""} paper`}
+        onPointerDownCapture={isDimmed ? () => setDimmed(false) : undefined}
+      >
         <span className={styles.tape} aria-hidden />
         {user ? (
           <Favorite
