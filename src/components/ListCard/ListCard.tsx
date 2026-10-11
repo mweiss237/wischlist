@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Calendar, Gift, Plus, Star } from "react-feather"
 import { describeCountdown, formatEventDate } from "lib/date"
+import InlinePrompt from "components/InlinePrompt/InlinePrompt"
 import styles from "./ListCard.module.scss"
 
 // festive wrapping paper colors, picked stably per list id
@@ -48,11 +49,41 @@ export const ListCard = ({ id, href, title, badge, variant = "gift", eventDate }
   )
 }
 
-export const AddListCard = ({ onClick }: { onClick: () => void }) => (
-  <button type="button" className={styles.addCard} onClick={onClick}>
-    <span className={styles.addIcon}>
-      <Plus size={22} aria-hidden />
-    </span>
-    Neue Liste
-  </button>
-)
+interface AddListCardProps {
+  isCreating: boolean
+  onOpen: () => void
+  onCreate: (title: string) => void
+  onCancel: () => void
+}
+
+// turns into the name field itself instead of asking in a browser dialog
+export const AddListCard = ({ isCreating, onOpen, onCreate, onCancel }: AddListCardProps) => {
+  if (!isCreating) {
+    return (
+      <button type="button" className={styles.addCard} onClick={onOpen}>
+        <span className={styles.addIcon}>
+          <Plus size={22} aria-hidden />
+        </span>
+        Neue Liste
+      </button>
+    )
+  }
+
+  return (
+    <div className={`${styles.addCard} ${styles.creating}`}>
+      <span className={styles.addIcon}>
+        <Gift size={22} aria-hidden />
+      </span>
+      <InlinePrompt
+        className={styles.createPrompt}
+        label="Wie soll die Liste heißen?"
+        placeholder="z. B. Geburtstag"
+        maxLength={100}
+        submitLabel="Liste anlegen"
+        compact
+        onSubmit={onCreate}
+        onCancel={onCancel}
+      />
+    </div>
+  )
+}

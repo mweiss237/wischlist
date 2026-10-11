@@ -1,5 +1,6 @@
 .row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.85rem;
   margin: 0 -0.75rem;
@@ -142,6 +143,11 @@
   display: flex;
   flex: none;
   width: 20px;
+}
+
+/* full width below the wish, the row wraps for it */
+.namePrompt {
+  flex-basis: 100%;
 }
 
 @keyframes pop {

@@ -1,0 +1,83 @@
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  max-width: 460px;
+  margin: 0 auto 1.75rem;
+  padding: 1.5rem 1.5rem 1rem;
+  border-color: var(--gold);
+  box-shadow: var(--ring), var(--shadow-lg);
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.question {
+  font-family: var(--font-hand), cursive;
+  font-size: 1.9rem;
+  line-height: 1.1;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.input {
+  flex: 1 1 12rem;
+  min-width: 0;
+  max-width: 18rem;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.info {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.skip {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.25rem;
+  padding: 0.35rem 0.75rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color 0.18s var(--ease);
+
+  &:hover {
+    color: var(--primary);
+  }
+}
+
+.arrow {
+  color: var(--gold);
+  animation: nudge 1.6s var(--ease) infinite;
+}
+
+@keyframes nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}

@@ -5,18 +5,19 @@ import cardStyles from "components/ListCard/ListCard.module.scss"
 import { useUser } from "lib/auth"
 import { useLists } from "lib/lists"
 import Link from "next/link"
+import { useState } from "react"
 import { Plus } from "react-feather"
 
 const ListOverview = () => {
   const { user, loading } = useUser()
   const { lists, addList } = useLists()
+  const [isCreating, setCreating] = useState(false)
 
   if (loading) return <Loading />
 
-  const handleAddList = () => {
-    const listName = prompt("Bitte listennamen eingeben:", "neue Liste")
-    if (listName)
-      addList(listName)
+  const handleAddList = (listName: string) => {
+    addList(listName)
+    setCreating(false)
   }
 
   if (!user) {
@@ -38,7 +39,7 @@ const ListOverview = () => {
           <h1>Meine Listen</h1>
           <p>Leg für jeden Anlass eine eigene Liste an und teile sie, wenn sie fertig ist.</p>
         </div>
-        <button type="button" className="btn btn-primary" onClick={handleAddList}>
+        <button type="button" className="btn btn-primary" onClick={() => setCreating(true)}>
           <Plus size={18} aria-hidden /> Neue Liste
         </button>
       </header>
@@ -54,7 +55,12 @@ const ListOverview = () => {
             eventDate={list.eventDate}
           />
         ))}
-        <AddListCard onClick={handleAddList} />
+        <AddListCard
+          isCreating={isCreating}
+          onOpen={() => setCreating(true)}
+          onCreate={handleAddList}
+          onCancel={() => setCreating(false)}
+        />
       </div>
     </>
   )

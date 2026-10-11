@@ -2,6 +2,7 @@
 import AddCard from "components/AddCard/AddCard"
 import Card from "components/Card/Card"
 import { DeleteTrashCan } from "components/DeleteTrashCan/DeleteTrashCan"
+import { useDialog } from "components/Dialog/Dialog"
 import Loading from "components/Loading/Loading"
 import { useUser } from "lib/auth"
 import { useEntries } from "lib/entries"
@@ -13,7 +14,9 @@ import React from "react"
 import { useState, useCallback } from "react"
 import styles from "./List.module.scss"
 
-import { Priority } from "types"
+import { Priority, SortOrder } from "types"
+import { SORT_ORDER_LABELS, sortEntries } from "lib/sort"
+import { hasCommitment } from "lib/gifts"
 import { DndContext, useSensors, DragEndEvent } from "@dnd-kit/core"
 import {
   KeyboardSensor,
@@ -29,6 +32,7 @@ import { describeCountdown, formatEventDate, todayIsoDate } from "lib/date"
 const List = ({ params }: { params: { listId: string } }) => {
   const router = useRouter()
   const { user, loading } = useUser()
+  const dialog = useDialog()
 
   const { listId } = params
 
@@ -55,15 +59,17 @@ const List = ({ params }: { params: { listId: string } }) => {
     entries,
     addEntry,
     removeEntry,
-    removeEntries,
     updateEntry,
     reorderEntries,
+    setEntryMulti,
+    resetEntries,
   } = useEntries(listId)
 
+  // a multi entry with gifts counts as one wish, so the owner can't tell how many give it
   const takenEntryIds = React.useMemo(
     () =>
       Object.entries(entries || {}).flatMap(([id, entry]) =>
-        entry.taken?.timestamp ? [id] : []
+        hasCommitment(entry) ? [id] : []
       ),
     [entries]
   )
@@ -89,25 +95,41 @@ const List = ({ params }: { params: { listId: string } }) => {
     }
   }, [list, setListName, setListShared, setListBlurry])
 
-  React.useEffect(() => {
-    if (!loading && user !== null && list && user.uid !== list.userId) {
-      alert("⛔ Diese Liste gehört einem anderen Account! ⛔")
-      router.replace("/list")
-    }
-  }, [user, list, router, loading])
+  // the dialog is not blocking, so the effect could fire again before the redirect is done
+  const isRedirecting = React.useRef(false)
 
-  const handleDeleteList = useCallback(() => {
+  React.useEffect(() => {
     if (
-      confirm("Möchtest du diese Liste wirklich unwiederbringlich löschen?")
+      !isRedirecting.current &&
+      !loading &&
+      user !== null &&
+      list &&
+      user.uid !== list.userId
     ) {
+      isRedirecting.current = true
+      router.replace("/list")
+      dialog.alert("Diese Liste gehört einem anderen Account.", {
+        title: "Kein Zugriff",
+      })
+    }
+  }, [user, list, router, loading, dialog])
+
+  const handleDeleteList = useCallback(async () => {
+    const confirmed = await dialog.confirm(
+      "Die Liste und alle Wünsche darauf werden unwiederbringlich gelöscht.",
+      { title: "Liste löschen?", confirmLabel: "Löschen", danger: true }
+    )
+    if (confirmed) {
       deleteList()
         .then(() => router.replace("/list"))
         .catch((error) => {
           console.error("[rtdb] delete list", error)
-          alert("Liste konnte nicht gelöscht werden.")
+          dialog.alert("Liste konnte nicht gelöscht werden.", {
+            title: "Hoppla",
+          })
         })
     }
-  }, [deleteList, router])
+  }, [deleteList, router, dialog])
 
   if (
     loading ||
@@ -128,15 +150,32 @@ const List = ({ params }: { params: { listId: string } }) => {
   // only reveal which entries were taken once the occasion is over
   const isEventOver = !!list?.eventDate && list.eventDate < todayIsoDate()
 
-  const handleRemoveTakenEntries = () => {
-    if (
-      confirm(
-        `${takenEntryIds.length} reservierte Wünsche endgültig von der Liste entfernen?`
-      )
-    ) {
-      removeEntries(takenEntryIds).catch((error) => {
+  // multi entries ("Dauerbrenner") stay on the list for the next occasion, only their gifts are cleared
+  const handleRemoveTakenEntries = async () => {
+    const multiEntryIds = takenEntryIds.filter((id) => entries?.[id]?.multi)
+    const closedEntryIds = takenEntryIds.filter((id) => !entries?.[id]?.multi)
+
+    const isSingleMulti = multiEntryIds.length === 1
+    const message = !closedEntryIds.length
+      ? `${multiEntryIds.length} Dauerbrenner wieder freigeben? ${isSingleMulti ? "Er bleibt" : "Sie bleiben"} auf der Liste, nur die Zusagen werden entfernt.`
+      : [
+          `${closedEntryIds.length} ${closedEntryIds.length === 1 ? "reservierten Wunsch" : "reservierte Wünsche"} endgültig von der Liste entfernen?`,
+          multiEntryIds.length
+            ? `${multiEntryIds.length} Dauerbrenner ${isSingleMulti ? "bleibt stehen und wird" : "bleiben stehen und werden"} wieder freigegeben.`
+            : "",
+        ].join(" ").trim()
+
+    const confirmed = await dialog.confirm(message, {
+      title: "Reservierte entfernen?",
+      confirmLabel: closedEntryIds.length ? "Entfernen" : "Freigeben",
+      danger: closedEntryIds.length > 0,
+    })
+    if (confirmed) {
+      resetEntries(closedEntryIds, multiEntryIds).catch((error) => {
         console.error("[rtdb] remove taken entries", error)
-        alert("Reservierte Wünsche konnten nicht entfernt werden.")
+        dialog.alert("Reservierte Wünsche konnten nicht entfernt werden.", {
+          title: "Hoppla",
+        })
       })
     }
   }
@@ -169,9 +208,12 @@ const List = ({ params }: { params: { listId: string } }) => {
     setTimeout(() => setClicked(false), 2000)
   }
 
-  const sortedEntryArray = Object.entries(entries || {}).sort(
-    (a, b) => (a[1].position || 0) - (b[1].position || 0)
-  )
+  const sortOrder: SortOrder = list?.options?.sortOrder || "custom"
+  const sortedEntryArray = sortEntries(entries, sortOrder)
+
+  const handleChangeSortOrder: React.ChangeEventHandler<HTMLSelectElement> = (
+    event
+  ) => updateListOptions({ sortOrder: event.target.value as SortOrder })
 
   const shareUrl = `${window.location.href}/share`
   const wishCount = sortedEntryArray.length
@@ -276,6 +318,19 @@ const List = ({ params }: { params: { listId: string } }) => {
                   onChange={handleChangeEventDate}
                 />
               </label>
+              <label className={styles.sortOrder}>
+                <span className={styles.eventDateText}>
+                  <b>Sortierung</b>
+                  <span>Gilt auch für die geteilte Liste.</span>
+                </span>
+                <select value={sortOrder} onChange={handleChangeSortOrder}>
+                  {Object.entries(SORT_ORDER_LABELS).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
               <div
                 className={`${styles.shareWrapper} ${isListShared ? "" : "crit_hidden"}`}
@@ -324,6 +379,7 @@ const List = ({ params }: { params: { listId: string } }) => {
                         value={entry.text}
                         link={entry.link}
                         priority={entry.priority}
+                        multi={entry.multi}
                         onDelete={() => removeEntry(id)}
                         onSave={(_id, value) => {
                           updateEntry(id, { text: value })
@@ -333,6 +389,17 @@ const List = ({ params }: { params: { listId: string } }) => {
                         }}
                         onSetPriority={(priority) => {
                           updateEntry(id, { priority })
+                        }}
+                        onToggleMulti={() => {
+                          setEntryMulti(id, entry, !entry.multi).catch(
+                            (error) => {
+                              console.error("[rtdb] toggle multi entry", error)
+                              dialog.alert(
+                                "Wunsch konnte nicht geändert werden.",
+                                { title: "Hoppla" }
+                              )
+                            }
+                          )
                         }}
                       />
                     ))}
@@ -345,13 +412,14 @@ const List = ({ params }: { params: { listId: string } }) => {
                       text: "",
                       priority: Priority.medium,
                       position: sortedEntryArray.length,
-                    }).then(() => {
-                      const cards =
-                        document.querySelectorAll<HTMLInputElement>(
-                          "#list > .wish-card"
+                    }).then(({ key }) => {
+                      // with a sort order the new card is not necessarily the last one
+                      document
+                        .querySelector<HTMLElement>(
+                          `#list > .wish-card[data-entry-id="${key}"]`
                         )
-                      const lastCard = cards[cards.length - 1]
-                      lastCard?.querySelector("textarea")?.focus()
+                        ?.querySelector("textarea")
+                        ?.focus()
                     })
                   }
                 />
@@ -360,6 +428,9 @@ const List = ({ params }: { params: { listId: string } }) => {
               <p className={styles.hint}>
                 <Move size={14} aria-hidden />
                 Die Reihenfolge entspricht der geteilten Liste. Halte einen Zettel gedrückt, um ihn zu verschieben.
+                {sortOrder !== "custom"
+                  ? " Danach gilt wieder deine eigene Sortierung."
+                  : null}
               </p>
             </section>
           </div>

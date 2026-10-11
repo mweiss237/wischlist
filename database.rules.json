@@ -5,8 +5,11 @@
         ".read": "root.child('lists').child($listId).child('options/isShared').val() === true || (auth != null && root.child('lists').child($listId).child('userId').val() === auth.uid)",
         ".write": "auth != null && root.child('lists').child($listId).child('userId').val() === auth.uid",
         "$entryId": {
+          "multi": {
+            ".validate": "newData.isBoolean()"
+          },
           "taken": {
-            ".write": "data.exists() ? !newData.exists() : root.child('lists').child($listId).child('options/isShared').val() === true && data.parent().child('text').exists()",
+            ".write": "data.exists() ? !newData.exists() : root.child('lists').child($listId).child('options/isShared').val() === true && data.parent().child('text').exists() && data.parent().child('multi').val() !== true && !data.parent().child('gifts').exists()",
             ".validate": "newData.hasChildren(['timestamp'])",
             "timestamp": {
               ".validate": "newData.isString() && newData.val().length <= 30"
@@ -16,6 +19,24 @@
             },
             "$other": {
               ".validate": false
+            }
+          },
+          "gifts": {
+            "$giftId": {
+              ".write": "data.exists() ? !newData.exists() : root.child('lists').child($listId).child('options/isShared').val() === true && data.parent().parent().child('multi').val() === true",
+              ".validate": "newData.hasChildren(['timestamp'])",
+              "timestamp": {
+                ".validate": "newData.isString() && newData.val().length <= 30"
+              },
+              "giver": {
+                ".validate": "newData.isString() && newData.val().length <= 100"
+              },
+              "note": {
+                ".validate": "newData.isString() && newData.val().length <= 80"
+              },
+              "$other": {
+                ".validate": false
+              }
             }
           }
         }
@@ -29,6 +50,11 @@
         ".write": "auth != null && (data.exists() ? data.child('userId').val() === auth.uid : newData.child('userId').val() === auth.uid)",
         "eventDate": {
           ".validate": "newData.isString() && newData.val().matches(/^(19|20)[0-9][0-9]-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/)"
+        },
+        "options": {
+          "sortOrder": {
+            ".validate": "newData.isString() && newData.val().matches(/^(custom|priority|alphabetical)$/)"
+          }
         }
       }
     },

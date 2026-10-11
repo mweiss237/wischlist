@@ -1,0 +1,113 @@
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.dialog {
+  width: calc(100% - 2rem);
+  max-width: 420px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background-color: var(--paper);
+  background-image: var(--grain);
+  box-shadow: var(--shadow-lg);
+  color: var(--text);
+  overflow: hidden;
+
+  &[open] {
+    animation: dialog-in 0.22s var(--ease) both;
+  }
+
+  &::backdrop {
+    background: rgba(28, 22, 12, 0.42);
+    backdrop-filter: blur(3px);
+    animation: backdrop-in 0.22s var(--ease) both;
+  }
+
+  /* gift ribbon along the top edge, like the auth cards */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 2rem;
+    right: 2rem;
+    height: 4px;
+    border-radius: 0 0 4px 4px;
+    background: linear-gradient(90deg, var(--primary), var(--gold), var(--berry));
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 2rem 1.75rem 1.5rem;
+  text-align: center;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--gold-soft);
+  color: var(--gold);
+
+  &.danger {
+    background: var(--berry-soft);
+    color: var(--berry);
+  }
+}
+
+.title {
+  margin: 0.25rem 0 0;
+  font-size: 1.35rem;
+}
+
+.message {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+  white-space: pre-line;
+  word-break: break-word;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  margin-top: 0.9rem;
+
+  :global(.btn) {
+    flex: 1 1 140px;
+  }
+}
+
+:global(.btn).dangerButton {
+  background: var(--berry);
+  border-color: var(--berry);
+
+  &:hover {
+    background: color-mix(in srgb, var(--berry) 88%, black);
+  }
+}

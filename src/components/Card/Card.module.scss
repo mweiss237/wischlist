@@ -130,24 +130,56 @@
   }
 }
 
-.linkBadge {
+.badges {
   position: absolute;
   z-index: 2;
   left: 12px;
+  right: 48px;
   bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  pointer-events: none;
+}
+
+.linkBadge,
+.multiBadge {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
-  background: var(--primary-soft);
-  color: var(--primary);
   font-size: 0.72rem;
   font-weight: 600;
+  pointer-events: auto;
+}
+
+.linkBadge {
+  background: var(--primary-soft);
+  color: var(--primary);
 
   &:hover {
     text-decoration: underline;
   }
+}
+
+.multiBadge {
+  background: var(--gold-soft);
+  color: color-mix(in srgb, var(--gold) 80%, var(--text));
+}
+
+/* link field lies on the lower part of the note, the wish text stays readable */
+.linkPrompt {
+  position: absolute;
+  z-index: 4;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  padding: 0.55rem;
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  box-shadow: var(--shadow-md);
 }
 
 .saveWish {

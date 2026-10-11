@@ -4,6 +4,7 @@ import Link from "next/link"
 import React, { FormEvent, useEffect, useState } from "react"
 import styles from "./Auth.module.scss"
 import Loading from "components/Loading/Loading"
+import { useDialog } from "components/Dialog/Dialog"
 import { useAuth, useUser } from "lib/auth"
 import { useRouter, useSearchParams } from "next/navigation"
 
@@ -12,6 +13,7 @@ const Login = () => {
   const { login, sendLoginLink, signInWithLink, checkLoginLink } = useAuth()
   const router = useRouter()
   const { get } = useSearchParams()
+  const dialog = useDialog()
 
   const [loading, setLoading] = useState(false)
   const email = get("email") || ""
@@ -32,7 +34,7 @@ const Login = () => {
         password,
       )
     } catch (e) {
-      alert("Die Anmeldung ist fehlgeschlagen! Überprüfe deine E-Mail oder dein Passwort.")
+      dialog.alert("Überprüfe deine E-Mail oder dein Passwort.", { title: "Anmeldung fehlgeschlagen" })
       console.error(e)
     } finally {
       setLoading(false)
@@ -46,13 +48,13 @@ const Login = () => {
     } catch (error) {
       if (typeof error === "object" && error && "code" in error) {
         if (error.code === "auth/quota-exceeded") {
-          alert("Hoppla, ohne Passwort anmelden geht gerade nicht. Bitte melde dich mit deinem Passwort an oder versuchs später nochmal.")
+          dialog.alert("Ohne Passwort anmelden geht gerade nicht. Bitte melde dich mit deinem Passwort an oder versuchs später nochmal.", { title: "Hoppla" })
           setLoginMethod("password")
           return
         }
       }
       console.warn(error)
-      alert("Hoppla, da lief etwas schief. Versuch's bitte nochmal.")
+      dialog.alert("Da lief etwas schief. Versuch's bitte nochmal.", { title: "Hoppla" })
       setLoginMethod("pending")
     }
   }

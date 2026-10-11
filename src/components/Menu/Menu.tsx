@@ -9,6 +9,8 @@ interface MenuProps {
         onClick: () => void
         active?: boolean
         activeColor?: string
+        // for entries that open something else, e.g. an input
+        closesMenu?: boolean
     }[]
 }
 
@@ -50,7 +52,10 @@ const Menu = ({ entries }: MenuProps) => {
                         className={`${styles.entry} ${entry.active ? styles.entryActive : ""}`}
                         style={entry.activeColor ? { ["--active" as string]: entry.activeColor } : undefined}
                         title={entry.label}
-                        onClick={entry.onClick}
+                        onClick={() => {
+                            entry.onClick()
+                            if (entry.closesMenu) setShowMenu(false)
+                        }}
                     >
                         {entry.Icon}
                         <span>{entry.label}</span>

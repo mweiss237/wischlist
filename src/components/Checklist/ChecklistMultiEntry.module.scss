@@ -1,0 +1,156 @@
+/* same rhythm as a regular row, gifts hang below on a dashed thread */
+.wrapper {
+  margin: 0 -0.75rem;
+  padding: 0.85rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border-bottom: 1px dashed var(--line-strong);
+  transition: background-color 0.18s var(--ease);
+
+  &:last-child {
+    border-bottom-color: transparent;
+  }
+
+  &:hover {
+    background: var(--surface-2);
+  }
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+/* looks like the checkbox of a regular row, but dashed and gold */
+.toggle {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 7px;
+  border: 1.5px dashed var(--gold);
+  background: var(--paper);
+  color: var(--gold);
+  cursor: pointer;
+  transition:
+    background-color 0.2s var(--ease),
+    border-color 0.2s var(--ease),
+    box-shadow 0.2s var(--ease);
+
+  &:hover {
+    box-shadow: 0 0 0 4px var(--gold-soft);
+  }
+
+  &.checked {
+    border-style: solid;
+    border-color: var(--primary);
+    background: var(--primary);
+    color: var(--on-primary);
+
+    &:hover {
+      box-shadow: 0 0 0 4px var(--primary-soft);
+    }
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--ring);
+  }
+}
+
+.title {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.6rem;
+  min-width: 0;
+}
+
+/* indented below the text, the thread starts under the toggle */
+.gifts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0.5rem 0 0 11px;
+  padding: 0.15rem 0 0.15rem calc(11px + 0.85rem);
+  border-left: 2px dashed var(--line-strong);
+  list-style: none;
+}
+
+.gift {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+  min-height: 26px;
+}
+
+.own {
+  font-weight: 600;
+}
+
+.note {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  font-weight: 400;
+  word-break: break-word;
+}
+
+.remove {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    background-color 0.18s var(--ease),
+    color 0.18s var(--ease);
+
+  &:hover {
+    background: var(--berry-soft);
+    color: var(--berry);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--ring);
+  }
+}
+
+.prompt {
+  max-width: 420px;
+  padding: 0.25rem 0 0.35rem;
+}
+
+.add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0;
+  border: none;
+  background: none;
+  color: var(--primary);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--ring);
+  }
+}
