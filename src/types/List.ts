@@ -10,4 +10,8 @@ export interface List {
 export type ListOptions = {
   blurForOwner: boolean
   isShared: boolean
+  // missing means "custom" (manual order by position)
+  sortOrder?: SortOrder
 }
+
+export type SortOrder = "custom" | "priority" | "alphabetical"

@@ -38,11 +38,13 @@ export const useEntries = (listId: string) => {
         update(ref(database, `entries/${listId}/${entryId}`), entry)
         , [listId])
 
-    // write all positions in one atomic multi-path update
+    // write all positions in one atomic multi-path update,
+    // a manual reorder always switches the list back to the custom sort order
     const reorderEntries = useCallback((orderedEntryIds: string[]) =>
-        update(ref(database, `entries/${listId}`),
-            Object.fromEntries(orderedEntryIds.map((entryId, index) => [`${entryId}/position`, index]))
-        )
+        update(ref(database), {
+            ...Object.fromEntries(orderedEntryIds.map((entryId, index) => [`entries/${listId}/${entryId}/position`, index])),
+            [`lists/${listId}/options/sortOrder`]: "custom",
+        })
         , [listId])
 
     return { entries, addEntry, removeEntry, removeEntries, updateEntry, reorderEntries }

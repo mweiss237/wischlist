@@ -67,6 +67,7 @@ const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onS
     <div
       className={`${styles.cardWrapper} wish-card`}
       data-priority={priority}
+      data-entry-id={id}
       ref={setNodeRef}
       style={draggableStyle}
       {...attributes}

@@ -29,6 +29,11 @@
         ".write": "auth != null && (data.exists() ? data.child('userId').val() === auth.uid : newData.child('userId').val() === auth.uid)",
         "eventDate": {
           ".validate": "newData.isString() && newData.val().matches(/^(19|20)[0-9][0-9]-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/)"
+        },
+        "options": {
+          "sortOrder": {
+            ".validate": "newData.isString() && newData.val().matches(/^(custom|priority|alphabetical)$/)"
+          }
         }
       }
     },

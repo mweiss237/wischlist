@@ -40,7 +40,7 @@ Imports laufen absolut über `baseUrl: ./src`: `import { useList } from "lib/lis
 
 ## Datenmodell (Realtime Database)
 ```text
-lists/{listId}             { title, userId, eventDate?: "YYYY-MM-DD", options: { isShared, blurForOwner } }
+lists/{listId}             { title, userId, eventDate?: "YYYY-MM-DD", options: { isShared, blurForOwner, sortOrder? } }
 entries/{listId}/{entryId} { text, link?, priority?, position?, taken?: { timestamp: ISO-String, giver? } }
 favorites/{uid}/{listId}   { title }
 ```
@@ -65,7 +65,9 @@ favorites/{uid}/{listId}   { title }
 - Der Besitzer soll nicht sehen, was schon geschenkt wurde. Bei `blurForOwner` wird die eigene
   Share-Ansicht unscharf dargestellt, das darf nicht kaputtgehen.
 - Ist eine Liste nicht geteilt (`isShared: false`), zeigt die Share-Seite einen Hinweis statt der Einträge.
-- Einträge werden nach `position` sortiert. Fehlt `position`, landen sie am Ende.
+- Einträge werden nach `options.sortOrder` sortiert (`lib/sort.ts`, in Editier- und Share-Ansicht gleich):
+  `custom` (Standard, nach `position`; fehlt `position`, landen sie am Ende), `priority` oder `alphabetical`.
+  Bei Gleichstand entscheidet `position`. Manuelles Verschieben setzt die Sortierung wieder auf `custom`.
 
 ## Konventionen
 - Die UI-Sprache ist Deutsch (Labels, `confirm`, `prompt`, Metadaten). Neue Texte auf Deutsch schreiben.

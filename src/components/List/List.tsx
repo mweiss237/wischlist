@@ -13,7 +13,8 @@ import React from "react"
 import { useState, useCallback } from "react"
 import styles from "./List.module.scss"
 
-import { Priority } from "types"
+import { Priority, SortOrder } from "types"
+import { SORT_ORDER_LABELS, sortEntries } from "lib/sort"
 import { DndContext, useSensors, DragEndEvent } from "@dnd-kit/core"
 import {
   KeyboardSensor,
@@ -169,9 +170,12 @@ const List = ({ params }: { params: { listId: string } }) => {
     setTimeout(() => setClicked(false), 2000)
   }
 
-  const sortedEntryArray = Object.entries(entries || {}).sort(
-    (a, b) => (a[1].position || 0) - (b[1].position || 0)
-  )
+  const sortOrder: SortOrder = list?.options?.sortOrder || "custom"
+  const sortedEntryArray = sortEntries(entries, sortOrder)
+
+  const handleChangeSortOrder: React.ChangeEventHandler<HTMLSelectElement> = (
+    event
+  ) => updateListOptions({ sortOrder: event.target.value as SortOrder })
 
   const shareUrl = `${window.location.href}/share`
   const wishCount = sortedEntryArray.length
@@ -276,6 +280,19 @@ const List = ({ params }: { params: { listId: string } }) => {
                   onChange={handleChangeEventDate}
                 />
               </label>
+              <label className={styles.sortOrder}>
+                <span className={styles.eventDateText}>
+                  <b>Sortierung</b>
+                  <span>Gilt auch für die geteilte Liste.</span>
+                </span>
+                <select value={sortOrder} onChange={handleChangeSortOrder}>
+                  {Object.entries(SORT_ORDER_LABELS).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
               <div
                 className={`${styles.shareWrapper} ${isListShared ? "" : "crit_hidden"}`}
@@ -345,13 +362,14 @@ const List = ({ params }: { params: { listId: string } }) => {
                       text: "",
                       priority: Priority.medium,
                       position: sortedEntryArray.length,
-                    }).then(() => {
-                      const cards =
-                        document.querySelectorAll<HTMLInputElement>(
-                          "#list > .wish-card"
+                    }).then(({ key }) => {
+                      // with a sort order the new card is not necessarily the last one
+                      document
+                        .querySelector<HTMLElement>(
+                          `#list > .wish-card[data-entry-id="${key}"]`
                         )
-                      const lastCard = cards[cards.length - 1]
-                      lastCard?.querySelector("textarea")?.focus()
+                        ?.querySelector("textarea")
+                        ?.focus()
                     })
                   }
                 />
@@ -360,6 +378,9 @@ const List = ({ params }: { params: { listId: string } }) => {
               <p className={styles.hint}>
                 <Move size={14} aria-hidden />
                 Die Reihenfolge entspricht der geteilten Liste. Halte einen Zettel gedrückt, um ihn zu verschieben.
+                {sortOrder !== "custom"
+                  ? " Danach gilt wieder deine eigene Sortierung."
+                  : null}
               </p>
             </section>
           </div>

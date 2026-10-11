@@ -105,13 +105,15 @@
   font-size: 1.1rem;
 }
 
-.eventDate {
+.eventDate,
+.sortOrder {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
   padding: 0.85rem 0;
 
-  input {
+  input,
+  select {
     width: 100%;
   }
 }

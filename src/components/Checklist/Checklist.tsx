@@ -15,14 +15,13 @@ import { useFavorites } from 'lib/favorite'
 import Link from 'next/link'
 import { Calendar } from 'react-feather'
 import { describeCountdown, formatEventDate } from 'lib/date'
+import { sortEntries } from 'lib/sort'
 
 interface ChecklistParams {
   params: {
     listId: string
   }
 }
-
-const SORT_TO_THE_END = 0
 
 const Checklist = ({ params }: ChecklistParams) => {
   const { listId } = params
@@ -48,13 +47,10 @@ const Checklist = ({ params }: ChecklistParams) => {
     }
   }, [giverName, loading, setName, user])
 
+  const sortOrder = list?.options?.sortOrder
   const sortedEntryIds = React.useMemo(() =>
-    entries
-      ? Object.keys(entries || {}).sort((a, b) =>
-        (entries[a].position || SORT_TO_THE_END) - (entries[b].position || SORT_TO_THE_END)
-      )
-      : [],
-    [entries]
+    sortEntries(entries, sortOrder).map(([id]) => id),
+    [entries, sortOrder]
   )
 
   return (
