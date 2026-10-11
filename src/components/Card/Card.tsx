@@ -6,20 +6,22 @@ import { Priority } from "types"
 import styles from "./Card.module.scss"
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Check, ChevronDown, ChevronUp, Link, Minus, X } from "react-feather"
+import { Check, ChevronDown, ChevronUp, Link, Minus, Users, X } from "react-feather"
 
 type CardParams = {
   id: string
   value?: string
   link?: string
   priority?: Priority
+  multi?: boolean
   onDelete: (id: string) => void
   onSave: (id: string, value: string) => void
   onAddLink: (value: string) => void
   onSetPriority: (priority: Priority) => void
+  onToggleMulti: () => void
 }
 
-const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onSetPriority }: CardParams) => {
+const Card = ({ id, value = "", link, priority, multi, onDelete, onSave, onAddLink, onSetPriority, onToggleMulti }: CardParams) => {
   const [pristine, setPristine] = React.useState(false)
   const [dragable, setDragable] = React.useState(true)
   const [text, setText] = React.useState(value)
@@ -85,17 +87,26 @@ const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onS
         defaultValue={text}
         onBlur={handler.save}
       />
-      {link ? (
-        <a
-          href={link}
-          target="_blank"
-          rel="noreferrer"
-          className={styles.linkBadge}
-          title={link}
-          onPointerDown={(event) => event.stopPropagation()}
-        >
-          <Link size={12} /> Link
-        </a>
+      {link || multi ? (
+        <div className={styles.badges}>
+          {link ? (
+            <a
+              href={link}
+              target="_blank"
+              rel="noreferrer"
+              className={styles.linkBadge}
+              title={link}
+              onPointerDown={(event) => event.stopPropagation()}
+            >
+              <Link size={12} /> Link
+            </a>
+          ) : null}
+          {multi ? (
+            <span className={styles.multiBadge} title="Mehrere können diesen Wunsch schenken">
+              <Users size={12} /> Mehrfach
+            </span>
+          ) : null}
+        </div>
       ) : null}
       <button
         type="button"
@@ -112,6 +123,13 @@ const Card = ({ id, value = "", link, priority, onDelete, onSave, onAddLink, onS
           Icon: <Link />,
           label: link ? "Link ändern" : "Link hinzufügen",
           onClick: addLink
+        },
+        {
+          active: !!multi,
+          activeColor: "var(--gold)",
+          Icon: <Users />,
+          label: "Mehrfach schenkbar",
+          onClick: onToggleMulti
         },
         {
           active: priority === Priority.high,

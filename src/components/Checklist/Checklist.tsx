@@ -3,6 +3,7 @@
 import React from 'react'
 import styles from "./Checklist.module.scss"
 import ChecklistEntry from "./ChecklistEntry"
+import ChecklistMultiEntry from "./ChecklistMultiEntry"
 import { useEntries } from "lib/entries"
 import { useGiver } from "lib/giver"
 import Loading from "components/Loading/Loading"
@@ -13,9 +14,10 @@ import { useUser } from 'lib/auth'
 import Favorite from './Favorite'
 import { useFavorites } from 'lib/favorite'
 import Link from 'next/link'
-import { Calendar } from 'react-feather'
+import { Calendar, Users } from 'react-feather'
 import { describeCountdown, formatEventDate } from 'lib/date'
 import { sortEntries } from 'lib/sort'
+import { hasCommitment } from 'lib/gifts'
 
 interface ChecklistParams {
   params: {
@@ -32,7 +34,8 @@ const Checklist = ({ params }: ChecklistParams) => {
   const { checkIsFavorite, addFavorite, removeFavorite } = useFavorites()
 
   const isListOwner = !!list?.userId && !!user?.uid && list.userId === user.uid
-  const isSomeTaken = Object.values(entries || {}).some(entry => !!entry.taken?.timestamp)
+  const isSomeTaken = Object.values(entries || {}).some(hasCommitment)
+  const hasMultiEntries = Object.values(entries || {}).some(entry => !!entry.multi)
 
   const isShared = list?.options?.isShared
   const isBlurred = isListOwner && isSomeTaken && list?.options?.blurForOwner && isShared
@@ -102,14 +105,17 @@ const Checklist = ({ params }: ChecklistParams) => {
           {
             isShared ?
               !entries || !list ? <Loading className={styles.centered} /> :
-                sortedEntryIds.map((entryId) => (
-                  <ChecklistEntry
-                    entry={entries[entryId]}
-                    entryId={entryId}
-                    listId={listId}
-                    key={`wish${entryId}`}
-                  />
-                ))
+                sortedEntryIds.map((entryId) => {
+                  const EntryComponent = entries[entryId].multi ? ChecklistMultiEntry : ChecklistEntry
+                  return (
+                    <EntryComponent
+                      entry={entries[entryId]}
+                      entryId={entryId}
+                      listId={listId}
+                      key={`wish${entryId}`}
+                    />
+                  )
+                })
               : <p className={styles.notShared}>Diese Liste wird aktuell nicht geteilt.</p>
           }
         </div>
@@ -119,6 +125,9 @@ const Checklist = ({ params }: ChecklistParams) => {
           <span><PriorityIcon priority={Priority.high} /> Hoch</span>
           <span><PriorityIcon priority={Priority.medium} /> Mittel</span>
           <span><PriorityIcon priority={Priority.low} /> Niedrig</span>
+          {isShared && hasMultiEntries ? (
+            <span className={styles.legendMulti}><Users aria-hidden /> Mehrfach schenkbar</span>
+          ) : null}
         </footer>
       </div>
     </div>

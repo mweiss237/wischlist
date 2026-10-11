@@ -32,19 +32,24 @@ Imports laufen absolut über `baseUrl: ./src`: `import { useList } from "lib/lis
   - `auth.tsx`: `AuthProvider`, `useUser()` (User, Profil), `useAuth()` (Login, Register, E-Mail-Link, Passwort-Reset)
   - `lists.ts`: `useLists()` (eigene Listen per `orderByChild("userId")`)
   - `list.ts`: `useList(id)`, `deleteListWithEntries()`
-  - `entries.ts`: `useEntries(id)`, `pickEntry()` und `unpickEntry()` für Schenkende
+  - `entries.ts`: `useEntries(id)`, `pickEntry()`/`unpickEntry()` und `addGift()`/`removeGift()` für Schenkende
+  - `gifts.ts`: reine Hilfsfunktionen für Dauerbrenner (`getGifts`, `hasCommitment`, `isEntryClosed`, `isOwnGift`)
   - `favorite.ts`: `useFavorites()`
-  - `giver.tsx`: `GiverProvider` merkt sich den Namen anonymer Schenkender in localStorage
+  - `giver.tsx`: `GiverProvider` merkt sich den Namen anonymer Schenkender und die auf diesem Gerät
+    angelegten Zusagen (`giftIds`) in localStorage
   - `date.ts`: Event-Datum formatieren, Countdown
 - `src/types/`: `List`, `ListOptions`, `Entry`, `Priority` (1 hoch, 2 mittel, 3 niedrig), `Favorite`
 
 ## Datenmodell (Realtime Database)
 ```text
 lists/{listId}             { title, userId, eventDate?: "YYYY-MM-DD", options: { isShared, blurForOwner, sortOrder? } }
-entries/{listId}/{entryId} { text, link?, priority?, position?, taken?: { timestamp: ISO-String, giver? } }
+entries/{listId}/{entryId} { text, link?, priority?, position?, taken?: { timestamp: ISO-String, giver? },
+                             multi?: true, gifts?: { {pushId}: { timestamp: ISO-String, giver?, note? } } }
 favorites/{uid}/{listId}   { title }
 ```
 - Einträge liegen absichtlich getrennt von `lists`, damit sich die Leserechte unterscheiden lassen.
+- `multi: true` macht einen Eintrag zum Dauerbrenner: Statt `taken` sammelt er beliebig viele `gifts`
+  (eine Push-ID pro Zusage, keine Transaktion nötig). Normale Einträge nutzen weiter nur `taken`.
 - Muster für Hooks: `onValue` in `useEffect`, den State beim ID-Wechsel auf `null` zurücksetzen,
   den Unsubscriber zurückgeben, Fehler mit `console.error("[rtdb] <pfad>", error)` loggen.
   Für neue Daten-Hooks dieses Muster übernehmen.
@@ -57,6 +62,9 @@ favorites/{uid}/{listId}   { title }
 - `entries/{listId}` dürfen alle lesen, wenn `options.isShared === true`, sonst nur der Besitzer.
 - `taken` dürfen alle setzen (auch anonym), solange die Liste geteilt ist und der Eintrag existiert.
   Entfernen ist nur als Löschen möglich. Erlaubt sind nur die Felder `timestamp` (≤30 Zeichen) und `giver` (≤100).
+  Bei Dauerbrennern (`multi === true`) oder wenn schon `gifts` existieren, ist `taken` gesperrt.
+- `gifts/{giftId}` dürfen alle anlegen (auch anonym), solange die Liste geteilt ist und der Eintrag `multi === true` ist.
+  Nur Anlegen oder Löschen, kein Bearbeiten. Felder: `timestamp` (≤30), `giver` (≤100), `note` (≤80).
 - `lists` als Ganzes lässt sich nur mit Query `orderByChild('userId').equalTo(uid)` lesen.
 - **Wenn sich das Datenmodell ändert, immer auch die Regeln anpassen** und prüfen, ob die
   anonyme Share-Ansicht noch funktioniert. Neue Felder unter `taken` werden sonst abgelehnt (`$other: false`).
@@ -68,6 +76,14 @@ favorites/{uid}/{listId}   { title }
 - Einträge werden nach `options.sortOrder` sortiert (`lib/sort.ts`, in Editier- und Share-Ansicht gleich):
   `custom` (Standard, nach `position`; fehlt `position`, landen sie am Ende), `priority` oder `alphabetical`.
   Bei Gleichstand entscheidet `position`. Manuelles Verschieben setzt die Sortierung wieder auf `custom`.
+- Dauerbrenner (im UI „Mehrfach schenkbar“) werden nie durchgestrichen. Die Zusagen stehen eingerückt
+  darunter, optional mit einer Notiz, was genau geschenkt wird. Für Blur und den Zähler beim Besitzer
+  zählt ein Dauerbrenner mit Zusagen als ein reservierter Wunsch (`hasCommitment`), damit nicht erkennbar ist,
+  wie viele dahinterstecken.
+- Umschalten verliert keine Zusagen: Aus `taken` wird die erste Zusage. Beim Zurückstellen bleiben die
+  `gifts` erhalten, und der Eintrag gilt als vergeben (`isEntryClosed`).
+- „Reservierte entfernen“ nach dem Event löscht normale vergebene Wünsche. Dauerbrenner bleiben stehen,
+  nur ihre `gifts` werden geleert.
 
 ## Konventionen
 - Die UI-Sprache ist Deutsch (Labels, `confirm`, `prompt`, Metadaten). Neue Texte auf Deutsch schreiben.

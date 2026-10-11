@@ -15,6 +15,7 @@ import styles from "./List.module.scss"
 
 import { Priority, SortOrder } from "types"
 import { SORT_ORDER_LABELS, sortEntries } from "lib/sort"
+import { hasCommitment } from "lib/gifts"
 import { DndContext, useSensors, DragEndEvent } from "@dnd-kit/core"
 import {
   KeyboardSensor,
@@ -56,15 +57,17 @@ const List = ({ params }: { params: { listId: string } }) => {
     entries,
     addEntry,
     removeEntry,
-    removeEntries,
     updateEntry,
     reorderEntries,
+    setEntryMulti,
+    resetEntries,
   } = useEntries(listId)
 
+  // a multi entry with gifts counts as one wish, so the owner can't tell how many give it
   const takenEntryIds = React.useMemo(
     () =>
       Object.entries(entries || {}).flatMap(([id, entry]) =>
-        entry.taken?.timestamp ? [id] : []
+        hasCommitment(entry) ? [id] : []
       ),
     [entries]
   )
@@ -129,13 +132,23 @@ const List = ({ params }: { params: { listId: string } }) => {
   // only reveal which entries were taken once the occasion is over
   const isEventOver = !!list?.eventDate && list.eventDate < todayIsoDate()
 
+  // multi entries ("Dauerbrenner") stay on the list for the next occasion, only their gifts are cleared
   const handleRemoveTakenEntries = () => {
-    if (
-      confirm(
-        `${takenEntryIds.length} reservierte Wünsche endgültig von der Liste entfernen?`
-      )
-    ) {
-      removeEntries(takenEntryIds).catch((error) => {
+    const multiEntryIds = takenEntryIds.filter((id) => entries?.[id]?.multi)
+    const closedEntryIds = takenEntryIds.filter((id) => !entries?.[id]?.multi)
+
+    const isSingleMulti = multiEntryIds.length === 1
+    const message = !closedEntryIds.length
+      ? `${multiEntryIds.length} Dauerbrenner wieder freigeben? ${isSingleMulti ? "Er bleibt" : "Sie bleiben"} auf der Liste, nur die Zusagen werden entfernt.`
+      : [
+          `${closedEntryIds.length} ${closedEntryIds.length === 1 ? "reservierten Wunsch" : "reservierte Wünsche"} endgültig von der Liste entfernen?`,
+          multiEntryIds.length
+            ? `${multiEntryIds.length} Dauerbrenner ${isSingleMulti ? "bleibt stehen und wird" : "bleiben stehen und werden"} wieder freigegeben.`
+            : "",
+        ].join(" ").trim()
+
+    if (confirm(message)) {
+      resetEntries(closedEntryIds, multiEntryIds).catch((error) => {
         console.error("[rtdb] remove taken entries", error)
         alert("Reservierte Wünsche konnten nicht entfernt werden.")
       })
@@ -341,6 +354,7 @@ const List = ({ params }: { params: { listId: string } }) => {
                         value={entry.text}
                         link={entry.link}
                         priority={entry.priority}
+                        multi={entry.multi}
                         onDelete={() => removeEntry(id)}
                         onSave={(_id, value) => {
                           updateEntry(id, { text: value })
@@ -350,6 +364,14 @@ const List = ({ params }: { params: { listId: string } }) => {
                         }}
                         onSetPriority={(priority) => {
                           updateEntry(id, { priority })
+                        }}
+                        onToggleMulti={() => {
+                          setEntryMulti(id, entry, !entry.multi).catch(
+                            (error) => {
+                              console.error("[rtdb] toggle multi entry", error)
+                              alert("Wunsch konnte nicht geändert werden.")
+                            }
+                          )
                         }}
                       />
                     ))}
