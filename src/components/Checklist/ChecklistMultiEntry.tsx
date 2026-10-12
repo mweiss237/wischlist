@@ -5,11 +5,12 @@ import React from "react"
 import { addGift, removeGift } from "lib/entries"
 import { useGiver } from "lib/giver"
 import { getGifts, isOwnGift, NOTE_MAX_LENGTH } from "lib/gifts"
-import { Check, ExternalLink, Gift, Plus, Users, X } from "react-feather"
+import { ExternalLink, Plus, X } from "react-feather"
 import { Entry } from "types"
+import { DoodleCheck } from "components/Doodle/Doodle"
 import entryStyles from "./ChecklistEntry.module.scss"
 import styles from "./ChecklistMultiEntry.module.scss"
-import PriorityIcon from "./Priority"
+import PriorityTape from "./Priority"
 
 interface ChecklistMultiEntryParams {
   entry: Entry
@@ -84,44 +85,43 @@ const ChecklistMultiEntry = ({ entry, entryId, listId }: ChecklistMultiEntryPara
   }
 
   return (
-    <div className={styles.wrapper}>
+    <div className={`${styles.wrapper} ${hasOwnGift ? entryStyles.taken : ""}`}>
       <div className={styles.head}>
+        {/* the whole line toggles, like a regular row */}
         <button
           type="button"
-          className={`${styles.toggle} ${hasOwnGift ? styles.checked : ""}`}
+          className={styles.toggle}
           onClick={handleToggle}
           aria-pressed={hasOwnGift}
           title={hasOwnGift ? "Zusage zurückziehen" : "Ich schenke etwas davon"}
         >
-          {hasOwnGift ? <Check size={14} strokeWidth={3.5} /> : <Plus size={14} strokeWidth={3} />}
-        </button>
-        <span className={styles.title}>
-          <span className={entryStyles.text}>{entry?.text}</span>
-          <span className="chip chip-gold" title="Mehrere können diesen Wunsch schenken">
-            <Users size={12} aria-hidden /> Mehrfach
+          <span className={`${entryStyles.box} ${styles.box}`} aria-hidden>
+            {hasOwnGift ? <DoodleCheck draw className={entryStyles.check} /> : <Plus size={16} strokeWidth={2.5} />}
           </span>
-        </span>
+          <span className={styles.text}>{entry?.text}</span>
+          <span className={styles.multi} title="Mehrere können diesen Wunsch schenken">mehrfach</span>
+        </button>
         {entry?.link ?
           <a href={entry.link} target="_blank" rel="noreferrer" className={entryStyles.share} title="Link öffnen">
-            <ExternalLink size={16} />
+            <ExternalLink size={18} />
+            <span className="sr_only">Link öffnen</span>
           </a>
           : null}
-        <span className={entryStyles.priority}>
-          <PriorityIcon priority={entry?.priority} />
-        </span>
+        <PriorityTape priority={entry?.priority} className={entryStyles.priority} />
       </div>
 
+      {/* every commitment hangs on the twine as a gift tag */}
       <ul className={styles.gifts}>
         {gifts.map((gift) => {
           const [giftId, { giver, note }] = gift
           const isOwn = isOwnGift(gift, ownGiftIds, userName)
 
           return (
-            <li key={giftId} className={`${styles.gift} ${isOwn ? styles.own : ""}`}>
-              <span className={entryStyles.giver}>
-                <Gift size={12} aria-hidden /> {giver || "jemand"}{isOwn ? " (du)" : ""}
+            <li key={giftId} className={styles.gift}>
+              <span className={entryStyles.tag}>
+                {giver || "jemand"}{isOwn ? " (du)" : ""}
+                {note ? <span className={styles.note}>: „{note}“</span> : null}
               </span>
-              {note ? <span className={styles.note}>„{note}“</span> : null}
               {isOwn ? (
                 <button
                   type="button"
@@ -129,7 +129,8 @@ const ChecklistMultiEntry = ({ entry, entryId, listId }: ChecklistMultiEntryPara
                   onClick={() => handleRemove(giftId)}
                   title="Zusage zurückziehen"
                 >
-                  <X size={14} />
+                  <X size={16} />
+                  <span className="sr_only">Zusage zurückziehen</span>
                 </button>
               ) : null}
             </li>

@@ -1,95 +1,106 @@
+@use "../../styles/materials" as m;
+
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.75rem 1.5rem;
+
+  /* packages lie slightly askew, decided by position, never by chance */
+  > :nth-child(3n + 1) {
+    rotate: var(--tilt-1);
+  }
+
+  > :nth-child(3n + 2) {
+    rotate: var(--tilt-2);
+  }
+
+  > :focus-visible,
+  > :focus-within {
+    rotate: 0deg;
+  }
 }
 
+/* a wrapped present lying on the table, it does not lift on hover */
 .card {
-  --wrap: #1f5c45;
-  --ribbon: #e2b660;
+  position: relative;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  min-height: 200px;
-  border-radius: var(--radius);
-  background-color: var(--paper);
-  background-image: var(--grain);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-sm);
+  justify-content: flex-end;
+  min-height: 220px;
+  /* the label grows upwards for long titles, but never under the bow */
+  padding: 76px 0.9rem 0.9rem;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-contact);
   color: var(--text);
-  transition:
-    transform 0.28s var(--ease),
-    box-shadow 0.28s var(--ease);
 
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
-
-    .bow {
-      transform: rotate(-12deg) scale(1.08);
-    }
-  }
-
-  &[data-wrapping="berry"] {
-    --wrap: #a3302a;
-    --ribbon: #f0d9a8;
-  }
-  &[data-wrapping="gold"] {
-    --wrap: #c08a2a;
-    --ribbon: #fffcf5;
-  }
-  &[data-wrapping="plum"] {
-    --wrap: #6b3a5b;
-    --ribbon: #e2b660;
-  }
-  &[data-wrapping="navy"] {
-    --wrap: #22375a;
-    --ribbon: #d7dde8;
-  }
-  &[data-wrapping="copper"] {
-    --wrap: #a45a33;
-    --ribbon: #1f5c45;
+  &:hover .bow {
+    transform: rotate(-7deg) scale(1.04);
   }
 }
 
 /* wrapping paper with a ribbon crossing it */
 .wrap {
-  position: relative;
-  display: grid;
-  place-items: center;
-  height: 96px;
-  background:
-    linear-gradient(90deg, transparent calc(50% - 7px), var(--ribbon) 0 calc(50% + 7px), transparent 0),
-    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.14) 0 2px, transparent 3px) 0 0 / 22px 22px,
-    linear-gradient(160deg, color-mix(in srgb, var(--wrap) 85%, white), var(--wrap));
-  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+  @include m.wrap-variants;
+  @include m.pattern-variants;
+  --wrap: var(--wrap-evergreen);
+  --ribbon: var(--ribbon-evergreen);
+  --ribbon-x: 74%;
+  --ribbon-y: 42px;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background-color: var(--wrap);
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    background: var(--ribbon);
+    box-shadow: 0 0 0 1px var(--ribbon-shade);
+  }
+
+  &::before {
+    top: 0;
+    bottom: 0;
+    left: calc(var(--ribbon-x) - 8px);
+    width: 16px;
+  }
+
+  &::after {
+    left: 0;
+    right: 0;
+    top: calc(var(--ribbon-y) - 8px);
+    height: 16px;
+  }
 }
 
 .bow {
-  display: grid;
-  place-items: center;
-  width: 44px;
+  position: absolute;
+  z-index: 1;
+  top: calc(var(--ribbon-y) - 25px);
+  left: calc(var(--ribbon-x) - 32px);
+  width: 64px;
   height: 44px;
-  border-radius: 50%;
-  /* stays light in dark mode so the bow reads on any wrapping */
-  background: #fffcf5;
-  color: var(--wrap);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
-  transition: transform 0.3s var(--ease);
+  color: var(--ribbon);
+  stroke: var(--ribbon-shade);
+  transform-origin: 50% 50%;
+  transition: transform 0.25s var(--ease);
 }
 
-.body {
+/* text never sits on the pattern, only on the label stuck onto the package */
+.label {
+  @include m.shipping-label;
   display: flex;
-  flex: 1;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 1rem 1.1rem 1.1rem;
+  gap: 0.6rem;
+  padding: 0.7rem 0.8rem 0.75rem;
 }
 
 .title {
   margin: 0;
-  font-size: 1.2rem;
+  color: var(--ink);
+  font-size: 1.25rem;
   line-height: 1.2;
   word-break: break-word;
 }
@@ -97,72 +108,75 @@
 .meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  align-items: flex-end;
+  gap: 0.5rem 1rem;
 }
 
+.value {
+  font-size: 0.9rem;
+}
+
+.stamp {
+  --stamp-tilt: -5deg;
+  margin-left: auto;
+}
+
+/* "cut here": a new list is made at the dashed line */
 .addCard {
+  @include m.cut-line;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  min-height: 200px;
-  border-radius: var(--radius);
-  border: 1.5px dashed var(--line-strong);
+  min-height: 220px;
+  padding: 1rem;
   background: transparent;
-  color: var(--muted);
+  color: var(--text);
   font: inherit;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition:
-    color 0.2s var(--ease),
     border-color 0.2s var(--ease),
     background-color 0.2s var(--ease);
 
   &:hover {
-    color: var(--primary);
     border-color: var(--gold);
-    background: color-mix(in srgb, var(--paper) 60%, transparent);
 
-    .addIcon {
-      transform: rotate(90deg);
-      box-shadow: var(--shadow-md);
+    .scissors {
+      transform: translateX(8px);
     }
   }
 }
 
+/* the scissors sit on the line, the table shows around them */
+.scissors {
+  position: absolute;
+  top: -12px;
+  left: 14px;
+  box-sizing: content-box;
+  padding: 0 4px;
+  background: var(--bg);
+  color: var(--muted);
+  transition: transform 0.25s var(--ease);
+}
+
 .creating {
-  padding: 1.1rem;
-  border-style: solid;
+  align-items: stretch;
   border-color: var(--gold);
-  background: var(--paper);
-  box-shadow: var(--shadow-md);
-  color: var(--primary);
+  background-color: var(--paper);
+  background-image: var(--grain);
   cursor: default;
 
-  &:hover {
-    background: var(--paper);
+  .scissors {
+    background: linear-gradient(var(--bg) 50%, var(--paper) 50%);
   }
 
-  .addIcon,
-  &:hover .addIcon {
+  &:hover .scissors {
     transform: none;
   }
 }
 
 .createPrompt {
   width: 100%;
-}
-
-.addIcon {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--paper);
-  box-shadow: var(--shadow-sm);
-  transition:
-    transform 0.3s var(--ease),
-    box-shadow 0.3s var(--ease);
 }

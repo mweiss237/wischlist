@@ -1,7 +1,6 @@
 "use client"
 
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
-import { AlertTriangle, HelpCircle, Info } from "react-feather"
 import styles from "./Dialog.module.scss"
 
 interface DialogOptions {
@@ -74,7 +73,6 @@ export const DialogProvider = ({ children }: PropsWithChildren) => {
 
   const isConfirm = current?.kind === "confirm"
   const isDanger = isConfirm && !!current?.options.danger
-  const Icon = isDanger ? AlertTriangle : isConfirm ? HelpCircle : Info
   const title = current?.options.title || (isConfirm ? "Bist du sicher?" : "Hinweis")
 
   return (
@@ -97,9 +95,9 @@ export const DialogProvider = ({ children }: PropsWithChildren) => {
       >
         {current ? (
           <div className={styles.content}>
-            <span className={`${styles.icon} ${isDanger ? styles.danger : ""}`}>
-              <Icon size={22} aria-hidden />
-            </span>
+            {/* a note put down on the table and taped, destructive questions get a warning stamp */}
+            <span className={`tape ${styles.tape}`} aria-hidden />
+            {isDanger ? <span className={`stamp stamp-berry ${styles.stamp}`} aria-hidden>Achtung</span> : null}
             <h2 id="dialog-title" className={styles.title}>{title}</h2>
             <p id="dialog-message" className={styles.message}>{current.message}</p>
             <div className={styles.actions}>

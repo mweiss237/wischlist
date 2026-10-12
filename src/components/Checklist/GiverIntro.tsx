@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { ArrowRight, ChevronDown } from "react-feather"
+import { ArrowRight } from "react-feather"
 import styles from "./GiverIntro.module.scss"
 
 interface GiverIntroProps {
@@ -9,7 +9,7 @@ interface GiverIntroProps {
   onSkip: () => void
 }
 
-// first thing an anonymous giver sees, asks for a name but lets them skip right to the list
+// first thing an anonymous giver sees: a big gift tag to sign, the list waits below
 const GiverIntro = ({ onSubmit, onSkip }: GiverIntroProps) => {
   const [name, setName] = React.useState("")
   const inputRef = React.useRef<HTMLInputElement>(null)
@@ -25,37 +25,39 @@ const GiverIntro = ({ onSubmit, onSkip }: GiverIntroProps) => {
   }
 
   return (
-    <section className={`${styles.intro} paper rise_in`} aria-labelledby="giver-intro-title">
-      <span className="eyebrow">Schön, dass du da bist!</span>
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <label id="giver-intro-title" htmlFor="giver-intro-name" className={styles.question}>
-          Wie heißt du?
-        </label>
-        <div className={styles.row}>
-          <input
-            ref={inputRef}
-            id="giver-intro-name"
-            type="text"
-            className={styles.input}
-            placeholder="Dein Name"
-            maxLength={100}
-            autoComplete="name"
-            aria-describedby="giver-intro-info"
-            value={name}
-            onChange={(event) => setName(event.currentTarget.value)}
-          />
+    <section className={`${styles.intro} lay_in`} aria-labelledby="giver-intro-title">
+      <div className={styles.tag}>
+        <p className={styles.hello}>Schön, dass du da bist!</p>
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <label id="giver-intro-title" htmlFor="giver-intro-name" className={styles.question}>
+            Wie heißt du?
+          </label>
+          <div className={styles.line}>
+            <span className={styles.from} aria-hidden>Von:</span>
+            <input
+              ref={inputRef}
+              id="giver-intro-name"
+              type="text"
+              className={`crit_textinput ${styles.input}`}
+              placeholder="Dein Name"
+              maxLength={100}
+              autoComplete="name"
+              aria-describedby="giver-intro-info"
+              value={name}
+              onChange={(event) => setName(event.currentTarget.value)}
+            />
+          </div>
           <button type="submit" className="btn btn-primary" disabled={!name.trim()}>
             Weiter <ArrowRight size={16} aria-hidden />
           </button>
-        </div>
-      </form>
-      <p id="giver-intro-info" className={styles.info}>
-        Dann sehen andere Schenkende, was du besorgst, und nichts kommt doppelt.
-      </p>
-      <button type="button" className={styles.skip} onClick={onSkip}>
-        Ohne Namen weiter
-        <ChevronDown size={20} className={styles.arrow} aria-hidden />
-      </button>
+        </form>
+        <p id="giver-intro-info" className={styles.info}>
+          Dann sehen andere Schenkende, was du besorgst, und nichts kommt doppelt.
+        </p>
+        <button type="button" className={`btn btn-tertiary ${styles.skip}`} onClick={onSkip}>
+          Ohne Namen weiter
+        </button>
+      </div>
     </section>
   )
 }

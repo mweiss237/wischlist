@@ -1,28 +1,23 @@
+@use "../../styles/materials" as m;
+
+/* a form on a sheet of paper, taped to the table */
 .wrapper {
+  @include m.paper;
   position: relative;
   display: flex;
   flex-flow: column nowrap;
   width: 100%;
   max-width: 440px;
-  margin: 2rem auto;
+  margin: 2.5rem auto 2rem;
   padding: 2.25rem 2rem 2rem;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--line);
-  background-color: var(--paper);
-  background-image: var(--grain);
-  box-shadow: var(--shadow-lg);
   color: var(--text);
 
-  /* gift ribbon along the top edge */
   &::before {
+    @include m.tape;
     content: "";
-    position: absolute;
-    top: 0;
-    left: 2rem;
-    right: 2rem;
-    height: 4px;
-    border-radius: 0 0 4px 4px;
-    background: linear-gradient(90deg, var(--primary), var(--gold), var(--berry));
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
   }
 }
 
@@ -30,7 +25,7 @@
   margin-bottom: 1.5rem;
 
   h1 {
-    margin: 0.2rem 0 0.35rem;
+    margin: 0 0 0.4rem;
     font-size: 1.9rem;
   }
 
@@ -50,21 +45,23 @@
   }
 }
 
+/* labels stay in the body font */
 .inputlabel {
   margin-bottom: 0.35rem;
-  color: var(--muted);
-  font-size: 0.82rem;
-  font-weight: 600;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .textfield {
   width: 100%;
-  margin-bottom: 1rem;
-  padding: 0.75rem 0.9rem !important;
+  min-height: 46px;
+  margin-bottom: 1.1rem;
+  padding: 0.7rem 0.85rem;
 
   &:disabled {
     color: var(--muted);
-    background: var(--surface-2) !important;
+    background: var(--surface-2);
   }
 }
 
@@ -74,11 +71,15 @@
 
 .sm {
   align-self: flex-end;
-  margin: -0.5rem 0 1rem;
-  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: -0.85rem 0 0.5rem;
+  font-size: 0.9rem;
   color: var(--primary);
   text-decoration: underline;
   text-decoration-color: var(--gold);
+  text-decoration-thickness: 1.5px;
   text-underline-offset: 3px;
 }
 
@@ -94,7 +95,7 @@
   align-items: center;
   gap: 0.75rem;
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
 
   &::before,
   &::after {
@@ -105,12 +106,12 @@
   }
 }
 
+/* a short call in handwriting */
 .notice {
-  margin: 0.5rem 0 0;
-  padding: 1rem;
-  border-radius: var(--radius-sm);
-  background: var(--primary-soft);
+  margin: 0.75rem 0 0;
   color: var(--primary);
-  font-weight: 600;
+  font-family: var(--font-hand), cursive;
+  font-size: 1.75rem;
+  line-height: 1.2;
   text-align: center;
 }

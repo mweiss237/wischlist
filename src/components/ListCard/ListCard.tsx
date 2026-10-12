@@ -1,48 +1,76 @@
 import Link from "next/link"
-import { Calendar, Gift, Plus, Star } from "react-feather"
-import { describeCountdown, formatEventDate } from "lib/date"
+import { Scissors } from "react-feather"
+import { daysUntil, describeDaysLeft, formatEventDate } from "lib/date"
 import InlinePrompt from "components/InlinePrompt/InlinePrompt"
+import { Bow } from "components/Doodle/Doodle"
 import styles from "./ListCard.module.scss"
 
-// festive wrapping paper colors, picked stably per list id
+// wrapping paper per list: color and pattern are picked stably from the list id
 const wrappings = ["evergreen", "berry", "gold", "plum", "navy", "copper"] as const
+const patterns = ["stripes", "dots", "stars", "diamonds", "herringbone"] as const
 
-const pickWrapping = (id: string) => {
+const hashId = (id: string) => {
   let hash = 0
   for (let i = 0; i < id.length; i++) {
     hash = (hash * 31 + id.charCodeAt(i)) % 997
   }
-  return wrappings[hash % wrappings.length]
+  return hash
+}
+
+export const pickWrapping = (id: string) => {
+  const hash = hashId(id)
+  return {
+    wrapping: wrappings[hash % wrappings.length],
+    // from the next digits of the hash, so the pattern does not follow the color
+    pattern: patterns[Math.floor(hash / wrappings.length) % patterns.length],
+  }
+}
+
+const stamps = {
+  shared: { label: "Geteilt", className: "stamp-primary" },
+  private: { label: "Nicht geteilt", className: "stamp-berry" },
+  favorite: { label: "Gemerkt", className: "" },
 }
 
 interface ListCardProps {
   id: string
   href: string
   title: string
-  badge: string
-  variant?: "gift" | "favorite"
+  status: keyof typeof stamps
   eventDate?: string
 }
 
-export const ListCard = ({ id, href, title, badge, variant = "gift", eventDate }: ListCardProps) => {
-  const Icon = variant === "favorite" ? Star : Gift
+// a list is a wrapped present, title and details sit on a label stuck onto it
+export const ListCard = ({ id, href, title, status, eventDate }: ListCardProps) => {
+  const { wrapping, pattern } = pickWrapping(id)
+  const stamp = stamps[status]
+  const isOver = !!eventDate && daysUntil(eventDate) < 0
 
   return (
-    <Link href={href} id={id} className={styles.card} data-wrapping={pickWrapping(id)}>
-      <div className={styles.wrap} aria-hidden>
-        <span className={styles.bow}>
-          <Icon size={18} />
-        </span>
+    <Link href={href} id={id} className={styles.card}>
+      <div className={styles.wrap} data-wrapping={wrapping} data-pattern={pattern} aria-hidden>
+        <Bow className={styles.bow} />
       </div>
-      <div className={styles.body}>
+      <div className={styles.label}>
         <h3 className={styles.title}>{title || "Ohne Titel"}</h3>
         <div className={styles.meta}>
-          <span className={`chip ${badge === "Geteilt" ? "chip-green" : ""}`}>{badge}</span>
           {eventDate ? (
-            <span className="chip chip-gold" title={formatEventDate(eventDate)}>
-              <Calendar size={12} aria-hidden /> {describeCountdown(eventDate)}
-            </span>
+            <>
+              <span className="field">
+                <span className="field_key">Am</span>
+                <span className={`field_value ${styles.value}`}>{formatEventDate(eventDate)}</span>
+              </span>
+              {!isOver ? (
+                <span className="field">
+                  <span className="field_key">Noch</span>
+                  <span className={`field_value ${styles.value}`}>{describeDaysLeft(eventDate)}</span>
+                </span>
+              ) : null}
+            </>
           ) : null}
+          <span className={`stamp ${stamp.className} ${styles.stamp}`}>
+            {isOver ? "Event vorbei" : stamp.label}
+          </span>
         </div>
       </div>
     </Link>
@@ -56,14 +84,12 @@ interface AddListCardProps {
   onCancel: () => void
 }
 
-// turns into the name field itself instead of asking in a browser dialog
+// a cut line: here a new list is made. Turns into the name field itself.
 export const AddListCard = ({ isCreating, onOpen, onCreate, onCancel }: AddListCardProps) => {
   if (!isCreating) {
     return (
       <button type="button" className={styles.addCard} onClick={onOpen}>
-        <span className={styles.addIcon}>
-          <Plus size={22} aria-hidden />
-        </span>
+        <Scissors size={20} className={styles.scissors} aria-hidden />
         Neue Liste
       </button>
     )
@@ -71,9 +97,7 @@ export const AddListCard = ({ isCreating, onOpen, onCreate, onCancel }: AddListC
 
   return (
     <div className={`${styles.addCard} ${styles.creating}`}>
-      <span className={styles.addIcon}>
-        <Gift size={22} aria-hidden />
-      </span>
+      <Scissors size={20} className={styles.scissors} aria-hidden />
       <InlinePrompt
         className={styles.createPrompt}
         label="Wie soll die Liste heißen?"

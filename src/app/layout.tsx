@@ -3,7 +3,7 @@ import "styles/critical.scss"
 import { AuthProvider } from "lib/auth"
 import { DialogProvider } from "components/Dialog/Dialog"
 import type { Metadata } from "next"
-import { fontBody, fontDisplay, fontHand } from "styles/fonts"
+import { fontBody, fontDisplay, fontHand, fontLabel } from "styles/fonts"
 
 export const metadata: Metadata = {
   title: "Wischlist",
@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html
       lang="de"
-      className={`${fontBody.variable} ${fontDisplay.variable} ${fontHand.variable}`}
+      className={`${fontBody.variable} ${fontDisplay.variable} ${fontHand.variable} ${fontLabel.variable}`}
     >
       <body>
         <AuthProvider>

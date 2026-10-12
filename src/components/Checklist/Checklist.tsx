@@ -9,16 +9,16 @@ import { useEntries } from "lib/entries"
 import { useGiver } from "lib/giver"
 import Loading from "components/Loading/Loading"
 import { useList } from "lib/list"
-import PriorityIcon from './Priority'
+import PriorityTape from './Priority'
 import { Priority } from 'types'
 import { useUser } from 'lib/auth'
 import Favorite from './Favorite'
 import { useFavorites } from 'lib/favorite'
 import Link from 'next/link'
-import { Calendar, Users } from 'react-feather'
-import { describeCountdown, formatEventDate } from 'lib/date'
+import { daysUntil, describeDaysLeft, formatEventDate } from 'lib/date'
 import { sortEntries } from 'lib/sort'
 import { hasCommitment } from 'lib/gifts'
+import { DoodleCircle } from 'components/Doodle/Doodle'
 
 interface ChecklistParams {
   params: {
@@ -86,16 +86,40 @@ const Checklist = ({ params }: ChecklistParams) => {
     [entries, sortOrder]
   )
 
+  const eventDate = isShared ? list?.eventDate : undefined
+  const isEventOver = !!eventDate && daysUntil(eventDate) < 0
+
   return (
     <div className={styles.page}>
+      {/* the head is a shipping label: what the list is for and when */}
       <header className={styles.header}>
-        <span className="eyebrow">Ich wünsche mir…</span>
-        <h1 className={styles.title}>{(isShared && list?.title) || "Wunschliste"}</h1>
-        {isShared && list?.eventDate ? (
-          <span className="chip chip-gold">
-            <Calendar size={12} aria-hidden /> {formatEventDate(list.eventDate)} · {describeCountdown(list.eventDate)}
-          </span>
-        ) : null}
+        <span className={`remark ${styles.remark}`}>Ich wünsche mir…</span>
+        <div className={`shipping_label ${styles.label}`}>
+          <div className={styles.labelTitle}>
+            <span className="field_key">Wunschliste</span>
+            <h1 className={styles.title}>{(isShared && list?.title) || "Wunschliste"}</h1>
+          </div>
+          {eventDate ? (
+            <div className={styles.labelFields}>
+              <div className="field">
+                <span className="field_key">Am</span>
+                <span className="field_value">{formatEventDate(eventDate)}</span>
+              </div>
+              {isEventOver ? (
+                <span className={`stamp ${styles.overStamp}`}>Event vorbei</span>
+              ) : (
+                <div className="field">
+                  <span className="field_key">Noch</span>
+                  <span className={`field_value ${styles.countdown}`}>
+                    {describeDaysLeft(eventDate)}
+                    <DoodleCircle draw className={styles.countdownCircle} />
+                  </span>
+                </div>
+              )}
+            </div>
+          ) : null}
+          <span className={`barcode ${styles.barcode}`} aria-hidden />
+        </div>
       </header>
 
       {isIntroActive ? (
@@ -112,11 +136,12 @@ const Checklist = ({ params }: ChecklistParams) => {
       ) : <div className={styles.giverWrapper}>
         {user === null ? (
           <>
-            <label className={styles.giverField}>
-              <span>Ich bin</span>
+            {/* a small gift tag to sign, like the big one in the intro */}
+            <label className={styles.giverTag}>
+              <span className={styles.giverKey}>Von</span>
               <input
                 type="text"
-                className="crit_textinput"
+                className={`crit_textinput ${styles.giverInput}`}
                 placeholder="anonym"
                 maxLength={100}
                 autoComplete="name"
@@ -137,22 +162,23 @@ const Checklist = ({ params }: ChecklistParams) => {
         )}
       </div>}
 
+      {/* one ruled sheet, taped to the table, torn off at the bottom */}
       <div
         ref={listRef}
-        className={`${styles.checklist_wrapper} ${isDimmed ? styles.dimmed : ""} paper`}
+        className={`${styles.sheetWrapper} ${isDimmed ? styles.dimmed : ""}`}
         onPointerDownCapture={isDimmed ? () => setDimmed(false) : undefined}
       >
-        <span className={styles.tape} aria-hidden />
+        <span className={`tape ${styles.tape}`} aria-hidden />
         {user ? (
           <Favorite
             isFavorite={isFavorite}
             setIsFavorite={() => isFavorite ? removeFavorite(listId) : addFavorite(listId, list?.title || "")}
           />
         ) : null}
-        <div className={`${styles.checklist} ${isBlurred ? styles.blurry : ""}`}>
-          {
-            isShared ?
-              !entries || !list ? <Loading className={styles.centered} /> :
+        <div className={`${styles.sheet} torn_bottom`}>
+          {isShared ? (
+            <div className={`${styles.checklist} ${isBlurred ? `${styles.blurry} is_blurred` : ""}`}>
+              {!entries || !list ? <Loading className={styles.centered} /> :
                 sortedEntryIds.map((entryId) => {
                   const EntryComponent = entries[entryId].multi ? ChecklistMultiEntry : ChecklistEntry
                   return (
@@ -163,20 +189,32 @@ const Checklist = ({ params }: ChecklistParams) => {
                       key={`wish${entryId}`}
                     />
                   )
-                })
-              : <p className={styles.notShared}>Diese Liste wird aktuell nicht geteilt.</p>
-          }
-        </div>
+                })}
+            </div>
+          ) : (
+            <div className={styles.notShared}>
+              <span className="stamp stamp-berry">Nicht geteilt</span>
+              <p>Diese Liste wird aktuell nicht geteilt.</p>
+            </div>
+          )}
 
-        <footer className={styles.legend}>
-          <span>Priorität:</span>
-          <span><PriorityIcon priority={Priority.high} /> Hoch</span>
-          <span><PriorityIcon priority={Priority.medium} /> Mittel</span>
-          <span><PriorityIcon priority={Priority.low} /> Niedrig</span>
-          {isShared && hasMultiEntries ? (
-            <span className={styles.legendMulti}><Users aria-hidden /> Mehrfach schenkbar</span>
+          {isShared ? (
+            <footer className={styles.legend}>
+              <div className="perforation" aria-hidden />
+              <p className={styles.footnote}>
+                <span>Priorität:</span>
+                <span><PriorityTape priority={Priority.high} /> hoch</span>
+                <span><PriorityTape priority={Priority.medium} /> mittel</span>
+                <span><PriorityTape priority={Priority.low} /> niedrig</span>
+              </p>
+              {hasMultiEntries ? (
+                <p className={styles.footnote}>
+                  <span className={styles.legendMulti}>mehrfach</span> = mehrere können etwas davon schenken
+                </p>
+              ) : null}
+            </footer>
           ) : null}
-        </footer>
+        </div>
       </div>
     </div>
   )

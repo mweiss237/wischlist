@@ -1,6 +1,11 @@
+@use "../../styles/materials" as m;
+
 /* a wish as a lined paper note */
 .cardWrapper {
   --prio: var(--prio-medium);
+  --tape-width: 50px;
+  /* two sheets peeking out behind a dauerbrenner, always two whatever the count */
+  --stack: 0 0 0 0 transparent;
   position: relative;
   display: flex;
   aspect-ratio: 1 / 1;
@@ -8,164 +13,164 @@
 
   &[data-priority="1"] {
     --prio: var(--prio-high);
+    --tape-width: 64px;
   }
   &[data-priority="3"] {
     --prio: var(--prio-low);
-  }
-
-  /* priority as a strip of washi tape */
-  &::before {
-    content: "";
-    position: absolute;
-    z-index: 2;
-    top: -7px;
-    left: 18px;
-    width: 54px;
-    height: 16px;
-    border-radius: 2px;
-    background: color-mix(in srgb, var(--prio) 70%, transparent);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-    transform: rotate(-4deg);
-    pointer-events: none;
+    --tape-width: 36px;
   }
 
   &:nth-child(3n + 1) .card {
-    rotate: -0.8deg;
+    rotate: var(--tilt-1);
   }
   &:nth-child(3n + 2) .card {
-    rotate: 0.6deg;
+    rotate: var(--tilt-2);
   }
 
-  &:hover .card,
-  .card:focus {
+  /* what is being edited lies straight */
+  &:focus-within .card {
     rotate: 0deg;
   }
 
   @media (hover: hover) {
     .deleteWish {
       opacity: 0;
-      transform: scale(0.8);
     }
 
     &:hover .deleteWish,
     &:focus-within .deleteWish {
       opacity: 1;
-      transform: none;
     }
   }
+}
+
+.multi {
+  --stack: 3px 3px 0 -1px var(--paper), 3px 3px 0 0 var(--line-strong), 6px 6px 0 -1px var(--paper),
+    6px 6px 0 0 var(--line-strong);
+}
+
+/* priority as a strip of washi tape, wider for higher priority */
+.tape {
+  @include m.tape-ends;
+  position: absolute;
+  z-index: 2;
+  top: -7px;
+  left: 30px;
+  width: var(--tape-width);
+  height: 16px;
+  background: color-mix(in srgb, var(--prio) 70%, transparent);
+  transform: rotate(-4deg);
 }
 
 .card {
   width: 100%;
   height: 100%;
-  padding: 26px 16px 36px;
+  padding: 26px 16px 40px;
   resize: none;
   color: var(--text);
   font: inherit;
   font-size: 1rem;
   line-height: 28px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+  border: none !important;
+  border-radius: var(--radius-sm) !important;
   background-color: var(--paper);
-  background-image: repeating-linear-gradient(
-      transparent 0 25px,
-      var(--line) 25px 26px,
-      transparent 26px 28px
-    ),
+  background-image: repeating-linear-gradient(transparent 0 27px, var(--line) 27px 28px),
     var(--grain);
-  background-position: 0 25px, 0 0;
+  background-position: 0 26px, 0 0;
   background-attachment: local, scroll;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--stack), var(--shadow-contact);
   transition:
     rotate 0.25s var(--ease),
-    transform 0.25s var(--ease),
-    box-shadow 0.25s var(--ease),
-    border-color 0.25s var(--ease);
-
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
-  }
+    box-shadow 0.2s var(--ease);
 
   &:focus {
     outline: none;
-    transform: translateY(-3px);
-    border-color: var(--gold);
-    box-shadow: var(--ring), var(--shadow-md);
+    box-shadow: var(--ring), var(--stack), var(--shadow-contact) !important;
   }
 
   &::placeholder {
     color: var(--muted);
-    opacity: 0.6;
-    font-style: italic;
+    opacity: 0.75;
+  }
+}
+
+/* only what is held gets lifted */
+.dragging {
+  z-index: 5;
+
+  .card {
+    rotate: 0deg;
+    box-shadow: var(--shadow-lift) !important;
   }
 }
 
 .deleteWish {
+  @include m.hit-area;
   position: absolute;
   z-index: 3;
-  top: -8px;
-  left: -8px;
+  top: -10px;
+  left: -10px;
   display: grid;
   place-items: center;
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
   padding: 0;
-  border-radius: 50%;
-  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--ink);
   background: var(--paper);
-  color: var(--muted);
-  box-shadow: var(--shadow-sm);
+  color: var(--text);
+  box-shadow: var(--shadow-print);
   cursor: pointer;
   transition:
     opacity 0.18s var(--ease),
-    transform 0.18s var(--ease),
     background-color 0.18s var(--ease),
     color 0.18s var(--ease);
 
   &:hover {
     background: var(--berry);
     border-color: var(--berry);
-    color: #fffcf5;
+    color: var(--on-primary);
+  }
+
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
   }
 }
 
 .badges {
   position: absolute;
   z-index: 2;
-  left: 12px;
-  right: 48px;
-  bottom: 10px;
+  left: 14px;
+  right: 52px;
+  bottom: 8px;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem;
+  align-items: center;
+  gap: 0.2rem 0.75rem;
   pointer-events: none;
 }
 
-.linkBadge,
-.multiBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.15rem 0.5rem;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  pointer-events: auto;
-}
-
-.linkBadge {
-  background: var(--primary-soft);
+/* the link as a small stamp in the corner of the note */
+.linkStamp {
+  @include m.stamp;
+  @include m.hit-area;
+  --stamp-tilt: -4deg;
   color: var(--primary);
+  font-size: 0.72rem;
+  pointer-events: auto;
 
   &:hover {
-    text-decoration: underline;
+    opacity: 1;
   }
 }
 
-.multiBadge {
-  background: var(--gold-soft);
-  color: color-mix(in srgb, var(--gold) 80%, var(--text));
+/* a margin note in handwriting */
+.multiNote {
+  color: var(--gold-ink);
+  font-family: var(--font-hand), cursive;
+  font-size: 1.25rem;
+  line-height: 1;
 }
 
 /* link field lies on the lower part of the note, the wish text stays readable */
@@ -176,38 +181,40 @@
   right: 8px;
   bottom: 8px;
   padding: 0.55rem;
-  border: 1px solid var(--gold);
-  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius);
   background: var(--paper);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-print);
 }
 
 .saveWish {
+  @include m.hit-area;
   position: absolute;
   z-index: 2;
   right: 10px;
-  bottom: 10px;
+  bottom: 8px;
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   padding: 0;
-  border-radius: 50%;
-  border: none;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--ink-shadow);
   background: var(--primary);
   color: var(--on-primary);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-print);
   cursor: pointer;
   opacity: 0;
-  transform: scale(0.6);
   pointer-events: none;
-  transition:
-    opacity 0.18s var(--ease),
-    transform 0.18s var(--ease);
+  transition: opacity 0.18s var(--ease);
 
   &.active {
     opacity: 1;
-    transform: none;
     pointer-events: auto;
+  }
+
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
   }
 }

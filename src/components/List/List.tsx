@@ -25,7 +25,8 @@ import {
   closestCenter,
 } from "@dnd-kit/core"
 import { SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
-import { Calendar, Check, Copy, Eye, Gift, Link as FeatherLink, Move } from "react-feather"
+import { Check, Copy, Eye, Link as FeatherLink, Move } from "react-feather"
+import EmptyState from "components/EmptyState/EmptyState"
 import Checkbox from "./ListOptions"
 import { describeCountdown, formatEventDate, todayIsoDate } from "lib/date"
 
@@ -222,7 +223,6 @@ const List = ({ params }: { params: { listId: string } }) => {
     <>
       <header className={`page_header ${styles.header}`}>
         <div className={styles.titleBlock}>
-          <span className="eyebrow">Wunschliste</span>
           <label className="sr_only" htmlFor="list-title">Name der Liste</label>
           <input
             id="list-title"
@@ -231,20 +231,28 @@ const List = ({ params }: { params: { listId: string } }) => {
             type="text"
             value={listName || ""}
             placeholder="Name der Liste"
-            className={styles.titleInput}
+            className={`crit_textinput ${styles.titleInput}`}
           />
           <div className={styles.meta}>
-            <span className="chip">
-              {wishCount} {wishCount === 1 ? "Wunsch" : "Wünsche"}
-            </span>
-            <span className={`chip ${isListShared ? "chip-green" : ""}`}>
-              {isListShared ? "Geteilt" : "Entwurf"}
+            <span className="field">
+              <span className="field_key">Wünsche</span>
+              <span className="field_value">{wishCount}</span>
             </span>
             {list?.eventDate ? (
-              <span className="chip chip-gold">
-                <Calendar size={12} aria-hidden /> {formatEventDate(list.eventDate)} · {describeCountdown(list.eventDate)}
+              <span className="field">
+                <span className="field_key">Anlass am</span>
+                <span className="field_value">
+                  {formatEventDate(list.eventDate)} · {describeCountdown(list.eventDate)}
+                </span>
               </span>
             ) : null}
+            {/* the key replays the stamp when the status changes */}
+            <span
+              key={String(isListShared)}
+              className={`stamp ${isListShared ? "stamp-primary" : "stamp-berry"} ${styles.stamp}`}
+            >
+              {isListShared ? "Geteilt" : "Nicht geteilt"}
+            </span>
           </div>
         </div>
         {user ? (
@@ -262,10 +270,7 @@ const List = ({ params }: { params: { listId: string } }) => {
       {user ? (
         <>
           {alreadyPickedSome ? (
-            <div className={styles.pickedInfo}>
-              <span className={styles.pickedIcon}>
-                <Gift size={20} aria-hidden />
-              </span>
+            <div className={`paper ${styles.pickedInfo}`}>
               <p>
                 <b>
                   Bereits {takenEntryIds.length}{" "}
@@ -274,9 +279,16 @@ const List = ({ params }: { params: { listId: string } }) => {
                 <span>Wer was schenkt, bleibt natürlich geheim.</span>
               </p>
               {isEventOver ? (
-                <button className="btn btn-ghost btn-sm" onClick={handleRemoveTakenEntries}>
-                  Reservierte entfernen
-                </button>
+                <>
+                  {/* below the perforation: what can be torn off after the occasion */}
+                  <div className={`perforation ${styles.pickedPerforation}`} aria-hidden />
+                  <div className={styles.pickedActions}>
+                    <span>Der Anlass ist vorbei.</span>
+                    <button className="btn btn-ghost btn-danger btn-sm" onClick={handleRemoveTakenEntries}>
+                      Reservierte entfernen
+                    </button>
+                  </div>
+                </>
               ) : null}
             </div>
           ) : null}
@@ -332,32 +344,39 @@ const List = ({ params }: { params: { listId: string } }) => {
                 </select>
               </label>
 
+              {/* the share link is a shipping label, torn off along the perforation */}
               <div
                 className={`${styles.shareWrapper} ${isListShared ? "" : "crit_hidden"}`}
               >
-                <span className={styles.shareLabel}>Link zum Teilen</span>
-                <div className={styles.shareField}>
-                  <input
-                    type="text"
-                    readOnly
-                    value={shareUrl}
-                    onClick={(e) => e.currentTarget.select()}
-                    aria-label="Link zum Teilen"
-                  />
-                  <button
-                    title={isShareAvailable ? "Liste teilen" : "Link kopieren"}
-                    className={`btn btn-primary btn-sm ${styles.share}`}
-                    onClick={shareOrCopyUrlToClipboard}
-                  >
-                    {isClicked ? (
-                      <Check size={16} />
-                    ) : isShareAvailable ? (
-                      <FeatherLink size={16} />
-                    ) : (
-                      <Copy size={16} />
-                    )}
-                    {isClicked ? "Kopiert" : isShareAvailable ? "Teilen" : "Kopieren"}
-                  </button>
+                <div className={`perforation ${styles.sharePerforation}`} aria-hidden />
+                <div className={`shipping_label ${styles.shareLabel}`}>
+                  <span className={styles.shareHead}>
+                    <span className="field_key">Link zum Teilen</span>
+                    <span className="barcode" aria-hidden />
+                  </span>
+                  <div className={styles.shareField}>
+                    <input
+                      type="text"
+                      readOnly
+                      value={shareUrl}
+                      onClick={(e) => e.currentTarget.select()}
+                      aria-label="Link zum Teilen"
+                    />
+                    <button
+                      title={isShareAvailable ? "Liste teilen" : "Link kopieren"}
+                      className={`btn btn-primary btn-sm ${styles.share}`}
+                      onClick={shareOrCopyUrlToClipboard}
+                    >
+                      {isClicked ? (
+                        <Check size={16} />
+                      ) : isShareAvailable ? (
+                        <FeatherLink size={16} />
+                      ) : (
+                        <Copy size={16} />
+                      )}
+                      {isClicked ? "Kopiert" : isShareAvailable ? "Teilen" : "Kopieren"}
+                    </button>
+                  </div>
                 </div>
               </div>
             </aside>
@@ -436,11 +455,10 @@ const List = ({ params }: { params: { listId: string } }) => {
           </div>
         </>
       ) : (
-        <div className="empty_state paper">
-          <h2>Nicht angemeldet</h2>
-          <p>Melde dich an, um deine Liste sehen zu können.</p>
-          <Link href="/auth" className="btn btn-primary">Anmelden</Link>
-        </div>
+        <EmptyState
+          text="Melde dich an, dann kannst du deine Liste bearbeiten."
+          action={<Link href="/auth" className="btn btn-primary">Anmelden</Link>}
+        />
       )}
     </>
   )

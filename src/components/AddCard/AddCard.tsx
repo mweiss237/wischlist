@@ -3,7 +3,7 @@
 import { useDialog } from "components/Dialog/Dialog"
 import { useUser } from "lib/auth"
 import React from "react"
-import { Plus } from "react-feather"
+import { Scissors } from "react-feather"
 
 import styles from "./AddCard.module.scss"
 
@@ -11,6 +11,7 @@ interface AddCardParams {
   callback: () => void
 }
 
+// a cut line: a new note is made here
 const AddCard = ({ callback }: AddCardParams) => {
   const { user, loading } = useUser()
   const dialog = useDialog()
@@ -27,10 +28,8 @@ const AddCard = ({ callback }: AddCardParams) => {
       type="button"
       onClick={addEmptyCard}
     >
-      <span className={styles.icon}>
-        <Plus size={22} aria-hidden />
-      </span>
-      Wunsch hinzufügen
+      <Scissors size={20} className={styles.scissors} aria-hidden />
+      Neuer Wunsch
     </button>
   )
 }

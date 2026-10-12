@@ -10,6 +10,12 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Check, ChevronDown, ChevronUp, Link, Minus, Users, X } from "react-feather"
 
+const priorityLabels: Record<Priority, string> = {
+  [Priority.high]: "Priorität hoch",
+  [Priority.medium]: "Priorität mittel",
+  [Priority.low]: "Priorität niedrig",
+}
+
 type CardParams = {
   id: string
   value?: string
@@ -58,6 +64,7 @@ const Card = ({ id, value = "", link, priority, multi, onDelete, onSave, onAddLi
     setNodeRef,
     transform,
     transition,
+    isDragging,
   } = useSortable({ id });
 
   const draggableStyle = {
@@ -85,7 +92,7 @@ const Card = ({ id, value = "", link, priority, multi, onDelete, onSave, onAddLi
 
   return (
     <div
-      className={`${styles.cardWrapper} wish-card`}
+      className={`${styles.cardWrapper} ${multi ? styles.multi : ""} ${isDragging ? styles.dragging : ""} wish-card`}
       data-priority={priority}
       data-entry-id={id}
       ref={setNodeRef}
@@ -93,8 +100,14 @@ const Card = ({ id, value = "", link, priority, multi, onDelete, onSave, onAddLi
       {...attributes}
       {...dragable ? listeners : {}}
     >
+      {priority ? (
+        <span className={styles.tape} title={priorityLabels[priority]}>
+          <span className="sr_only">{priorityLabels[priority]}</span>
+        </span>
+      ) : null}
       <button type="button" className={styles.deleteWish} onClick={handler.remove} title="Wunsch löschen">
-        <X size={14} />
+        <X size={16} />
+        <span className="sr_only">Wunsch löschen</span>
       </button>
 
       <textarea
@@ -127,16 +140,16 @@ const Card = ({ id, value = "", link, priority, multi, onDelete, onSave, onAddLi
               href={link}
               target="_blank"
               rel="noreferrer"
-              className={styles.linkBadge}
+              className={styles.linkStamp}
               title={link}
               onPointerDown={(event) => event.stopPropagation()}
             >
-              <Link size={12} /> Link
+              Link ↗
             </a>
           ) : null}
           {multi ? (
-            <span className={styles.multiBadge} title="Mehrere können diesen Wunsch schenken">
-              <Users size={12} /> Mehrfach
+            <span className={styles.multiNote} title="Mehrere können diesen Wunsch schenken">
+              mehrfach
             </span>
           ) : null}
         </div>
@@ -148,6 +161,7 @@ const Card = ({ id, value = "", link, priority, multi, onDelete, onSave, onAddLi
         title="Speichern"
       >
         <Check size={16} />
+        <span className="sr_only">Speichern</span>
       </button>
       <Menu entries={[
         {
