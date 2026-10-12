@@ -99,6 +99,7 @@ favorites/{uid}/{listId}   { title }
 - Styling: zuerst die Design-Tokens aus `src/styles/globals.scss` nutzen (`--primary`, `--gold`, `--berry`,
   `--prio-*`, `--radius*`, `--shadow-*`), keine hart codierten Farben. Dark Mode läuft über
   `prefers-color-scheme` in derselben Datei. Globale Hilfsklassen (`crit_*`) stehen in `critical.scss`.
+  Gestaltungsregeln, Materialsprache und Anti-Patterns stehen in `DESIGN.md`. Vor UI-Änderungen lesen.
 - SVGs werden per `@svgr/webpack` als React-Komponenten importiert.
 - Commits: Conventional Commits mit Scope, z. B. `feat(List): …`, `fix(Auth): …`, `chore(core): …`.
 - Branches: Entwickelt wird auf `dev`, Releases gehen per PR nach `main`.
