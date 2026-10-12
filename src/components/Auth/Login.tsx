@@ -80,7 +80,6 @@ const Login = () => {
   return (
     <form onSubmit={handleLogin} className={`${styles.wrapper} ${styles.darktext}`}>
       <div className={styles.heading}>
-        <span className="eyebrow">Schön, dass du da bist</span>
         <h1>Anmelden</h1>
         <p>Wie möchtest du dich anmelden?</p>
       </div>

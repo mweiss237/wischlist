@@ -1,5 +1,6 @@
 "use client"
 import Loading from "components/Loading/Loading"
+import EmptyState from "components/EmptyState/EmptyState"
 import { AddListCard, ListCard } from "components/ListCard/ListCard"
 import cardStyles from "components/ListCard/ListCard.module.scss"
 import { useUser } from "lib/auth"
@@ -22,12 +23,15 @@ const ListOverview = () => {
 
   if (!user) {
     return (
-      <div className="empty_state paper">
-        <span className="eyebrow">Hallo!</span>
-        <h2>Deine Listen warten</h2>
-        <p>Melde dich an, um deine Wunschlisten zu sehen und neue anzulegen.</p>
-        <Link href="/auth" className="btn btn-primary">Anmelden</Link>
-      </div>
+      <>
+        <header className="page_header">
+          <h1>Meine Listen</h1>
+        </header>
+        <EmptyState
+          text="Melde dich an, dann warten hier deine Wunschlisten."
+          action={<Link href="/auth" className="btn btn-primary">Anmelden</Link>}
+        />
+      </>
     )
   }
 
@@ -35,7 +39,6 @@ const ListOverview = () => {
     <>
       <header className="page_header page_header_row">
         <div>
-          <span className="eyebrow">Deine Wunschlisten</span>
           <h1>Meine Listen</h1>
           <p>Leg für jeden Anlass eine eigene Liste an und teile sie, wenn sie fertig ist.</p>
         </div>
@@ -51,7 +54,7 @@ const ListOverview = () => {
             id={listId}
             href={`/list/${listId}`}
             title={list.title}
-            badge={list.options?.isShared ? "Geteilt" : "Entwurf"}
+            status={list.options?.isShared ? "shared" : "private"}
             eventDate={list.eventDate}
           />
         ))}

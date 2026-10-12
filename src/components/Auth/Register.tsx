@@ -41,7 +41,6 @@ const Register = () => {
   return (
     <form onSubmit={handleSignup} className={styles.wrapper}>
       <div className={styles.heading}>
-        <span className="eyebrow">Neu hier?</span>
         <h1>Konto erstellen</h1>
         <p>Nur noch Name und Passwort – dann kann es losgehen.</p>
       </div>

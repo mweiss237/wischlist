@@ -20,6 +20,14 @@ export const daysUntil = (isoDate: string) => {
   return Math.round((parseIsoDate(isoDate).getTime() - parseIsoDate(todayIsoDate()).getTime()) / msPerDay)
 }
 
+// for a "Noch:" field on a label, the occasion has not passed yet
+export const describeDaysLeft = (isoDate: string) => {
+  const days = daysUntil(isoDate)
+  if (days <= 0) return "heute!"
+  if (days === 1) return "1 Tag"
+  return `${days} Tage`
+}
+
 export const describeCountdown = (isoDate: string) => {
   const days = daysUntil(isoDate)
   if (days < 0) return "vorbei"

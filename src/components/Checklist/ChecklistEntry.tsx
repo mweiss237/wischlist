@@ -5,10 +5,11 @@ import React from "react"
 import { pickEntry, removeGift, unpickEntry } from "lib/entries"
 import { useGiver } from "lib/giver"
 import { getGifts, isEntryClosed, isOwnGift } from "lib/gifts"
-import { ExternalLink, Gift } from "react-feather"
+import { ExternalLink } from "react-feather"
 import { Entry } from "types"
+import { DoodleCheck } from "components/Doodle/Doodle"
 import styles from "./ChecklistEntry.module.scss"
-import PriorityIcon from "./Priority"
+import PriorityTape from "./Priority"
 
 interface ChecklistEntryParams {
   entry: Entry
@@ -103,20 +104,23 @@ const ChecklistEntry = ({ entry, entryId, listId }: ChecklistEntryParams) => {
         readOnly
         onClick={({ currentTarget: { checked } }) => handleSelect(checked)}
       />
+      {/* the label spans the row, so the whole line toggles */}
       <label className={styles.label} htmlFor={entryId}>
+        <span className={styles.box} aria-hidden>
+          <DoodleCheck className={styles.check} />
+        </span>
         <span className={styles.text}>{entry?.text}</span>
         {isTaken
-          ? (<span className={styles.giver}><Gift size={12} aria-hidden /> schenkt {givers.join(", ")}</span>)
+          ? (<span className={styles.tag}>von {givers.join(", ")}</span>)
           : null}
       </label>
       {entry?.link ?
         <a href={entry.link} target="_blank" rel="noreferrer" className={styles.share} title="Link öffnen">
-          <ExternalLink size={16} />
+          <ExternalLink size={18} />
+          <span className="sr_only">Link öffnen</span>
         </a>
         : null}
-      <span className={styles.priority}>
-        <PriorityIcon priority={entry?.priority} />
-      </span>
+      <PriorityTape priority={entry?.priority} className={styles.priority} />
       {isAskingName && !isTaken ? (
         <InlinePrompt
           className={styles.namePrompt}

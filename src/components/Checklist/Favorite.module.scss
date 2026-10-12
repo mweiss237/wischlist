@@ -1,44 +1,44 @@
+/* a sticker pinned onto the top edge of the sheet */
 .button {
   position: absolute;
   z-index: 2;
-  /* pinned onto the top edge of the sheet */
-  top: -19px;
+  top: -18px;
   right: 20px;
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   padding: 0;
-  border-radius: 50%;
-  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--ink);
   background: var(--paper);
-  color: var(--muted);
-  box-shadow: var(--shadow-sm);
+  color: var(--text);
+  box-shadow: var(--shadow-print);
   cursor: pointer;
   transition:
-    transform 0.2s var(--ease),
-    color 0.2s var(--ease),
-    border-color 0.2s var(--ease),
-    box-shadow 0.2s var(--ease);
+    transform 0.12s var(--ease),
+    box-shadow 0.12s var(--ease),
+    background-color 0.18s var(--ease);
 
   svg {
-    transition: fill 0.2s var(--ease);
+    transition: fill 0.2s var(--ease), color 0.2s var(--ease);
   }
 
   &:hover {
-    transform: translateY(-2px) rotate(-8deg);
-    color: var(--gold);
-    border-color: var(--gold);
-    box-shadow: var(--shadow-md);
+    background: var(--surface-2);
+  }
+
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
   }
 }
 
 .active {
-  color: var(--gold);
-  border-color: var(--gold);
   background: var(--gold-soft);
 
   svg {
+    color: var(--gold-ink);
     fill: var(--gold);
   }
 }

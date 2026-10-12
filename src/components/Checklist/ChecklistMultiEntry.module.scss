@@ -1,82 +1,80 @@
-/* same rhythm as a regular row, gifts hang below on a dashed thread */
+/* same rhythm as a regular line, gifts hang below on a twine */
 .wrapper {
   margin: 0 -0.75rem;
-  padding: 0.85rem 0.75rem;
-  border-radius: var(--radius-sm);
-  border-bottom: 1px dashed var(--line-strong);
+  padding: 0.6rem 0.75rem 0.75rem;
+  border-bottom: 1px solid var(--line-strong);
   transition: background-color 0.18s var(--ease);
 
-  &:last-child {
-    border-bottom-color: transparent;
-  }
-
   &:hover {
-    background: var(--surface-2);
+    background: var(--gold-soft);
   }
 }
 
 .head {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.75rem;
 }
 
-/* looks like the checkbox of a regular row, but dashed and gold */
 .toggle {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border-radius: 7px;
-  border: 1.5px dashed var(--gold);
-  background: var(--paper);
-  color: var(--gold);
-  cursor: pointer;
-  transition:
-    background-color 0.2s var(--ease),
-    border-color 0.2s var(--ease),
-    box-shadow 0.2s var(--ease);
-
-  &:hover {
-    box-shadow: 0 0 0 4px var(--gold-soft);
-  }
-
-  &.checked {
-    border-style: solid;
-    border-color: var(--primary);
-    background: var(--primary);
-    color: var(--on-primary);
-
-    &:hover {
-      box-shadow: 0 0 0 4px var(--primary-soft);
-    }
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: var(--ring);
-  }
-}
-
-.title {
   display: flex;
   flex: 1;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.25rem 0.6rem;
+  gap: 0.35rem 0.75rem;
   min-width: 0;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover > span:first-child {
+    box-shadow: 0 0 0 4px var(--gold-soft);
+  }
+
+  &:focus-visible {
+    outline: none;
+
+    > span:first-child {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+    }
+  }
 }
 
-/* indented below the text, the thread starts under the toggle */
+/* drawn like a regular box, the plus says "several can join" */
+.box {
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+}
+
+.text {
+  min-width: 0;
+  font-size: 1.05rem;
+  word-break: break-word;
+}
+
+/* a margin note, dauerbrenner are never struck through */
+.multi {
+  color: var(--gold-ink);
+  font-family: var(--font-hand), cursive;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+/* indented below the text, the twine starts under the box */
 .gifts {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  margin: 0.5rem 0 0 11px;
-  padding: 0.15rem 0 0.15rem calc(11px + 0.85rem);
-  border-left: 2px dashed var(--line-strong);
+  gap: 0.4rem;
+  margin: 0.4rem 0 0 11px;
+  padding: 0.25rem 0 0.25rem 0;
+  border-left: 2px solid var(--twine);
   list-style: none;
 }
 
@@ -84,30 +82,30 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.25rem 0.5rem;
-  min-height: 26px;
-}
+  gap: 0.25rem 0.4rem;
 
-.own {
-  font-weight: 600;
+  /* a short piece of twine to the tag */
+  &::before {
+    content: "";
+    flex: none;
+    width: calc(0.75rem + 11px);
+    height: 2px;
+    background: var(--twine);
+  }
 }
 
 .note {
-  color: var(--muted);
-  font-size: 0.85rem;
-  font-style: italic;
-  font-weight: 400;
   word-break: break-word;
 }
 
 .remove {
   display: grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   border: none;
-  border-radius: 50%;
+  border-radius: var(--radius);
   background: none;
   color: var(--muted);
   cursor: pointer;
@@ -119,38 +117,33 @@
     background: var(--berry-soft);
     color: var(--berry);
   }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: var(--ring);
-  }
 }
 
 .prompt {
   max-width: 420px;
-  padding: 0.25rem 0 0.35rem;
+  padding: 0.25rem 0 0.35rem calc(0.75rem + 11px);
 }
 
 .add {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.2rem 0;
+  gap: 0.35rem;
+  min-height: 44px;
+  margin-left: calc(0.75rem + 11px);
+  padding: 0 0.2rem;
   border: none;
   background: none;
-  color: var(--primary);
+  color: var(--text);
   font: inherit;
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
   cursor: pointer;
 
   &:hover {
-    text-decoration: underline;
-  }
-
-  &:focus-visible {
-    outline: none;
-    border-radius: var(--radius-sm);
-    box-shadow: var(--ring);
+    color: var(--primary);
   }
 }

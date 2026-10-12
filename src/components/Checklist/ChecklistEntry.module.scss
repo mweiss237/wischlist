@@ -1,85 +1,95 @@
+@use "../../styles/materials" as m;
+
+/* a line on the ruled sheet, no box per row */
 .row {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.5rem 0.75rem;
+  min-height: 56px;
   margin: 0 -0.75rem;
-  padding: 0.85rem 0.75rem;
-  border-radius: var(--radius-sm);
-  border-bottom: 1px dashed var(--line-strong);
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--line-strong);
   transition: background-color 0.18s var(--ease);
 
-  &:last-child {
-    border-bottom-color: transparent;
-  }
-
+  /* like going over it with a highlighter */
   &:hover {
-    background: var(--surface-2);
+    background: var(--gold-soft);
   }
 }
 
+/* the real checkbox stays focusable, the drawn box shows its state */
 .input {
-  -webkit-appearance: none;
-  appearance: none;
-  flex: none;
-  display: grid;
-  place-items: center;
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
   width: 24px;
   height: 24px;
-  margin: 0;
-  border-radius: 7px;
-  border: 1.5px solid var(--line-strong);
-  background: var(--paper);
-  cursor: pointer;
-  transition:
-    background-color 0.2s var(--ease),
-    border-color 0.2s var(--ease),
-    box-shadow 0.2s var(--ease);
-
-  &::after {
-    content: "";
-    width: 12px;
-    height: 12px;
-    transform: scale(0);
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E")
-      center / contain no-repeat;
-    transition: transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1);
-  }
-
-  &:hover {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 4px var(--primary-soft);
-  }
-
-  &:checked {
-    border-color: var(--primary);
-    background: var(--primary);
-    animation: pop 0.35s var(--ease);
-
-    &::after {
-      transform: scale(1);
-    }
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: var(--ring);
-  }
+  margin: -12px 0 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .label {
   display: flex;
   flex: 1;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.25rem 0.6rem;
+  align-items: center;
+  gap: 0.35rem 0.75rem;
   min-width: 0;
+  min-height: 44px;
   cursor: pointer;
+}
+
+/* a slightly crooked, hand drawn box */
+.box {
+  position: relative;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--ink);
+  border-radius: 3px 5px 4px 6px;
+  background: var(--paper);
+  transition: box-shadow 0.18s var(--ease);
+
+  .input:focus-visible + .label & {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+
+  .label:hover & {
+    box-shadow: 0 0 0 4px var(--gold-soft);
+  }
+}
+
+/* the tick overshoots the box like a real one */
+.box .check {
+  position: absolute;
+  top: -8px;
+  left: 1px;
+  width: 30px;
+  height: 30px;
+  color: var(--ink);
+  stroke-width: 2.6;
+
+  path {
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+    transition: stroke-dashoffset 0.35s var(--ease);
+  }
+
+  .taken & path {
+    stroke-dashoffset: 0;
+  }
 }
 
 .text {
   position: relative;
+  flex: 0 1 auto;
+  min-width: 0;
   color: var(--text);
+  font-size: 1.05rem;
   word-break: break-word;
   transition: color 0.3s var(--ease);
 
@@ -87,13 +97,13 @@
   &::after {
     content: "";
     position: absolute;
-    left: -2px;
-    right: -2px;
-    top: 55%;
+    left: -3px;
+    right: -3px;
+    top: 52%;
     height: 2px;
     border-radius: 2px;
     background: var(--berry);
-    transform: scaleX(0) rotate(-1deg);
+    transform: scaleX(0) rotate(-1.2deg);
     transform-origin: left;
     transition: transform 0.35s var(--ease);
   }
@@ -104,54 +114,51 @@
     color: var(--muted);
 
     &::after {
-      transform: scaleX(1) rotate(-1deg);
+      transform: scaleX(1) rotate(-1.2deg);
     }
   }
 }
 
-.giver {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.1rem 0.55rem;
-  border-radius: 999px;
-  background: var(--primary-soft);
-  color: var(--primary);
-  font-size: 0.78rem;
-  font-weight: 500;
+/* who gives it hangs on a gift tag behind the wish */
+.tag {
+  @include m.gift-tag;
+  --hole: var(--paper);
+  word-break: break-word;
+
+  /* for a blurred owner view a tag must not leave a recognizable shape */
+  :global(.is_blurred) & {
+    clip-path: none;
+    padding: 0;
+    background: none;
+    color: var(--muted);
+  }
 }
 
 .share {
   display: grid;
   place-items: center;
   flex: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius);
   color: var(--muted);
   transition:
     background-color 0.18s var(--ease),
     color 0.18s var(--ease);
 
   &:hover {
-    background: var(--primary-soft);
-    color: var(--primary);
+    background: var(--gold-soft);
+    color: var(--text);
   }
 }
 
+/* tapes have different widths, this keeps them centered in one column */
 .priority {
-  display: flex;
-  flex: none;
-  width: 20px;
+  margin-inline: calc((44px - var(--prio-width)) / 2);
 }
 
 /* full width below the wish, the row wraps for it */
 .namePrompt {
   flex-basis: 100%;
-}
-
-@keyframes pop {
-  50% {
-    transform: scale(1.15);
-  }
+  padding-left: calc(24px + 0.75rem);
 }

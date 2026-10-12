@@ -1,98 +1,104 @@
 import Link from "next/link"
-import { ArrowRight, Edit3, Gift, Share2 } from "react-feather"
+import { ArrowRight } from "react-feather"
+import { Bow, DoodleCheck } from "components/Doodle/Doodle"
 import styles from "./Home.module.scss"
 
-const features = [
+const steps = [
   {
-    Icon: Edit3,
-    title: "Wünsche notieren",
-    text: "Schreib deine Wünsche auf Zettel, setz Prioritäten und hänge Links an.",
+    title: "Liste schreiben",
+    text: "Notier deine Wünsche auf Zettel, setz Prioritäten und häng Links an.",
   },
   {
-    Icon: Share2,
-    title: "Liste teilen",
-    text: "Ein Link genügt – Familie und Freunde sehen deine Liste ganz ohne Konto.",
+    title: "Link teilen",
+    text: "Ein Link genügt. Familie und Freunde sehen deine Liste ganz ohne Konto.",
   },
   {
-    Icon: Gift,
-    title: "Überraschung bleibt",
-    text: "Wer etwas schenkt, hakt es ab. Keine Doppelgeschenke, und du erfährst nichts.",
+    title: "Abhaken lassen",
+    text: "Wer etwas besorgt, hakt es ab. Nichts kommt doppelt, und du erfährst nichts.",
   },
+]
+
+const previewWishes = [
+  { text: "Kuscheldecke", priority: 2, giver: "Oma" },
+  { text: "Neues Kochbuch", priority: 1 },
+  { text: "Konzertkarten", priority: 1, giver: "Lea" },
+  { text: "Duftkerze", priority: 3 },
 ]
 
 const Home = () => (
   <div className={styles.home}>
     <section className={styles.hero}>
-      <div className={`${styles.copy} rise_in`}>
-        <span className="eyebrow">Frohes Schenken!</span>
+      <div className={`${styles.copy} lay_in`}>
         <h1>
           Die Wunschliste, die sich <em>von selbst</em> verwaltet.
         </h1>
         <p>
           Kennst du das? Du verschickst deine Wunschliste, aber niemand koordiniert sie.
-          Entweder du verdirbst dir die Überraschung – oder du bekommst alles doppelt.
+          Entweder du verdirbst dir die Überraschung oder du bekommst alles doppelt.
           Mit <b>Wischlist</b> haken Schenkende Wünsche einfach ab.
         </p>
         <div className={styles.actions}>
           <Link href="/list" className="btn btn-primary btn-lg">
             Meine Listen <ArrowRight size={18} aria-hidden />
           </Link>
-          <Link href="/auth" className="btn btn-ghost btn-lg">
+          <Link href="/auth" className="btn btn-tertiary btn-lg">
             Anmelden
           </Link>
         </div>
       </div>
 
-      {/* decorative preview of a shared list */}
-      <div className={styles.preview} aria-hidden>
-        <div className={styles.backSheet} />
-        <div className={`${styles.sheet} paper`}>
-          <span className={styles.tape} />
-          <span className="hand">Ich wünsche mir…</span>
-          <h3>Weihnachten 2026</h3>
+      {/* decorative: a wish list, a wrapped present and a gift tag on the packing table */}
+      <div className={styles.table} aria-hidden>
+        <div className={styles.sheet}>
+          <span className={`tape ${styles.sheetTape}`} />
+          <span className={styles.sheetRemark}>Ich wünsche mir…</span>
           <ul>
-            <li className={styles.done}>
-              <span className={styles.box} />
-              <span>Kuscheldecke</span>
-              <span className="chip chip-green">schenkt Oma</span>
-            </li>
-            <li>
-              <span className={styles.box} />
-              <span>Neues Kochbuch</span>
-              <i className={styles.prioHigh} />
-            </li>
-            <li className={styles.done}>
-              <span className={styles.box} />
-              <span>Konzertkarten</span>
-              <span className="chip chip-green">schenkt Lea</span>
-            </li>
-            <li>
-              <span className={styles.box} />
-              <span>Duftkerze</span>
-              <i className={styles.prioLow} />
-            </li>
+            {previewWishes.map(({ text, priority, giver }) => (
+              <li key={text} className={giver ? styles.done : undefined}>
+                <span className={styles.box}>{giver ? <DoodleCheck className={styles.check} /> : null}</span>
+                <span className={styles.wish}>{text}</span>
+                <span className="prio_tape" data-priority={priority} />
+              </li>
+            ))}
           </ul>
         </div>
-        <span className={styles.tag}>
-          <Gift size={20} />
-        </span>
+
+        <div className={styles.package}>
+          <div className={styles.wrap} data-wrapping="berry" data-pattern="dots">
+            <Bow className={styles.bow} />
+          </div>
+          <div className={styles.label}>
+            <span className="field">
+              <span className="field_key">Für</span>
+              <span className="field_value">Lea</span>
+            </span>
+            <span className="field">
+              <span className="field_key">Am</span>
+              <span className="field_value">24.12.</span>
+            </span>
+          </div>
+        </div>
+
+        <span className={styles.tag}>von Oma</span>
       </div>
     </section>
 
-    <section className={styles.features}>
-      {features.map(({ Icon, title, text }, index) => (
-        <article
-          key={title}
-          className={`${styles.feature} rise_in`}
-          style={{ animationDelay: `${120 + index * 80}ms` }}
-        >
-          <span className={styles.featureIcon}>
-            <Icon size={20} aria-hidden />
-          </span>
-          <h3>{title}</h3>
-          <p>{text}</p>
-        </article>
-      ))}
+    {/* three numbered notes on one sheet instead of a feature grid */}
+    <section className={styles.stepsWrapper} aria-labelledby="steps-title">
+      <div className={`${styles.steps} torn_bottom`}>
+        <h2 id="steps-title">So funktioniert&apos;s</h2>
+        <ol>
+          {steps.map(({ title, text }, index) => (
+            <li key={title}>
+              <span className={styles.number} aria-hidden>{index + 1}.</span>
+              <div>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
     </section>
   </div>
 )

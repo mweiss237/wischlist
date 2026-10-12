@@ -36,7 +36,6 @@ const AuthDecision = () => {
     return (
         <form className={styles.wrapper} onSubmit={authorize}>
             <div className={styles.heading}>
-                <span className="eyebrow">Willkommen!</span>
                 <h1>Anmelden oder registrieren</h1>
                 <p>Gib deine E-Mail ein – wir finden heraus, ob du schon ein Konto hast.</p>
             </div>

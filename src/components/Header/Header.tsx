@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useUser } from "lib/auth"
 import { Gift, Home, LogIn, Star, User } from "react-feather"
+import { DoodleUnderline } from "components/Doodle/Doodle"
 import styles from "./Header.module.scss"
 
 const navItems = [
@@ -30,24 +31,30 @@ const Header = () => {
       <div className={styles.inner}>
         <Link href="/" className={styles.brand} aria-label="Wischlist Startseite">
           <span className={styles.logo}>
-            <Image src="/wischlist-color.svg" alt="" width={34} height={34} unoptimized />
+            <Image src="/wischlist-color.svg" alt="" width={28} height={28} unoptimized />
           </span>
           <span className={styles.wordmark}>Wischlist</span>
         </Link>
 
-        <nav className={styles.nav} aria-label="Hauptnavigation">
-          {navItems.map(({ href, label, Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`${styles.navLink} ${activeHref === href ? styles.active : ""}`}
-              aria-current={activeHref === href ? "page" : undefined}
-            >
-              <Icon size={18} aria-hidden />
-              <span>{label}</span>
-            </Link>
-          ))}
-        </nav>
+        {/* on phones this becomes a paper strip at the bottom, the shell carries its shadow */}
+        <div className={styles.navShell}>
+          <nav className={styles.nav} aria-label="Hauptnavigation">
+            {navItems.map(({ href, label, Icon }) => (
+              <Link
+                key={href}
+                href={href}
+                className={`${styles.navLink} ${activeHref === href ? styles.active : ""}`}
+                aria-current={activeHref === href ? "page" : undefined}
+              >
+                <Icon size={18} aria-hidden />
+                <span className={styles.navLabel}>
+                  {label}
+                  {activeHref === href ? <DoodleUnderline draw className={styles.underline} /> : null}
+                </span>
+              </Link>
+            ))}
+          </nav>
+        </div>
 
         <Link
           href={user ? "/profile" : "/auth"}

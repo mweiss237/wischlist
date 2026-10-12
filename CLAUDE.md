@@ -99,6 +99,12 @@ favorites/{uid}/{listId}   { title }
 - Styling: zuerst die Design-Tokens aus `src/styles/globals.scss` nutzen (`--primary`, `--gold`, `--berry`,
   `--prio-*`, `--radius*`, `--shadow-*`), keine hart codierten Farben. Dark Mode läuft über
   `prefers-color-scheme` in derselben Datei. Globale Hilfsklassen (`crit_*`) stehen in `critical.scss`.
+  Gestaltungsregeln, Materialsprache und Anti-Patterns stehen in `DESIGN.md`. Vor UI-Änderungen lesen.
+  Die Materialien (Papier, Abrisskante, Perforation, Klebeband, Stempel, Anhänger, Etikett, Geschenkpapier)
+  sind Mixins in `src/styles/_materials.scss` (`@use "../../styles/materials" as m;`) und zusätzlich globale
+  Klassen in `globals.scss` (`.tape`, `.stamp`, `.gift_tag`, `.shipping_label`, `.field_key`, `.perforation`, …).
+  Wer ein Material im Modul anpasst, bindet das Mixin ein statt der globalen Klasse, sonst entscheidet die Ladereihenfolge.
+  Kritzeleien liegen als SVG in `src/components/Doodle/` und werden über `Doodle.tsx` genutzt.
 - SVGs werden per `@svgr/webpack` als React-Komponenten importiert.
 - Commits: Conventional Commits mit Scope, z. B. `feat(List): …`, `fix(Auth): …`, `chore(core): …`.
 - Branches: Entwickelt wird auf `dev`, Releases gehen per PR nach `main`.
