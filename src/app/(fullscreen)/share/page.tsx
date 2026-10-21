@@ -1,5 +1,5 @@
 "use client"
 
-import Checklist from "components/Checklist/Checklist"
+import SharedList from "components/SharedList/SharedList"
 
-export default Checklist
+export default SharedList

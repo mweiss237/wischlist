@@ -19,7 +19,7 @@ const Register = () => {
 
   useEffect(() => {
     if (user) router.push("/profile")
-  }, [user])
+  }, [router, user])
 
   const handleSignup = async (e: FormEvent) => {
     setLoading(true)

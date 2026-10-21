@@ -8,18 +8,18 @@ import { getGifts, isOwnGift, NOTE_MAX_LENGTH } from "lib/gifts"
 import { ExternalLink, Plus, X } from "react-feather"
 import { Entry } from "types"
 import { DoodleCheck } from "components/Doodle/Doodle"
-import entryStyles from "./ChecklistEntry.module.scss"
-import styles from "./ChecklistMultiEntry.module.scss"
+import entryStyles from "./SharedListEntry.module.scss"
+import styles from "./SharedListMultiEntry.module.scss"
 import PriorityTape from "./Priority"
 
-interface ChecklistMultiEntryParams {
+interface SharedListMultiEntryParams {
   entry: Entry
   entryId: string
   listId: string
 }
 
 // a "Dauerbrenner": stays open, every giver is listed below with an optional note
-const ChecklistMultiEntry = ({ entry, entryId, listId }: ChecklistMultiEntryParams) => {
+const SharedListMultiEntry = ({ entry, entryId, listId }: SharedListMultiEntryParams) => {
 
   const { giverName, setName, hasSkipped, skip, ownGiftIds, rememberGift, forgetGift } = useGiver()
   const { user } = useUser()
@@ -177,4 +177,4 @@ const ChecklistMultiEntry = ({ entry, entryId, listId }: ChecklistMultiEntryPara
   )
 }
 
-export default ChecklistMultiEntry
+export default SharedListMultiEntry
