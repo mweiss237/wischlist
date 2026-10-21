@@ -1,3 +1,9 @@
-import Login from "components/Auth/Login";
+import Login from "components/Auth/Login"
 
-export default Login;
+export default function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ email?: string }>
+}) {
+  return <Login searchParams={searchParams} />
+}

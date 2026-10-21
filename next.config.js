@@ -1,18 +1,25 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
-  optimizeFonts: false,
+  outputFileTracingRoot: __dirname,
   images: {
-    domains: ["via.placeholder.com"]
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com"
+      }
+    ]
   },
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ["@svgr/webpack"]
-    });
-
-    return config;
+  turbopack: {
+    rules: {
+      "*.svg": {
+        loaders: ["@svgr/webpack"],
+        as: "*.js"
+      }
+    }
+  },
+  experimental: {
+    agentUpgrade: "security"
   }
 
 }

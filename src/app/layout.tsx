@@ -2,7 +2,7 @@ import "styles/globals.scss"
 import "styles/critical.scss"
 import { AuthProvider } from "lib/auth"
 import { DialogProvider } from "components/Dialog/Dialog"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { fontBody, fontDisplay, fontHand, fontLabel } from "styles/fonts"
 
 export const metadata: Metadata = {
@@ -10,11 +10,14 @@ export const metadata: Metadata = {
   description: "Deine persönliche Wunschliste für Freunde und Familie!",
   manifest: "/manifest.json",
   icons: { icon: "/favicon.ico" },
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "Wischlist" },
+}
+
+export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#f4ecdd" },
     { media: "(prefers-color-scheme: dark)", color: "#0d1512" },
   ],
-  appleWebApp: { capable: true, statusBarStyle: "default", title: "Wischlist" },
 }
 
 export default function RootLayout({
@@ -22,7 +25,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-
   return (
     <html
       lang="de"
@@ -30,9 +32,7 @@ export default function RootLayout({
     >
       <body>
         <AuthProvider>
-          <DialogProvider>
-            {children}
-          </DialogProvider>
+          <DialogProvider>{children}</DialogProvider>
         </AuthProvider>
       </body>
     </html>

@@ -1,4 +1,4 @@
 "use client"
-import Checklist from "../../../../(fullscreen)/share/page"
+import SharedList from "../../../../(fullscreen)/share/page"
 
-export default Checklist
+export default SharedList

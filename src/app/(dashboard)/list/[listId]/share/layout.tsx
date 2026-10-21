@@ -1,6 +1,6 @@
 import { GiverProvider } from "lib/giver"
 
-export default function ChecklistLayout({
+export default function SharedListLayout({
     children,
 }: {
     children: React.ReactNode

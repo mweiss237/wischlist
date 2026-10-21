@@ -24,7 +24,7 @@ Imports laufen absolut über `baseUrl: ./src`: `import { useList } from "lib/lis
   - `/`: Home, `/login`, `/register`, `/auth`, `/forgot-password`, `/profile`
   - `/list`: eigene Listen, `/list/favorites`: favorisierte fremde Listen
   - `/list/[listId]`: Liste bearbeiten (Besitzer), `/list/[listId]/share`: öffentliche Abhak-Ansicht
-- `src/app/(fullscreen)/share`: dieselbe `Checklist`-Komponente ohne Chrome
+- `src/app/(fullscreen)/share`: dieselbe `SharedList`-Komponente ohne Chrome
 - Seiten sind dünne Wrapper (`export default List`). Die Logik liegt in `src/components/<Name>/<Name>.tsx`,
   die Styles daneben in `<Name>.module.scss`.
 - `src/lib/`: der komplette Firebase-Zugriff als React-Hooks. Komponenten sprechen Firebase nie direkt an.

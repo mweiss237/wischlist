@@ -207,7 +207,7 @@
 }
 
 $wrap-patterns: stripes, dots, stars, diamonds, herringbone;
-$wrap-colors: evergreen, berry, gold, plum, navy, copper;
+$wrap-colors: "evergreen", "berry", "gold", "plum", "navy", "copper";
 
 // picks --wrap/--ribbon from data-wrapping and the pattern from data-pattern
 @mixin wrap-variants {

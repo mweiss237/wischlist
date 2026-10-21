@@ -8,16 +8,16 @@ import { getGifts, isEntryClosed, isOwnGift } from "lib/gifts"
 import { ExternalLink } from "react-feather"
 import { Entry } from "types"
 import { DoodleCheck } from "components/Doodle/Doodle"
-import styles from "./ChecklistEntry.module.scss"
+import styles from "./SharedListEntry.module.scss"
 import PriorityTape from "./Priority"
 
-interface ChecklistEntryParams {
+interface SharedListEntryParams {
   entry: Entry
   entryId: string
   listId: string
 }
 
-const ChecklistEntry = ({ entry, entryId, listId }: ChecklistEntryParams) => {
+const SharedListEntry = ({ entry, entryId, listId }: SharedListEntryParams) => {
 
   const { giverName, setName, hasSkipped, skip, ownGiftIds, forgetGift } = useGiver()
   const { user } = useUser()
@@ -138,4 +138,4 @@ const ChecklistEntry = ({ entry, entryId, listId }: ChecklistEntryParams) => {
   )
 }
 
-export default ChecklistEntry
+export default SharedListEntry
