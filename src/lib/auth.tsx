@@ -12,7 +12,7 @@ import {
   sendSignInLinkToEmail,
   fetchSignInMethodsForEmail,
   isSignInWithEmailLink
-} from "firebase/auth"
+} from "firebase/auth";
 import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from "react";
 import _ from "lodash";
 import { getDownloadURL, ref, uploadBytes, deleteObject } from "firebase/storage";
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       unsubscribe()
       unsubscribeToken()
     };
-  }, [auth, setLoading])
+  }, [setLoading])
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
@@ -67,7 +67,7 @@ export const useUser = () => {
 
     return await user.reload()
 
-  }, [user, user?.displayName])
+  }, [user])
 
   const updateProfilePicture = useCallback(async (file: File) => {
     if (!user) return
@@ -90,7 +90,7 @@ export const useUser = () => {
 
     return await user.reload()
 
-  }, [user, user?.displayName])
+  }, [user])
 
   return {
     user,
@@ -120,11 +120,11 @@ export const useAuth = () => {
   }
 
   const sendLoginLink = (email: string, continueURL = window.location.href) => sendSignInLinkToEmail(auth, email, { url: continueURL, handleCodeInApp: true })
-  const checkLoginLink = React.useCallback(() => isSignInWithEmailLink(auth, window.location.href), [isSignInWithEmailLink, auth])
+  const checkLoginLink = React.useCallback(() => isSignInWithEmailLink(auth, window.location.href), [])
   const signInWithLink = React.useCallback(async (email: string) => {
     if (checkLoginLink())
       await signInWithEmailLink(auth, email)
-  }, [checkLoginLink, signInWithEmailLink, auth])
+  }, [checkLoginLink])
 
   const checkUserExists = async (email: string) => await fetchSignInMethodsForEmail(auth, email)
 
