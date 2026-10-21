@@ -12,6 +12,10 @@ const nextConfig = {
       use: ["@svgr/webpack"]
     });
 
+    // Firebase node builds pull in undici, which webpack 5 in Next 13 can't parse.
+    // Node 18+ has global fetch, so stub it.
+    config.resolve.alias = { ...config.resolve.alias, undici: false };
+
     return config;
   }
 
