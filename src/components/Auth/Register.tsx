@@ -1,19 +1,19 @@
 "use client"
 import { useAuth, useUser } from "lib/auth"
 import { useRouter } from "next/navigation"
-import React, { FormEvent, useState, useEffect } from "react"
+import React, { use, FormEvent, useState, useEffect } from "react"
 import styles from "./Auth.module.scss"
 
 const Register = ({
   searchParams,
 }: {
-  searchParams: { email?: string }
+  searchParams: Promise<{ email?: string }>
 }) => {
   const { user } = useUser()
   const router = useRouter()
   const { register } = useAuth()
 
-  const { email = "" } = searchParams
+  const { email = "" } = use(searchParams)
 
   const [password, setPassword] = React.useState("")
   const [username, setUsername] = React.useState("")

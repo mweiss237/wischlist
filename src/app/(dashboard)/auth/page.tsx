@@ -3,7 +3,7 @@ import AuthDecision from "components/Auth/AuthDecision"
 export default function Page({
   searchParams,
 }: {
-  searchParams: { email?: string }
+  searchParams: Promise<{ email?: string }>
 }) {
   return <AuthDecision searchParams={searchParams} />
 }

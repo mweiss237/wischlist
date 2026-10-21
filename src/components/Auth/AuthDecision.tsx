@@ -2,19 +2,19 @@
 
 import { useAuth, useUser } from "lib/auth"
 import { useRouter } from "next/navigation"
-import React, { FormEvent, useState, useEffect } from "react"
+import React, { use, FormEvent, useState, useEffect } from "react"
 import styles from "./Auth.module.scss"
 
 const AuthDecision = ({
   searchParams,
 }: {
-  searchParams: { email?: string }
+  searchParams: Promise<{ email?: string }>
 }) => {
   const { checkUserExists } = useAuth()
   const { user } = useUser()
   const router = useRouter()
 
-  const { email: initialEmail = "" } = searchParams
+  const { email: initialEmail = "" } = use(searchParams)
   const [email, setEmail] = React.useState(initialEmail)
   const [loading, setLoading] = useState(false)
 

@@ -2,7 +2,7 @@ import Register from "components/Auth/Register"
 export default function Page({
   searchParams,
 }: {
-  searchParams: { email?: string }
+  searchParams: Promise<{ email?: string }>
 }) {
   return <Register searchParams={searchParams} />
 }

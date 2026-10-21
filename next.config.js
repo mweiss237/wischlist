@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
-  optimizeFonts: false,
+  outputFileTracingRoot: __dirname,
   images: {
     domains: ["via.placeholder.com"]
   },

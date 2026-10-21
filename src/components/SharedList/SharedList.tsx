@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { use } from "react"
 import styles from "./SharedList.module.scss"
 import SharedListEntry from "./SharedListEntry"
 import SharedListMultiEntry from "./SharedListMultiEntry"
@@ -21,13 +21,13 @@ import { hasCommitment } from "lib/gifts"
 import { DoodleCircle } from "components/Doodle/Doodle"
 
 interface SharedListParams {
-  params: {
+  params: Promise<{
     listId: string
-  }
+  }>
 }
 
 const SharedList = ({ params }: SharedListParams) => {
-  const { listId } = params
+  const { listId } = use(params)
   const { entries } = useEntries(listId)
   const { list } = useList(listId)
   const { giverName, setName, isReady, hasSkipped, skip } = useGiver()

@@ -4,7 +4,7 @@ import { MoreHorizontal } from "react-feather"
 
 interface MenuProps {
     entries: {
-        Icon: JSX.Element
+        Icon: React.JSX.Element
         label: string
         onClick: () => void
         active?: boolean

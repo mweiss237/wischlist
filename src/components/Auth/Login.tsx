@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import React, { FormEvent, useEffect, useState } from "react"
+import React, { use, FormEvent, useEffect, useState } from "react"
 import styles from "./Auth.module.scss"
 import Loading from "components/Loading/Loading"
 import { useDialog } from "components/Dialog/Dialog"
@@ -11,12 +11,12 @@ import { useRouter } from "next/navigation"
 const Login = ({
   searchParams,
 }: {
-  searchParams: { email?: string }
+  searchParams: Promise<{ email?: string }>
 }) => {
   const { user } = useUser()
   const { login, sendLoginLink, signInWithLink, checkLoginLink } = useAuth()
   const router = useRouter()
-  const { email: initialEmail = "" } = searchParams
+  const { email: initialEmail = "" } = use(searchParams)
   const dialog = useDialog()
 
   const [loading, setLoading] = useState(false)

@@ -3,7 +3,7 @@ import ForgotPassword from "components/Auth/ForgotPassword"
 export default function ForgotPasswordPage({
   searchParams,
 }: {
-  searchParams: { email?: string }
+  searchParams: Promise<{ email?: string }>
 }) {
   return <ForgotPassword searchParams={searchParams} />
 }

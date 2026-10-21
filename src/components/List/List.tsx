@@ -11,7 +11,7 @@ import { useList } from "lib/list"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import React from "react"
-import { useState, useCallback } from "react"
+import { use, useState, useCallback } from "react"
 import styles from "./List.module.scss"
 
 import { Priority, SortOrder } from "types"
@@ -30,12 +30,12 @@ import EmptyState from "components/EmptyState/EmptyState"
 import Checkbox from "./ListOptions"
 import { describeCountdown, formatEventDate, todayIsoDate } from "lib/date"
 
-const List = ({ params }: { params: { listId: string } }) => {
+const List = ({ params }: { params: Promise<{ listId: string }> }) => {
   const router = useRouter()
   const { user, loading } = useUser()
   const dialog = useDialog()
 
-  const { listId } = params
+  const { listId } = use(params)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {

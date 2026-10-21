@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from "react"
+import React, { use, useEffect } from "react"
 import styles from "./Auth.module.scss"
 import { useDialog } from "components/Dialog/Dialog"
 import { useAuth, useUser } from "lib/auth"
@@ -9,14 +9,14 @@ import { useRouter } from "next/navigation"
 const ForgotPassword = ({
   searchParams,
 }: {
-  searchParams: { email?: string }
+  searchParams: Promise<{ email?: string }>
 }) => {
   const { user } = useUser()
   const { resetPassword } = useAuth()
   const router = useRouter()
 
   const dialog = useDialog()
-  const { email: initialEmail = "" } = searchParams
+  const { email: initialEmail = "" } = use(searchParams)
   const [email, setEmail] = React.useState(initialEmail)
 
   const handleReset: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
