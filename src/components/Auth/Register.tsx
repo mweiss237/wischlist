@@ -1,17 +1,20 @@
 "use client"
-
 import { useAuth, useUser } from "lib/auth"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import React, { FormEvent, useState, useEffect } from "react"
 import styles from "./Auth.module.scss"
 
-const Register = () => {
+const Register = ({
+  searchParams,
+}: {
+  searchParams: { email?: string }
+}) => {
   const { user } = useUser()
   const router = useRouter()
   const { register } = useAuth()
-  const { get } = useSearchParams()
 
-  const email = get("email") || ""
+  const { email = "" } = searchParams
+
   const [password, setPassword] = React.useState("")
   const [username, setUsername] = React.useState("")
 
@@ -27,16 +30,15 @@ const Register = () => {
 
     if (!email || !username || !password) return
 
-    await register(
-      email,
-      password,
-      username
-    )
+    await register(email, password, username)
 
     setLoading(false)
   }
 
-  if (!email) return router.push("/auth")
+  if (!email) {
+    router.push("/auth")
+    return null
+  }
 
   return (
     <form onSubmit={handleSignup} className={styles.wrapper}>
@@ -80,8 +82,17 @@ const Register = () => {
         disabled={loading}
       />
       <span className={styles.buttonWrapper}>
-        <button type={"button"} className="btn btn-ghost" disabled={loading} onClick={() => router.push("/auth")}>E-Mail ändern</button>
-        <button type={"submit"} className="btn btn-primary" disabled={loading}>Registrieren</button>
+        <button
+          type={"button"}
+          className="btn btn-ghost"
+          disabled={loading}
+          onClick={() => router.push("/auth")}
+        >
+          E-Mail ändern
+        </button>
+        <button type={"submit"} className="btn btn-primary" disabled={loading}>
+          Registrieren
+        </button>
       </span>
     </form>
   )

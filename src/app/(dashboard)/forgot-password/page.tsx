@@ -1,3 +1,9 @@
-import ForgotPassword from "components/Auth/ForgotPassword";
+import ForgotPassword from "components/Auth/ForgotPassword"
 
-export default ForgotPassword;
+export default function ForgotPasswordPage({
+  searchParams,
+}: {
+  searchParams: { email?: string }
+}) {
+  return <ForgotPassword searchParams={searchParams} />
+}

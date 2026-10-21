@@ -4,15 +4,20 @@ import React, { useEffect } from "react"
 import styles from "./Auth.module.scss"
 import { useDialog } from "components/Dialog/Dialog"
 import { useAuth, useUser } from "lib/auth"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 
-const ForgotPassword = () => {
+const ForgotPassword = ({
+  searchParams,
+}: {
+  searchParams: { email?: string }
+}) => {
   const { user } = useUser()
   const { resetPassword } = useAuth()
   const router = useRouter()
-  const { get } = useSearchParams()
+
   const dialog = useDialog()
-  const [email, setEmail] = React.useState(get("email") || "")
+  const { email: initialEmail = "" } = searchParams
+  const [email, setEmail] = React.useState(initialEmail)
 
   const handleReset: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault()
@@ -20,7 +25,10 @@ const ForgotPassword = () => {
     if (!email) return
 
     resetPassword(email)
-    await dialog.alert("Wir haben dir eine E-Mail zum Zurücksetzen deines Passworts geschickt.", { title: "E-Mail ist unterwegs" })
+    await dialog.alert(
+      "Wir haben dir eine E-Mail zum Zurücksetzen deines Passworts geschickt.",
+      { title: "E-Mail ist unterwegs" }
+    )
 
     router.push(`/auth?email=${email}`)
   }
@@ -33,7 +41,10 @@ const ForgotPassword = () => {
     <form className={styles.wrapper}>
       <div className={styles.heading}>
         <h1>Passwort vergessen?</h1>
-        <p>Wir schicken dir eine E-Mail, mit der du ein neues Passwort setzen kannst.</p>
+        <p>
+          Wir schicken dir eine E-Mail, mit der du ein neues Passwort setzen
+          kannst.
+        </p>
       </div>
       <label className={styles.inputlabel} htmlFor="email">
         Email
@@ -48,7 +59,13 @@ const ForgotPassword = () => {
       />
 
       <span className={styles.buttonWrapper}>
-        <button type={"submit"} className="btn btn-primary btn-lg" onClick={handleReset}>Passwort zurücksetzen</button>
+        <button
+          type={"submit"}
+          className="btn btn-primary btn-lg"
+          onClick={handleReset}
+        >
+          Passwort zurücksetzen
+        </button>
       </span>
     </form>
   )
