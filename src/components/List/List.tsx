@@ -25,7 +25,7 @@ import {
   closestCenter,
 } from "@dnd-kit/core"
 import { SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
-import { Check, Copy, Eye, Link as FeatherLink, Move } from "react-feather"
+import { Check, Copy, Eye, Link as FeatherLink, Move, Zap } from "react-feather"
 import EmptyState from "components/EmptyState/EmptyState"
 import Checkbox from "./ListOptions"
 import { describeCountdown, formatEventDate, todayIsoDate } from "lib/date"
@@ -382,6 +382,17 @@ const List = ({ params }: { params: Promise<{ listId: string }> }) => {
             </aside>
 
             <section className={styles.wishes}>
+              {/* a blank list is where people get stuck: offer ideas before the first wish */}
+              {entries !== null && wishCount === 0 ? (
+                <EmptyState
+                  text="Noch leer? Lass dich von Ideen inspirieren."
+                  action={
+                    <Link href={`/list/${listId}/ideas`} className="btn btn-primary">
+                      <Zap size={18} aria-hidden /> Ideen stöbern
+                    </Link>
+                  }
+                />
+              ) : null}
               <div id="list" className={styles.list}>
                 <DndContext
                   sensors={sensors}
@@ -426,6 +437,7 @@ const List = ({ params }: { params: Promise<{ listId: string }> }) => {
                 </DndContext>
 
                 <AddCard
+                  secondaryHref={wishCount > 0 ? `/list/${listId}/ideas` : undefined}
                   callback={() =>
                     addEntry({
                       text: "",

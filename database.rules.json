@@ -42,6 +42,64 @@
         }
       }
     },
+    "admins": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": false
+      }
+    },
+    "templates": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$templateId": {
+        ".validate": "newData.hasChildren(['title', 'published'])",
+        "title": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 80"
+        },
+        "description": {
+          ".validate": "newData.isString() && newData.val().length <= 300"
+        },
+        "tags": {
+          ".validate": "newData.isString() && newData.val().length <= 200"
+        },
+        "published": {
+          ".validate": "newData.isBoolean()"
+        },
+        "position": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "templateSuggestions": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$templateId": {
+        "$suggestionId": {
+          ".validate": "newData.hasChildren(['text'])",
+          "text": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200"
+          },
+          "description": {
+            ".validate": "newData.isString() && newData.val().length <= 300"
+          },
+          "link": {
+            ".validate": "newData.isString() && newData.val().length <= 500 && newData.val().matches(/^https?:\\/\\//)"
+          },
+          "priority": {
+            ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 3"
+          },
+          "position": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
+    },
     "lists": {
       ".read": "auth != null && query.orderByChild == 'userId' && query.equalTo == auth.uid",
       ".indexOn": ["userId"],

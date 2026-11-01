@@ -5,13 +5,19 @@ import { database } from "./firebase"
 
 export const useEntries = (listId: string) => {
     const [entries, setEntries] = useState<Record<string, Entry> | null>(null)
+    // an empty list is null as well, so this tells "empty" apart from "still loading"
+    const [loaded, setLoaded] = useState(false)
 
     useEffect(() => {
         setEntries(null)
+        setLoaded(false)
         const path = `entries/${listId}`
         const unsubscriber = onValue(
             ref(database, path),
-            (snapshot) => setEntries(snapshot.val()),
+            (snapshot) => {
+                setEntries(snapshot.val())
+                setLoaded(true)
+            },
             (error) => console.error(`[rtdb] ${path}`, error)
         );
 
@@ -68,7 +74,7 @@ export const useEntries = (listId: string) => {
         })
         , [listId])
 
-    return { entries, addEntry, removeEntry, removeEntries, updateEntry, reorderEntries, setEntryMulti, resetEntries }
+    return { entries, loaded, addEntry, removeEntry, removeEntries, updateEntry, reorderEntries, setEntryMulti, resetEntries }
 }
 
 /**

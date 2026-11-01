@@ -1,0 +1,13 @@
+.setup {
+  max-width: 30rem;
+  margin: 0 auto;
+  padding: 0 0.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+
+  code {
+    font-family: var(--font-label), ui-monospace, monospace;
+    color: var(--text);
+  }
+}

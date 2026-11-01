@@ -1,0 +1,73 @@
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+/* a search line on the table, not a boxed widget */
+.search {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  max-width: 34rem;
+  margin-bottom: 2rem;
+  color: var(--muted);
+
+  input {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.5rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li:nth-child(3n + 1) .topic {
+    rotate: var(--tilt-1);
+  }
+
+  li:nth-child(3n + 2) .topic {
+    rotate: var(--tilt-2);
+  }
+}
+
+/* every topic is a label on the pile, hover only changes the border */
+.topic {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  height: 100%;
+  padding: 0.9rem 1rem 1rem;
+  box-shadow: var(--shadow-contact);
+  text-decoration: none;
+  transition: border-color 0.2s var(--ease);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--gold);
+    rotate: 0deg;
+  }
+}
+
+.title {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.3rem;
+  line-height: 1.2;
+}
+
+.description {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.topic :global(.field) {
+  margin-top: auto;
+}

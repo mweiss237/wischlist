@@ -31,6 +31,9 @@ Imports laufen absolut über `paths: { "*": ["./src/*"] }` in `tsconfig.json` (k
   - `/`: Home, `/login`, `/register`, `/auth`, `/forgot-password`, `/profile`
   - `/list`: eigene Listen, `/list/favorites`: favorisierte fremde Listen
   - `/list/[listId]`: Liste bearbeiten (Besitzer), `/list/[listId]/share`: öffentliche Abhak-Ansicht
+  - `/list/[listId]/ideas`: Themen-Vorlagen suchen (Besitzer), `/list/[listId]/ideas/[templateId]`: Vorschläge
+    „swipen“ (rechts übernehmen, links überspringen)
+  - `/admin/templates`, `/admin/templates/[templateId]`: Pflegemaske für Themen und Vorschläge (nur Admins)
 - `src/app/(fullscreen)/share`: dieselbe `SharedList`-Komponente ohne Chrome
 - Seiten sind dünne Wrapper (`export default List`). Die Logik liegt in `src/components/<Name>/<Name>.tsx`,
   die Styles daneben in `<Name>.module.scss`.
@@ -46,10 +49,14 @@ Imports laufen absolut über `paths: { "*": ["./src/*"] }` in `tsconfig.json` (k
   - `favorite.ts`: `useFavorites()`
   - `giver.tsx`: `GiverProvider` merkt sich den Namen anonymer Schenkender, ob sie bewusst ohne Namen
     schenken (`giverSkipped`) und die auf diesem Gerät angelegten Zusagen (`giftIds`) in localStorage
+  - `admin.ts`: `useIsAdmin()` (liest `admins/{uid}`, `null` beim Laden). Steuert nur die UI, die Sicherheit liegt in den Regeln.
+  - `templates.ts`: `useTemplates()`, `useTemplate()`, `useTemplateSuggestions()`, `useSuggestionCounts()`, die Suche
+    `matchesTemplateQuery()` und die Admin-Schreibfunktionen (`addTemplate`, `deleteTemplateWithSuggestions`, `reorderSuggestions`, …)
   - `date.ts`: Event-Datum formatieren, Countdown
   - `sort.ts`: `sortEntries()` und `SORT_ORDER_LABELS`
   - Sonstiges: `link.ts` (URLs im Text verlinken), `localStorage.ts` (`useLocalStorage`), `env.ts` (App-Version aus `package.json`)
-- `src/types/`: `List`, `ListOptions`, `SortOrder`, `Entry`, `Gift`, `MultiGift`, `Priority` (1 hoch, 2 mittel, 3 niedrig), `Favorite`
+- `src/types/`: `List`, `ListOptions`, `SortOrder`, `Entry`, `Gift`, `MultiGift`, `Priority` (1 hoch, 2 mittel, 3 niedrig), `Favorite`,
+  `Template`, `TemplateSuggestion`
 
 ## Datenmodell (Realtime Database)
 ```text
@@ -57,7 +64,14 @@ lists/{listId}             { title, userId, eventDate?: "YYYY-MM-DD", options: {
 entries/{listId}/{entryId} { text, link?, priority?, position?, taken?: { timestamp: ISO-String, giver? },
                              multi?: true, gifts?: { {pushId}: { timestamp: ISO-String, giver?, note? } } }
 favorites/{uid}/{listId}   { title }
+admins/{uid}               true
+templates/{templateId}     { title, description?, tags?: "kommagetrennt", published, position? }
+templateSuggestions/{templateId}/{suggestionId}
+                           { text, description?, link?, priority?, position? }
 ```
+- Vorlagen („Ideen stöbern“): Beim Übernehmen eines Vorschlags wird `text`, `link` und `priority` zu einem normalen
+  Eintrag, `description` (Warum unterschätzt?) bleibt nur auf der Swipe-Karte. `published: false` ist ein Entwurf,
+  den nur Admins sehen (clientseitig gefiltert, die Inhalte sind nicht geheim).
 - Einträge liegen absichtlich getrennt von `lists`, damit sich die Leserechte unterscheiden lassen.
 - `multi: true` macht einen Eintrag zum Dauerbrenner: Statt `taken` sammelt er beliebig viele `gifts`
   (eine Push-ID pro Zusage, keine Transaktion nötig). Normale Einträge nutzen weiter nur `taken`.
@@ -76,6 +90,10 @@ favorites/{uid}/{listId}   { title }
   Bei Dauerbrennern (`multi === true`) oder wenn schon `gifts` existieren, ist `taken` gesperrt.
 - `gifts/{giftId}` dürfen alle anlegen (auch anonym), solange die Liste geteilt ist und der Eintrag `multi === true` ist.
   Nur Anlegen oder Löschen, kein Bearbeiten. Felder: `timestamp` (≤30), `giver` (≤100), `note` (≤80).
+- `templates` und `templateSuggestions` dürfen alle angemeldeten Nutzer lesen, schreiben nur Admins
+  (`root.admins.{auth.uid} === true`). Felder sind validiert (Längen, `link` nur `http(s)://`, `priority` 1 bis 3).
+- `admins/{uid}` kann jeder nur für die eigene UID lesen und niemand per Client schreiben. Admin wird man,
+  indem in der Firebase-Konsole `admins/<uid>: true` eingetragen wird (die UID zeigt die Admin-Seite Nicht-Admins an).
 - `lists` als Ganzes lässt sich nur mit Query `orderByChild('userId').equalTo(uid)` lesen.
 - **Wenn sich das Datenmodell ändert, immer auch die Regeln anpassen** und prüfen, ob die
   anonyme Share-Ansicht noch funktioniert. Neue Felder unter `taken` werden sonst abgelehnt (`$other: false`).

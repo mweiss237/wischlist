@@ -1,10 +1,11 @@
 "use client"
 import React from "react"
+import { useIsAdmin } from "lib/admin"
 import { useAuth, useUser } from "lib/auth"
 
 import Image from "next/image"
 import Link from "next/link"
-import { Camera, Gift, LogOut } from "react-feather"
+import { Camera, Edit3, Gift, LogOut } from "react-feather"
 import { useRouter } from "next/navigation"
 import Loading from "components/Loading/Loading"
 import styles from "./Profile.module.scss"
@@ -13,6 +14,7 @@ const Profile = () => {
   const { user, updateUserName, updateProfilePicture } = useUser()
   const [name, setName] = React.useState(user?.displayName || "")
   const { logout } = useAuth()
+  const isAdmin = useIsAdmin()
   const router = useRouter()
 
   const handleLogout = async () => {
@@ -98,6 +100,11 @@ const Profile = () => {
         <Link href="/list" className="btn btn-primary">
           <Gift size={18} aria-hidden /> Meine Listen
         </Link>
+        {isAdmin ? (
+          <Link href="/admin/templates" className="btn btn-ghost">
+            <Edit3 size={18} aria-hidden /> Vorlagen pflegen
+          </Link>
+        ) : null}
         <button type="button" className="btn btn-ghost" onClick={handleLogout}>
           <LogOut size={18} aria-hidden /> Ausloggen
         </button>

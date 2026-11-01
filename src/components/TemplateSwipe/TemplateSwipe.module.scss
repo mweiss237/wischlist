@@ -1,0 +1,197 @@
+@use "../../styles/materials" as m;
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  max-width: 26rem;
+  margin: 0 auto;
+}
+
+.meta {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.hint {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.4rem;
+  font-family: var(--font-hand), cursive;
+  font-size: 1.25rem;
+  line-height: 1.1;
+  color: var(--gold-ink);
+}
+
+.hintArrow {
+  flex: none;
+  width: 44px;
+  height: 32px;
+}
+
+/* all sheets share one grid cell, the top note decides the height */
+.pile {
+  display: grid;
+  width: 100%;
+  padding: 14px 0 10px;
+
+  > * {
+    grid-area: 1 / 1;
+  }
+}
+
+.sheet {
+  @include m.paper;
+  background-image: repeating-linear-gradient(transparent 0 27px, var(--line) 27px 28px), var(--grain);
+  background-position: 0 26px, 0 0;
+}
+
+.sheetMiddle {
+  transform: translate(5px, 6px) rotate(0.6deg);
+}
+
+.sheetBottom {
+  transform: translate(-4px, 12px) rotate(-0.8deg);
+}
+
+.card {
+  @include m.paper;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 17rem;
+  padding: 2.25rem 1.5rem 2rem;
+  background-image: repeating-linear-gradient(transparent 0 27px, var(--line) 27px 28px), var(--grain);
+  background-position: 0 26px, 0 0;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  /* vertical scrolling stays possible, horizontal drags belong to the note */
+  touch-action: pan-y;
+  transition: transform 0.22s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+/* only what is held gets lifted */
+.held {
+  cursor: grabbing;
+  box-shadow: var(--shadow-lift);
+  transition: none;
+}
+
+.prio {
+  @include m.prio-tape;
+  position: absolute;
+  top: -7px;
+  left: 28px;
+  width: calc(var(--prio-width) + 14px);
+  height: 16px;
+}
+
+.text {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+/* the why is a remark in the margin */
+.note {
+  margin: 0;
+  font-family: var(--font-hand), cursive;
+  font-size: 1.35rem;
+  line-height: 1.25;
+  color: var(--muted);
+}
+
+.verdict {
+  position: absolute;
+  top: 0.75rem;
+  font-family: var(--font-label), ui-monospace, monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.verdictTake {
+  right: 1rem;
+  color: var(--primary);
+}
+
+.verdictSkip {
+  left: 1rem;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.undo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  font-size: 0.9rem;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}
+
+.keys {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+
+  @media (hover: none) {
+    display: none;
+  }
+}
+
+.done {
+  max-width: 30rem;
+  margin: 2.5rem auto;
+  padding: 0 0.5rem;
+}
+
+.doneText {
+  margin: 0 0 1.25rem;
+  font-family: var(--font-hand), cursive;
+  font-size: 1.9rem;
+  line-height: 1.15;
+}
+
+.doneActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}
