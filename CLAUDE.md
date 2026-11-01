@@ -7,17 +7,24 @@ eigenen API-Routen und kein Server-Backend.
 
 ## Befehle
 - `npm run dev`: Dev-Server auf http://localhost:3000
-- `npm run build`: Produktions-Build (dient auch als Typecheck)
-- `npm run lint`: ESLint (`next/core-web-vitals`)
+- `npm run build`: Produktions-Build mit Turbopack (prüft auch die Typen)
+- `npm run typecheck`: `tsc --noEmit`. Braucht die generierten Routen-Typen unter `.next/types`
+  (entstehen bei `dev` oder `build`, `next-env.d.ts` importiert sie).
+- `npm run lint`: `eslint .` mit Flat Config in `eslint.config.mjs` (`eslint-config-next/core-web-vitals`,
+  dazu `no-alert` als Fehler). `react-hooks/set-state-in-effect` steht bewusst auf `warn`, weil das
+  Hook-Muster (State beim ID-Wechsel zurücksetzen) es auslöst. Diese Warnungen sind erwartet.
 - `npm run release`: release-it (Version bumpen, taggen). Nur auf ausdrückliche Anweisung ausführen.
 - `firebase deploy --only database`: Deployt `database.rules.json` ins Projekt `wischlist-cd9c6`.
   Nur auf ausdrückliche Anweisung ausführen.
-- Node-Version: siehe `.nvmrc` (v20). Es gibt keine Tests.
+- Node-Version: siehe `.nvmrc` (v26). Es gibt keine Tests.
 
 ## Stack
-Next.js 13 (App Router), React 18, TypeScript (strict), Firebase JS SDK v10 (modular), SCSS Modules,
-`@dnd-kit` (Sortieren der Einträge), `react-feather` (Icons), lodash.
-Imports laufen absolut über `baseUrl: ./src`: `import { useList } from "lib/list"` statt relativer Pfade.
+Next.js 16 (App Router, Turbopack für `dev` und `build`), React 19, TypeScript 5 (strict), ESLint 9,
+Firebase JS SDK v10 (modular), SCSS Modules, `@dnd-kit` (Sortieren der Einträge), `react-feather` (Icons), lodash.
+`next`, `react`, `react-dom` und `@types/react(-dom)` sind exakt gepinnt (Typen zusätzlich über `overrides`).
+Bei Updates zusammen anheben, `eslint-config-next` auf dieselbe Version wie `next`.
+Imports laufen absolut über `paths: { "*": ["./src/*"] }` in `tsconfig.json` (kein `baseUrl` mehr):
+`import { useList } from "lib/list"` statt relativer Pfade.
 
 ## Struktur
 - `src/app/(dashboard)/`: Seiten mit Header und Footer
@@ -27,6 +34,8 @@ Imports laufen absolut über `baseUrl: ./src`: `import { useList } from "lib/lis
 - `src/app/(fullscreen)/share`: dieselbe `SharedList`-Komponente ohne Chrome
 - Seiten sind dünne Wrapper (`export default List`). Die Logik liegt in `src/components/<Name>/<Name>.tsx`,
   die Styles daneben in `<Name>.module.scss`.
+- `params` und `searchParams` sind seit Next 15 Promises. Seiten reichen sie unverändert durch
+  (`params: Promise<{ listId: string }>`), die Client-Komponente entpackt sie mit `use(params)` aus React.
 - `src/lib/`: der komplette Firebase-Zugriff als React-Hooks. Komponenten sprechen Firebase nie direkt an.
   - `firebase.ts`: App-Singleton (HMR-sicher), `auth`, `database`, `storage`
   - `auth.tsx`: `AuthProvider`, `useUser()` (User, Profil), `useAuth()` (Login, Register, E-Mail-Link, Passwort-Reset)
@@ -38,7 +47,9 @@ Imports laufen absolut über `baseUrl: ./src`: `import { useList } from "lib/lis
   - `giver.tsx`: `GiverProvider` merkt sich den Namen anonymer Schenkender, ob sie bewusst ohne Namen
     schenken (`giverSkipped`) und die auf diesem Gerät angelegten Zusagen (`giftIds`) in localStorage
   - `date.ts`: Event-Datum formatieren, Countdown
-- `src/types/`: `List`, `ListOptions`, `Entry`, `Priority` (1 hoch, 2 mittel, 3 niedrig), `Favorite`
+  - `sort.ts`: `sortEntries()` und `SORT_ORDER_LABELS`
+  - Sonstiges: `link.ts` (URLs im Text verlinken), `localStorage.ts` (`useLocalStorage`), `env.ts` (App-Version aus `package.json`)
+- `src/types/`: `List`, `ListOptions`, `SortOrder`, `Entry`, `Gift`, `MultiGift`, `Priority` (1 hoch, 2 mittel, 3 niedrig), `Favorite`
 
 ## Datenmodell (Realtime Database)
 ```text
@@ -105,7 +116,8 @@ favorites/{uid}/{listId}   { title }
   Klassen in `globals.scss` (`.tape`, `.stamp`, `.gift_tag`, `.shipping_label`, `.field_key`, `.perforation`, …).
   Wer ein Material im Modul anpasst, bindet das Mixin ein statt der globalen Klasse, sonst entscheidet die Ladereihenfolge.
   Kritzeleien liegen als SVG in `src/components/Doodle/` und werden über `Doodle.tsx` genutzt.
-- SVGs werden per `@svgr/webpack` als React-Komponenten importiert.
+- SVGs werden per `@svgr/webpack` als React-Komponenten importiert. Das läuft über die Turbopack-Regel
+  `turbopack.rules["*.svg"]` in `next.config.js`, eine eigene `webpack()`-Konfiguration gibt es nicht mehr.
 - Commits: Conventional Commits mit Scope, z. B. `feat(List): …`, `fix(Auth): …`, `chore(core): …`.
 - Branches: Entwickelt wird auf `dev`, Releases gehen per PR nach `main`.
 
