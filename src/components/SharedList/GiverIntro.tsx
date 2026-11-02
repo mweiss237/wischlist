@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import Link from "next/link"
 import { ArrowRight } from "react-feather"
 import styles from "./GiverIntro.module.scss"
 
@@ -53,6 +54,12 @@ const GiverIntro = ({ onSubmit, onSkip }: GiverIntroProps) => {
         </form>
         <p id="giver-intro-info" className={styles.info}>
           Dann sehen andere Schenkende, was du besorgst, und nichts kommt doppelt.
+        </p>
+        <p className={styles.privacy}>
+          Dein Name ist für alle sichtbar, die diese Liste öffnen.{" "}
+          <Link href="/datenschutz" target="_blank" rel="noopener">
+            Datenschutz
+          </Link>
         </p>
         <button type="button" className={`btn btn-tertiary ${styles.skip}`} onClick={onSkip}>
           Ohne Namen weiter

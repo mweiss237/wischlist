@@ -4,7 +4,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useUser } from "lib/auth"
-import { Gift, Home, LogIn, Star, User } from "react-feather"
+import { getAvatarUrl } from "lib/avatar"
+import { Gift, Home, LogIn, Star } from "react-feather"
 import { DoodleUnderline } from "components/Doodle/Doodle"
 import styles from "./Header.module.scss"
 
@@ -61,11 +62,9 @@ const Header = () => {
           className={`${styles.account} ${isAccountActive ? styles.accountActive : ""}`}
           title={user ? "Profil" : "Anmelden"}
         >
-          {user?.photoURL ? (
+          {user ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={user.photoURL} alt="" className={styles.avatar} />
-          ) : user ? (
-            <User size={18} aria-hidden />
+            <img src={getAvatarUrl(user)} alt="" className={styles.avatar} />
           ) : (
             <LogIn size={18} aria-hidden />
           )}

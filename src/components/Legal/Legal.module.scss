@@ -1,0 +1,131 @@
+@use "../../styles/materials" as m;
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* a quiet sheet of paper, the only material on these pages */
+.sheet {
+  @include m.paper;
+  padding: 1.75rem 2rem 2rem;
+  font-size: 1rem;
+  line-height: 1.6;
+
+  h2 {
+    margin: 2.25rem 0 0.6rem;
+    font-size: 1.45rem;
+  }
+
+  h2:first-child {
+    margin-top: 0;
+  }
+
+  h3 {
+    margin: 1.5rem 0 0.4rem;
+    font-size: 1.15rem;
+  }
+
+  p,
+  ul,
+  dl {
+    margin: 0 0 0.9rem;
+  }
+
+  ul {
+    padding-left: 1.25rem;
+  }
+
+  li + li {
+    margin-top: 0.3rem;
+  }
+
+  a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-decoration-color: var(--gold);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* sits below the sticky header when jumping to an anchor */
+.section {
+  scroll-margin-top: 5rem;
+}
+
+.toc {
+  margin: 0 0 2rem;
+  padding: 0 0 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--line-strong);
+  columns: 2 16rem;
+  column-gap: 2rem;
+
+  li {
+    break-inside: avoid;
+  }
+
+  a {
+    display: inline-block;
+    padding: 0.2rem 0;
+  }
+}
+
+/* the address block of the imprint */
+.address {
+  font-style: normal;
+}
+
+.facts {
+  dt {
+    margin-top: 0.6rem;
+    color: var(--muted);
+    font-family: var(--font-label), ui-monospace, monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+/* fields the operator still has to fill in */
+.todo {
+  background: var(--gold-soft);
+}
+
+.updated {
+  margin-top: 2rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* link row for pages without the footer (full screen share view) */
+.links {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 1.5rem 1rem 2rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--text);
+    text-decoration: underline;
+    text-decoration-color: var(--gold);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+  }
+}
+
+@media (max-width: 640px) {
+  .sheet {
+    padding: 1.25rem 1rem 1.5rem;
+  }
+}

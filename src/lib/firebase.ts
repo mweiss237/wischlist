@@ -1,6 +1,5 @@
 import { getApp, getApps, initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getStorage } from 'firebase/storage';
 import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
@@ -17,7 +16,5 @@ const DB_URL = "https://wischlist-cd9c6-default-rtdb.europe-west1.firebasedataba
 export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 export const auth = getAuth(app)
-
-export const storage = getStorage(app)
 
 export const database = getDatabase(app, DB_URL)

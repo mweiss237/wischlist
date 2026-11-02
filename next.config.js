@@ -2,14 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: __dirname,
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "via.placeholder.com"
-      }
-    ]
-  },
   turbopack: {
     rules: {
       "*.svg": {

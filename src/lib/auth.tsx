@@ -1,6 +1,6 @@
 "use client"
 
-import { auth, storage } from "lib/firebase";
+import { auth, database } from "lib/firebase";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -11,12 +11,16 @@ import {
   sendPasswordResetEmail,
   sendSignInLinkToEmail,
   fetchSignInMethodsForEmail,
-  isSignInWithEmailLink
+  isSignInWithEmailLink,
+  deleteUser
 } from "firebase/auth";
+import { FirebaseError } from "firebase/app";
+import { equalTo, get, orderByChild, query, ref, update } from "firebase/database";
 import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from "react";
 import _ from "lodash";
-import { getDownloadURL, ref, uploadBytes, deleteObject } from "firebase/storage";
 
+// Firebase refuses sensitive actions after roughly 5 minutes, stay below that
+const RECENT_LOGIN_MS = 4 * 60 * 1000
 
 const AuthContext = createContext<{ user: User | null, loading: boolean }>({ user: null, loading: false })
 
@@ -69,34 +73,36 @@ export const useUser = () => {
 
   }, [user])
 
-  const updateProfilePicture = useCallback(async (file: File) => {
-    if (!user) return
+  /**
+   * Deletes lists, their entries and favorites in one atomic update, then the account itself.
+   * deleteUser() only works shortly after a login, so that is checked up front. Otherwise the
+   * data would be gone while the account stays. Rejects with `auth/requires-recent-login` then.
+   */
+  const deleteAccount = useCallback(async () => {
+    // `user` is a deep clone (see AuthProvider), the SDK calls need the real instance
+    const current = auth.currentUser
+    if (!user || !current) return
 
-    const storageRef = ref(storage, `uploads/${file.name}`);
+    const { authTime } = await current.getIdTokenResult()
+    if (Date.now() - new Date(authTime).getTime() > RECENT_LOGIN_MS)
+      throw new FirebaseError("auth/requires-recent-login", "Login too old to delete the account")
 
-    try {
-      const snapshot = await uploadBytes(storageRef, file);
-      const photoURL = await getDownloadURL(snapshot.ref);
+    const snapshot = await get(query(ref(database, "lists"), orderByChild("userId"), equalTo(user.uid)))
+    const updates: Record<string, null> = { [`favorites/${user.uid}`]: null }
+    snapshot.forEach((list) => {
+      updates[`lists/${list.key}`] = null
+      updates[`entries/${list.key}`] = null
+    })
+    await update(ref(database), updates)
 
-      await updateProfile(user, {
-        photoURL,
-      })
-
-      await deleteObject(storageRef)
-
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
-
-    return await user.reload()
-
+    await deleteUser(current)
   }, [user])
 
   return {
     user,
     loading,
-    updateProfilePicture,
-    updateUserName
+    updateUserName,
+    deleteAccount
   }
 }
 

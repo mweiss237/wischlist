@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <style>
+    .bg { fill: #f8f1e4 }
+    .figure { fill: #fffcf5; stroke: #2b2620 }
+    .accent { stroke: #c08a2a }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #1b2721 }
+      .figure { fill: #16201b; stroke: #efe7d6 }
+      .accent { stroke: #e2b660 }
+    }
+  </style>
+  <rect class="bg" width="96" height="96"/>
+  <path class="figure" d="M17.5 98c1.5-19 12-30 30.5-30.5C67 68 77.5 79 79 98"/>
+  <path class="figure" d="M48 18.5c-10.5-.5-17 7-16.5 17.5.5 10.5 7 18.5 16.5 18 9.5.5 16-7.5 16.5-18C65 25.5 58.5 18 48 18.5z"/>
+  <path class="accent" d="M39.5 69.5c3 4 12 4.5 17 0"/>
+</svg>

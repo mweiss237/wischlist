@@ -9,6 +9,9 @@ const Footer = () => {
         <p>
           © {year} <Link href={"https://www.moritz-weiss.dev"} target={"_blank"}>Moritz Weiss</Link> · Wischlist v{getVersion()}
         </p>
+        <p>
+          <Link href="/impressum">Impressum</Link> · <Link href="/datenschutz">Datenschutz</Link>
+        </p>
       </div>
     </footer>
   )

@@ -2,7 +2,7 @@
 
 Next.js-Web-App (App Router) zum Erstellen von Wunschlisten. Besitzer:innen teilen eine Liste per Link
 (`/list/<listId>/share`). Freunde und Familie haken dort Wünsche in Echtzeit ab, auch ohne Account.
-Backend ist ausschließlich Firebase: Auth, Realtime Database (europe-west1) und Storage. Es gibt keine
+Backend ist ausschließlich Firebase: Auth und Realtime Database (europe-west1). Firebase Storage wird nicht genutzt. Es gibt keine
 eigenen API-Routen und kein Server-Backend.
 
 ## Befehle
@@ -40,8 +40,10 @@ Imports laufen absolut über `paths: { "*": ["./src/*"] }` in `tsconfig.json` (k
 - `params` und `searchParams` sind seit Next 15 Promises. Seiten reichen sie unverändert durch
   (`params: Promise<{ listId: string }>`), die Client-Komponente entpackt sie mit `use(params)` aus React.
 - `src/lib/`: der komplette Firebase-Zugriff als React-Hooks. Komponenten sprechen Firebase nie direkt an.
-  - `firebase.ts`: App-Singleton (HMR-sicher), `auth`, `database`, `storage`
-  - `auth.tsx`: `AuthProvider`, `useUser()` (User, Profil), `useAuth()` (Login, Register, E-Mail-Link, Passwort-Reset)
+  - `firebase.ts`: App-Singleton (HMR-sicher), `auth`, `database`
+  - `auth.tsx`: `AuthProvider`, `useUser()` (User, Profil), `useAuth()` (Login, Register, E-Mail-Link, Passwort-Reset).
+    `useUser().deleteAccount()` löscht Listen, Einträge und Favoriten per atomarem Multi-Path-`update` und danach den Account
+    (Art. 17 DSGVO); ist der Login älter als ca. 4 Minuten, wirft sie vorab `auth/requires-recent-login`
   - `lists.ts`: `useLists()` (eigene Listen per `orderByChild("userId")`)
   - `list.ts`: `useList(id)`, `deleteListWithEntries()`
   - `entries.ts`: `useEntries(id)`, `pickEntry()`/`unpickEntry()` und `addGift()`/`removeGift()` für Schenkende
@@ -52,6 +54,9 @@ Imports laufen absolut über `paths: { "*": ["./src/*"] }` in `tsconfig.json` (k
   - `admin.ts`: `useIsAdmin()` (liest `admins/{uid}`, `null` beim Laden). Steuert nur die UI, die Sicherheit liegt in den Regeln.
   - `templates.ts`: `useTemplates()`, `useTemplate()`, `useTemplateSuggestions()`, `useSuggestionCounts()`, die Suche
     `matchesTemplateQuery()` und die Admin-Schreibfunktionen (`addTemplate`, `deleteTemplateWithSuggestions`, `reorderSuggestions`, …)
+  - `avatar.ts`: `getAvatarUrl(user)` zeichnet das Profilbild als SVG-Data-URI aus den Initialen des Namens (`Moritz` → M,
+    `Meister Propper` → MP; ohne Namen die E-Mail, sonst das Dummy-Bild `public/avatar.svg`). Es gibt keinen Profilbild-Upload;
+    eine spätere Gravatar-artige Umstellung passiert nur hier.
   - `date.ts`: Event-Datum formatieren, Countdown
   - `sort.ts`: `sortEntries()` und `SORT_ORDER_LABELS`
   - Sonstiges: `link.ts` (URLs im Text verlinken), `localStorage.ts` (`useLocalStorage`), `env.ts` (App-Version aus `package.json`)
@@ -142,4 +147,5 @@ templateSuggestions/{templateId}/{suggestionId}
 ## Hinweise
 - Die Firebase-Web-Config in `lib/firebase.ts` ist absichtlich öffentlich. Die Sicherheit kommt allein aus
   den DB-Regeln. Es gibt keine `.env`.
-- `src/lib/storage.ts` ist ein leerer Stub. Profilbilder laufen über `useUser().updateProfilePicture`.
+- Es werden keine Nutzerbilder gespeichert (kein Firebase Storage, `photoURL` wird nicht genutzt). Das steht so in der
+  Datenschutzerklärung (`src/components/Legal/`); wer das ändert, muss den Text mit anpassen.

@@ -87,6 +87,20 @@
   font-size: 0.9rem;
 }
 
+/* on kraft paper the global link colour is too faint */
+.privacy {
+  max-width: 34ch;
+  margin: 0;
+  color: var(--kraft-ink);
+  font-size: 0.85rem;
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
 .skip {
   color: var(--kraft-ink) !important;
 }

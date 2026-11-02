@@ -2,20 +2,24 @@
 import React from "react"
 import { useIsAdmin } from "lib/admin"
 import { useAuth, useUser } from "lib/auth"
+import { getAvatarUrl } from "lib/avatar"
 
 import Image from "next/image"
 import Link from "next/link"
-import { Camera, Edit3, Gift, LogOut } from "react-feather"
+import { Edit3, Gift, LogOut, Trash2 } from "react-feather"
 import { useRouter } from "next/navigation"
 import Loading from "components/Loading/Loading"
+import { useDialog } from "components/Dialog/Dialog"
 import styles from "./Profile.module.scss"
 
 const Profile = () => {
-  const { user, updateUserName, updateProfilePicture } = useUser()
+  const { user, updateUserName, deleteAccount } = useUser()
   const [name, setName] = React.useState(user?.displayName || "")
   const { logout } = useAuth()
   const isAdmin = useIsAdmin()
   const router = useRouter()
+  const dialog = useDialog()
+  const [deleting, setDeleting] = React.useState(false)
 
   const handleLogout = async () => {
     await logout()
@@ -34,15 +38,34 @@ const Profile = () => {
     updateUserName(name)
   }
 
-  const handleClickImage = () => {
-    document.getElementById("image-input")?.click()
-  }
-  const handleChangeImage: React.ChangeEventHandler<HTMLInputElement> = ({ target }) => {
+  const handleDeleteAccount = async () => {
+    const confirmed = await dialog.confirm(
+      "Dein Konto, alle deine Listen mit ihren Wünschen und deine Favoriten werden unwiderruflich gelöscht. Geteilte Links funktionieren danach nicht mehr.",
+      { title: "Konto löschen?", confirmLabel: "Konto löschen", danger: true }
+    )
+    if (!confirmed) return
 
-    const file = target.files && target.files[0]
-    if (!file) return
-
-    updateProfilePicture(file)
+    setDeleting(true)
+    try {
+      await deleteAccount()
+      router.push("/")
+    } catch (error) {
+      if ((error as { code?: string }).code === "auth/requires-recent-login") {
+        await dialog.alert(
+          "Zur Sicherheit musst du dich neu anmelden, bevor du dein Konto löschen kannst. Melde dich danach noch einmal an und versuche es erneut.",
+          { title: "Bitte neu anmelden" }
+        )
+        await logout()
+        router.push("/auth")
+      } else {
+        console.error("[auth] delete account", error)
+        await dialog.alert("Das Konto konnte nicht gelöscht werden. Bitte versuche es später noch einmal.", {
+          title: "Löschen fehlgeschlagen",
+        })
+      }
+    } finally {
+      setDeleting(false)
+    }
   }
 
   if (!user) return <Loading />
@@ -61,19 +84,9 @@ const Profile = () => {
           <span className="barcode" aria-hidden />
         </div>
         <div className={styles.labelBody}>
-          <button type="button" className={styles.avatar} onClick={handleClickImage} title="Profilbild ändern">
-            <Image
-              src={user.photoURL || "https://via.placeholder.com/150.png"}
-              alt="Profilbild"
-              width="96"
-              height="96"
-              unoptimized
-            />
-            <span className={styles.avatarOverlay}>
-              <Camera size={20} aria-hidden />
-            </span>
-          </button>
-          <input id="image-input" type={"file"} accept="image/*" className={styles.hidden} onChange={handleChangeImage} />
+          <div className={styles.avatar}>
+            <Image src={getAvatarUrl(user)} alt="" width="96" height="96" unoptimized />
+          </div>
 
           <div className={styles.fields}>
             <label className="field" htmlFor="display-name">
@@ -107,6 +120,15 @@ const Profile = () => {
         ) : null}
         <button type="button" className="btn btn-ghost" onClick={handleLogout}>
           <LogOut size={18} aria-hidden /> Ausloggen
+        </button>
+      </div>
+
+      {/* what is below the perforation can be torn off for good */}
+      <div className={`perforation ${styles.perforation}`} aria-hidden />
+      <div className={styles.danger}>
+        <p>Löscht dein Konto mit allen Listen, Wünschen und Favoriten endgültig.</p>
+        <button type="button" className="btn btn-ghost btn-danger" onClick={handleDeleteAccount} disabled={deleting}>
+          <Trash2 size={18} aria-hidden /> Konto löschen
         </button>
       </div>
     </div>

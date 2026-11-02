@@ -1,5 +1,6 @@
 "use client"
 import { useAuth, useUser } from "lib/auth"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import React, { use, FormEvent, useState, useEffect } from "react"
 import styles from "./Auth.module.scss"
@@ -94,6 +95,13 @@ const Register = ({
           Registrieren
         </button>
       </span>
+      <p className={styles.privacy}>
+        Wir speichern deine E-Mail-Adresse und deinen Namen, um dein Konto zu betreiben. Mehr dazu in der{" "}
+        <Link href="/datenschutz" target="_blank" rel="noopener">
+          Datenschutzerklärung
+        </Link>
+        .
+      </p>
     </form>
   )
 }
