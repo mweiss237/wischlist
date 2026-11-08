@@ -38,6 +38,8 @@ const TemplateSwipe = ({ params }: { params: Promise<{ listId: string; templateI
   const [deck, setDeck] = useState<SuggestionTuple[] | null>(null)
   const [decisions, setDecisions] = useState<Decision[]>([])
   const [leaving, setLeaving] = useState<SwipeDirection | null>(null)
+  // the first note nudges itself until someone drags, taps a button or uses the keys
+  const [interacted, setInteracted] = useState(false)
 
   useEffect(() => {
     if (deck !== null || suggestions === null || !loaded) return
@@ -55,6 +57,7 @@ const TemplateSwipe = ({ params }: { params: Promise<{ listId: string; templateI
 
   const decide = (direction: SwipeDirection) => {
     if (!deck || leaving || isDone) return
+    setInteracted(true)
     const [, suggestion] = deck[index]
 
     const commit = () => {
@@ -176,7 +179,14 @@ const TemplateSwipe = ({ params }: { params: Promise<{ listId: string; templateI
             {/* two blank sheets behind the note, always two like on a pad */}
             {deck.length - index > 2 ? <div className={`${styles.sheet} ${styles.sheetBottom}`} aria-hidden /> : null}
             {deck.length - index > 1 ? <div className={`${styles.sheet} ${styles.sheetMiddle}`} aria-hidden /> : null}
-            <SwipeCard key={deck[index][0]} suggestion={deck[index][1]} leaving={leaving} onSwipe={decide} />
+            <SwipeCard
+              key={deck[index][0]}
+              suggestion={deck[index][1]}
+              leaving={leaving}
+              onSwipe={decide}
+              hint={!interacted && index === 0}
+              onGrab={() => setInteracted(true)}
+            />
           </div>
 
           <div className={styles.actions}>

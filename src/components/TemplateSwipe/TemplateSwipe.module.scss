@@ -119,6 +119,60 @@
   color: var(--muted);
 }
 
+/* the link sits on the title like a paper clip, the shop is named in the label */
+.link {
+  @include m.hit-area;
+  display: inline-flex;
+  vertical-align: middle;
+  color: var(--muted);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--primary);
+  }
+}
+
+/* until the first interaction the note slides a bit to the right and back: it can be dragged */
+.nudge {
+  animation: swipe-nudge 3s var(--ease) 1s 3;
+
+  .verdictTake {
+    animation: swipe-nudge-verdict 3s var(--ease) 1s 3;
+  }
+}
+
+.nudge:hover {
+  animation: none;
+
+  .verdictTake {
+    animation: none;
+  }
+}
+
+@keyframes swipe-nudge {
+  0%,
+  30%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  10%,
+  20% {
+    transform: translateX(28px) rotate(1.5deg);
+  }
+}
+
+@keyframes swipe-nudge-verdict {
+  0%,
+  30%,
+  100% {
+    opacity: 0;
+  }
+  10%,
+  20% {
+    opacity: 0.7;
+  }
+}
+
 .verdict {
   position: absolute;
   top: 0.75rem;
@@ -193,5 +247,10 @@
 @media (prefers-reduced-motion: reduce) {
   .card {
     transition: none;
+  }
+
+  .nudge,
+  .nudge .verdictTake {
+    animation: none;
   }
 }
